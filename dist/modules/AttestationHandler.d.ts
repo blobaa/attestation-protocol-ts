@@ -1,4 +1,4 @@
-import { Request } from 'ardor-ts';
+import { Request } from '@somedotone/ardor-ts';
 import { AttestationResponse, CreateAttestationUncheckedParams, CreateIntermediateAttestationParams, CreateLeafAttestationParams, CreateRootAttestationParams, IAttestation, RevokeAttestationUncheckedParams, RevokeIntermediateAttestationParams, RevokeLeafAttestationParams, RevokeRootAttestationParams, UpdateIntermediateAttestationParams, UpdateLeafAttestationParams, UpdateRootAttestationParams } from '../types';
 export default class AttestationHandler implements IAttestation {
     private request;

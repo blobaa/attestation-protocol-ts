@@ -1,4 +1,4 @@
-import { DecodeTokenParams, DecodeTokenResponse, GetAccountPropertiesParams, GetAccountPropertiesResponse, Request, SetAccountPropertyParams, SetAccountPropertyResponse, time, DeleteAccountPropertyParams, DeleteAccountPropertyResponse } from 'ardor-ts';
+import { DecodeTokenParams, DecodeTokenResponse, GetAccountPropertiesParams, GetAccountPropertiesResponse, Request, SetAccountPropertyParams, SetAccountPropertyResponse, time, DeleteAccountPropertyParams, DeleteAccountPropertyResponse } from '@somedotone/ardor-ts';
 
 
 export default class RequestMock extends Request {

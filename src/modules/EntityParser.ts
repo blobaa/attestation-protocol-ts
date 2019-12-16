@@ -1,5 +1,5 @@
 import { IEntity, GetEntityResponse, GetEntityParams, EntityType, State } from '../types'
-import { IRequest, Request, account } from 'ardor-ts'
+import { IRequest, Request, account } from '@somedotone/ardor-ts'
 import { ErrorCode } from '..';
 import DataFields from './lib/DataFields';
 import Helper from './lib/Helper';

@@ -1,4 +1,4 @@
-import { ChainId, DeleteAccountPropertyParams, GetAccountPropertiesParams, SetAccountPropertyParams } from "ardor-ts";
+import { ChainId, DeleteAccountPropertyParams, GetAccountPropertiesParams, SetAccountPropertyParams } from '@somedotone/ardor-ts';
 import { Attestation, attestation, CreateAttestationUncheckedParams, CreateIntermediateAttestationParams, CreateLeafAttestationParams, CreateRootAttestationParams, EntityType, Error, ErrorCode, RevokeAttestationUncheckedParams, RevokeIntermediateAttestationParams, RevokeLeafAttestationParams, RevokeRootAttestationParams, State, UpdateIntermediateAttestationParams, UpdateLeafAttestationParams, UpdateRootAttestationParams } from "../src/index";
 import config from './config';
 import RequestMock from './mocks/RequestMock';

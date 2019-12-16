@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var ardor_ts_1 = require("ardor-ts");
+var ardor_ts_1 = require("@somedotone/ardor-ts");
 var constants_1 = require("../../constants");
 var types_1 = require("../../types");
 var DataField;

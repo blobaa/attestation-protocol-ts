@@ -1,5 +1,5 @@
-import { DecodeTokenParams, GetAccountPropertiesParams, SetAccountPropertyParams } from "ardor-ts";
-import { Claim, ClaimCheckParams, CreateClaimParams, EntityCheckParams, EntityType, Error, ErrorCode, State, VerifyClaimParams } from "../src/index";
+import { DecodeTokenParams, GetAccountPropertiesParams, SetAccountPropertyParams } from '@somedotone/ardor-ts';
+import { Claim, ClaimCheckParams, CreateClaimParams, EntityCheckParams, EntityType, Error, ErrorCode, State, VerifyClaimParams } from '../src/index';
 import config from './config';
 import RequestMock from "./mocks/RequestMock";
 

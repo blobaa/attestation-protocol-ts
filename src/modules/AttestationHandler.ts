@@ -1,4 +1,4 @@
-import { account, ChainId, DeleteAccountPropertyParams, DeleteAccountPropertyResponse, IRequest, Request, SetAccountPropertyParams, SetAccountPropertyResponse } from 'ardor-ts';
+import { account, ChainId, DeleteAccountPropertyParams, DeleteAccountPropertyResponse, IRequest, Request, SetAccountPropertyParams, SetAccountPropertyResponse } from '@somedotone/ardor-ts';
 import { ACCOUNT_PREFIX, noError } from '../constants';
 import { AttestationResponse, CreateAttestationUncheckedParams, CreateIntermediateAttestationParams, CreateLeafAttestationParams, CreateRootAttestationParams, EntityType, Error, ErrorCode, IAttestation, objectAny, RevokeAttestationUncheckedParams, RevokeIntermediateAttestationParams, RevokeLeafAttestationParams, RevokeRootAttestationParams, State, UpdateIntermediateAttestationParams, UpdateLeafAttestationParams, UpdateRootAttestationParams } from '../types';
 import DataFields from './lib/DataFields';

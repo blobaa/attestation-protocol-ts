@@ -1,4 +1,4 @@
-import { account, DecodeTokenParams, IRequest, Request, time } from 'ardor-ts';
+import { account, DecodeTokenParams, IRequest, Request, time } from '@somedotone/ardor-ts';
 import { ACCOUNT_PREFIX, MAX_DEPRECATION_HOPS } from '../constants';
 import { ClaimCheckParams, ClaimObject, CreateClaimParams, EntityCheckParams, EntityType, ErrorCode, IClaim, State, VerifyClaimParams, VerifyClaimResponse } from '../types';
 import DataFields from './lib/DataFields';

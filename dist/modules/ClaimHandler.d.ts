@@ -1,4 +1,4 @@
-import { Request } from 'ardor-ts';
+import { Request } from '@somedotone/ardor-ts';
 import { ClaimObject, CreateClaimParams, IClaim, VerifyClaimParams, VerifyClaimResponse } from '../types';
 export default class ClaimHandler implements IClaim {
     private request;

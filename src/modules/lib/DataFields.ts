@@ -1,4 +1,4 @@
-import { account } from 'ardor-ts';
+import { account } from '@somedotone/ardor-ts';
 import { ACCOUNT_PREFIX, DATA_FIELD_SEPARATOR, DUMMY_ACCOUNT_RS, MAX_PAYLOAD_LENGTH, noError, NUMBER_OF_DATA_FIELDS, PROTOCOL_IDENTIFIER, PROTOCOL_VERSION } from '../../constants';
 import { EntityType, Error, ErrorCode, State } from '../../types';
 

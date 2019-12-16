@@ -1,5 +1,5 @@
 import { IEntity, GetEntityResponse, GetEntityParams } from '../types';
-import { Request } from 'ardor-ts';
+import { Request } from '@somedotone/ardor-ts';
 export default class EntityParser implements IEntity {
     private request;
     constructor(request?: Request);
