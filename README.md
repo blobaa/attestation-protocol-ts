@@ -6,7 +6,6 @@ An implementation of the [Attestation Protocol](https://github.com/somedotone/at
 - [attestation-protocol-ts](#attestation-protocol-ts)
   - [Install](#install)
   - [Test](#test)
-  - [Commit](#commit)
   - [General](#general)
   - [APIs](#apis)
     - [Attestation](#attestation)
@@ -56,11 +55,6 @@ npm run test-node
 ````
 
 `npm test` runs both tests.
-
-
-## Commit
-
-Run the `npm run precommit` command before committing to the repo. It triggers the test and build scripts.
 
 
 ## General
