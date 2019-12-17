@@ -17,6 +17,9 @@
   },
   "author": "atz3n",
   "license": "ISC",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "devDependencies": {
     "@types/jest": "^24.0.23",
     "@types/node": "^12.12.14",
