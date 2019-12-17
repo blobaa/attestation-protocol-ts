@@ -45,7 +45,7 @@ You can now install the npm package via
 npm install @somedotone/attestation-protocol-ts@<release version>
 ````
 
-More information can be found at the [npm package](https://github.com/somedotone/ardor-ts/packages/81399) description and [this medium post](https://medium.com/@crysfel/using-different-registries-in-yarn-and-npm-766541d6f851) about multiple registry usage.
+More information can be found at the [npm package](https://github.com/somedotone/attestation-protocol-ts/packages/82302) description and [this medium post](https://medium.com/@crysfel/using-different-registries-in-yarn-and-npm-766541d6f851) about multiple registry usage.
 
 
 
