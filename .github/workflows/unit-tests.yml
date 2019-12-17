@@ -17,6 +17,9 @@ jobs:
     steps:
       - name: Check out project
         uses: actions/checkout@v1
+      
+      - name: Prepare project
+        run: rm -f .npmrc
 
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
