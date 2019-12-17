@@ -31,15 +31,22 @@ An implementation of the [Attestation Protocol](https://github.com/somedotone/at
 
 ## Install
 
-````
-npm install git+https://github.com/somedotone/attestation-protocol-ts
-````
-
-Release versions:
+At the current state this library is published to the GitHub npm registry only.
+To use it as a dependency, create an *.npmrc* file in the same directory as your *package.json* and add the following line 
 
 ````
-npm install git+https://github.com/somedotone/attestation-protocol-ts#<release tag>
+@somedotone:registry=https://npm.pkg.github.com/somedotone
+```` 
+
+This tells npm to use the GitHub registry for scoped somedotone packages.
+You can now install the npm package via
+
 ````
+npm install @somedotone/attestation-protocol-ts@<release version>
+````
+
+More information can be found at the [npm package](https://github.com/somedotone/ardor-ts/packages/81399) description and [this medium post](https://medium.com/@crysfel/using-different-registries-in-yarn-and-npm-766541d6f851) about multiple registry usage.
+
 
 
 ## Test
