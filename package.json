@@ -26,6 +26,6 @@
     "typescript": "^3.7.3"
   },
   "dependencies": {
-    "@somedotone/ardor-ts": "^2.2.2"
+    "@somedotone/ardor-ts": "^2.2.3"
   }
 }
