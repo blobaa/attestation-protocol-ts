@@ -17,15 +17,15 @@ jobs:
     steps:
       - name: Check out project
         uses: actions/checkout@v1
-      
-      - name: Prepare project
-        run: rm -f .npmrc
 
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
 
+      - name: Authenticate with GitHub package registry
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
+        
       - name: Install dependencies
         run: npm ci
 
