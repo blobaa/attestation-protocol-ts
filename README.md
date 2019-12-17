@@ -591,7 +591,7 @@ The Claim module handles claiming tasks. It provides the following APIs:
 
 #### createClaim
 
-This API lets you create verifiable claim.
+This API lets you create authenticated claim.
 
 ````typescript
 import { claim, CreateClaimParams } from 'attestation-protocol-ts'
@@ -628,7 +628,7 @@ createClaimExample();
 
 #### verifyClaim
 
-This API lets you verify claims.
+This API lets you verify the authenticity of an authenticated claims.
 
 ````typescript
 import { claim, VerifyClaimParams, ClaimCheckParams, EntityCheckParams } from 'attestation-protocol-ts'
