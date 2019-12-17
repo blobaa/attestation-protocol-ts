@@ -1,5 +1,5 @@
 {
-  "name": "attestation-protocol-ts",
+  "name": "@somedotone/attestation-protocol-ts",
   "version": "1.0.0",
   "description": "An implementation of the Attestation Protocol written in TypeScript",
   "main": "dist/src/index.js",
