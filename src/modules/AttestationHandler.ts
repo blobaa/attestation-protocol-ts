@@ -113,11 +113,11 @@ export default class AttestationHandler implements IAttestation {
         return noError;
     }
 
-    private createAttestationTransaction = async (url: string, passphrase: string, claimantAccount: string, dataFields: DataFields ): Promise<SetAccountPropertyResponse> => {
+    private createAttestationTransaction = async (url: string, passphrase: string, accountToAttest: string, dataFields: DataFields ): Promise<SetAccountPropertyResponse> => {
         const propertyRequestParams: SetAccountPropertyParams = {
             chain: ChainId.IGNIS,
             secretPhrase: passphrase,
-            recipient: claimantAccount,
+            recipient: accountToAttest,
             property: dataFields.attestationContext,
             value: dataFields.createDataFieldsString()
         }
@@ -194,7 +194,7 @@ export default class AttestationHandler implements IAttestation {
         let oldDataFields = new DataFields();
 
         if(entity !== EntityType.ROOT) {
-            error = await this.checkClaimantEntityAndState(url, this.getRecipient(params), myAccount, ownDataFields.attestationContext, oldDataFields, isStateUpdate, entity);
+            error = await this.checkAttestedEntityAndState(url, this.getRecipient(params), myAccount, ownDataFields.attestationContext, oldDataFields, isStateUpdate, entity);
             if(error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
         } else {
             oldDataFields = ownDataFields;
@@ -218,17 +218,17 @@ export default class AttestationHandler implements IAttestation {
 
 
         if(this.isDeprecationRequest(params)) {
-            const newClaimantAccount = this.getNewRecipient(params);
+            const newAttestedAccount = this.getNewRecipient(params);
 
             oldDataFields.state = State.DEPRECATED;
-            oldDataFields.redirectAccount = newClaimantAccount.substring(ACCOUNT_PREFIX.length);
+            oldDataFields.redirectAccount = newAttestedAccount.substring(ACCOUNT_PREFIX.length);
             newDataFields.state = State.ACTIVE;
 
-            let error = await this.checkNewClaimantAccount(url, newClaimantAccount, oldDataFields.attestationContext, myAccount);
+            let error = await this.checkNewAttestedAccount(url, newAttestedAccount, oldDataFields.attestationContext, myAccount);
             if(error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
 
             return Promise.all([
-                this.createAttestationTransaction(url, params.passphrase, newClaimantAccount, newDataFields),
+                this.createAttestationTransaction(url, params.passphrase, newAttestedAccount, newDataFields),
                 this.createAttestationTransaction(url, params.passphrase, this.getRecipient(params), oldDataFields)
             ]).then(value => Promise.resolve(value[0]));
         
@@ -237,10 +237,10 @@ export default class AttestationHandler implements IAttestation {
         }
     }
 
-    private isEntityPermitted = (attestorEntity: EntityType, claimantEntity: EntityType): boolean => {
-        if(claimantEntity === EntityType.ROOT) return attestorEntity === EntityType.ROOT;
-        if(claimantEntity === EntityType.INTERMEDIATE) return (attestorEntity === EntityType.INTERMEDIATE || attestorEntity === EntityType.ROOT);
-        if(claimantEntity === EntityType.LEAF) return (attestorEntity === EntityType.INTERMEDIATE || attestorEntity === EntityType.ROOT);
+    private isEntityPermitted = (attestorEntity: EntityType, myEntity: EntityType): boolean => {
+        if(myEntity === EntityType.ROOT) return attestorEntity === EntityType.ROOT;
+        if(myEntity === EntityType.INTERMEDIATE) return (attestorEntity === EntityType.INTERMEDIATE || attestorEntity === EntityType.ROOT);
+        if(myEntity === EntityType.LEAF) return (attestorEntity === EntityType.INTERMEDIATE || attestorEntity === EntityType.ROOT);
         return false;
     }
 
@@ -251,13 +251,13 @@ export default class AttestationHandler implements IAttestation {
         return '';
     }
 
-    private checkClaimantEntityAndState = async (url: string, claimant: string, attestor: string, attestationContext: string, dataFields = new DataFields(), isStateUpdate: boolean, entity: EntityType): Promise<Error> => {
+    private checkAttestedEntityAndState = async (url: string, attestedAccount: string, attestor: string, attestationContext: string, dataFields = new DataFields(), isStateUpdate: boolean, entity: EntityType): Promise<Error> => {
         try {
             dataFields.attestationContext = attestationContext;
 
-            const response = await this.request.getAccountProperties(url, { recipient: claimant, setter: attestor, property: dataFields.attestationContext });
+            const response = await this.request.getAccountProperties(url, { recipient: attestedAccount, setter: attestor, property: dataFields.attestationContext });
             const propertyObject = response.properties[0];
-            if(!propertyObject) return { code: ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND, description: "Attestation context not found. The specified attestation context could not be found at account '" + claimant + "'." };
+            if(!propertyObject) return { code: ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND, description: "Attestation context not found. The specified attestation context could not be found for account '" + attestedAccount + "'." };
             
             let error = dataFields.consumeDataFieldString(propertyObject.value);
             if(error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
@@ -282,7 +282,7 @@ export default class AttestationHandler implements IAttestation {
         return "";
     }
 
-    private checkNewClaimantAccount = async (url: string, newAccount: string, attestationContext: string, myAccount: string): Promise<Error> => {
+    private checkNewAttestedAccount = async (url: string, newAccount: string, attestationContext: string, myAccount: string): Promise<Error> => {
         try {
             const response = await this.request.getAccountProperties(url, { recipient: newAccount, property: attestationContext, setter: myAccount });
             if(response.properties.length !== 0) return Promise.resolve({ code: ErrorCode.ATTESTATION_CONTEXT_ALREADY_SET, description: "Attestation context already set. The new account '" + newAccount + "' already has a property with the name '" + myAccount + "' set by '" + attestationContext + "'." });
@@ -342,11 +342,11 @@ export default class AttestationHandler implements IAttestation {
        return this.createRevokeTransaction(url, params.passphrase, recipient, dataFields.attestationContext);
     } 
 
-    private checkRevokeAttestation = async (url: string, claimantAccount: string, attestorAccount: string, attestationContext: string, entityType: EntityType): Promise<Error> => {
+    private checkRevokeAttestation = async (url: string, attestedAccount: string, attestorAccount: string, attestationContext: string, entityType: EntityType): Promise<Error> => {
         try {
-            const response = await this.request.getAccountProperties(url, { setter: attestorAccount, recipient: claimantAccount, property: attestationContext });
+            const response = await this.request.getAccountProperties(url, { setter: attestorAccount, recipient: attestedAccount, property: attestationContext });
             const propertyObject = response.properties[0];
-            if(!propertyObject) return { code: ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND, description: "Attestation context not found. The specified attestation context could not be found at account '" + claimantAccount + "'."  };
+            if(!propertyObject) return { code: ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND, description: "Attestation context not found. The specified attestation context could not be found at account '" + attestedAccount + "'."  };
 
             const dataFields = new DataFields();
             const error = dataFields.consumeDataFieldString(propertyObject.value);
@@ -361,11 +361,11 @@ export default class AttestationHandler implements IAttestation {
         return noError;
     }
 
-    private createRevokeTransaction = (url: string, passphrase: string, claimantAccount: string, attestationContext: string): Promise<SetAccountPropertyResponse> => {
+    private createRevokeTransaction = (url: string, passphrase: string, attestedAccount: string, attestationContext: string): Promise<SetAccountPropertyResponse> => {
         const propertyRequestParams: DeleteAccountPropertyParams = {
             chain: ChainId.IGNIS,
             secretPhrase: passphrase,
-            recipient: claimantAccount,
+            recipient: attestedAccount,
             property: attestationContext
         };
         return this.request.deleteAccountProperty(url, propertyRequestParams);
@@ -399,8 +399,5 @@ export default class AttestationHandler implements IAttestation {
         } catch(error) {
             return Promise.reject(Helper.getError(error))
         }
-
-
     }
-
 }

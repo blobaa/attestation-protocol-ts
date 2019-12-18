@@ -15,18 +15,18 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IAttestation, IClaim, IEntity } from './types'
+import { IAttestation, IData, IEntity } from './types'
 import AttestationHandler from './modules/AttestationHandler'
-import ClaimHandler from './modules/ClaimHandler'
+import DataHandler from './modules/DataHandler'
 import EntityParser from './modules/EntityParser'
 
 export * from './types'
 
 
 export const attestation: IAttestation = new AttestationHandler();
-export const claim: IClaim = new ClaimHandler();
+export const data: IData = new DataHandler();
 export const entity: IEntity = new EntityParser();
 
 export class Attestation extends AttestationHandler {};
-export class Claim extends ClaimHandler {};
+export class Data extends DataHandler {};
 export class Entity extends EntityParser {};

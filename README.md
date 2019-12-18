@@ -20,9 +20,9 @@ An implementation of the [Attestation Protocol](https://github.com/somedotone/at
       - [revokeIntermediateAttestation](#revokeintermediateattestation)
       - [revokeLeafAttestation](#revokeleafattestation)
       - [revokeAttestationUnchecked](#revokeattestationunchecked)
-    - [Claim](#claim)
-      - [createClaim](#createclaim)
-      - [verifyClaim](#verifyclaim)
+    - [Data](#data)
+      - [signData](#signdata)
+      - [verifySignedData](#verifysigneddata)
     - [Entity](#entity)
       - [getEntity](#getentity)
     - [Error Handling](#error-handling)
@@ -70,6 +70,8 @@ This library uses the [ardor-ts](https://github.com/somedotone/ardor-ts) package
 
 There are lots of tests in the test folder. Have a look if you need some additional examples of how to use the APIs.
 
+This version implements the Attestation Protocol version 1.0.0
+
 
 ## APIs
 
@@ -105,7 +107,7 @@ Use the *createAttestationUnchecked* and *revokeAttestationUnchecked* APIs for b
 This API lets you create self attestations and therefore root entities for trust chains.
 
 ````typescript
-import { attestation, CreateRootAttestationParams } from 'attestation-protocol-ts'
+import { attestation, CreateRootAttestationParams } from '@somedotone/attestation-protocol-ts'
 
 
 const createRootAttestationExample = async () => {
@@ -138,7 +140,7 @@ createRootAttestationExample();
 This API creates intermediate attestations based on a root or intermediate account. It creates an intermediate chain link in a trust chain.
 
 ````typescript
-import { attestation, CreateIntermediateAttestationParams } from 'attestation-protocol-ts'
+import { attestation, CreateIntermediateAttestationParams } from '@somedotone/attestation-protocol-ts'
 
 
 const createIntermediateAttestationExample = async () => {
@@ -174,7 +176,7 @@ createIntermediateAttestationExample();
 This API creates leaf attestations based on a root or intermediate account. It creates the bottom end of a trust chain.
 
 ````typescript
-import { attestation, CreateLeafAttestationParams } from 'attestation-protocol-ts'
+import { attestation, CreateLeafAttestationParams } from '@somedotone/attestation-protocol-ts'
 
 
 const createLeafAttestationExample = async () => {
@@ -210,7 +212,7 @@ createLeafAttestationExample();
 This API lets you create attestations without checking conditions. Use it with caution as it may result in invalid trust chains.
 
 ````typescript
-import { attestation, CreateAttestationUncheckedParams, EntityType } from 'attestation-protocol-ts'
+import { attestation, CreateAttestationUncheckedParams, EntityType } from '@somedotone/attestation-protocol-ts'
 
 
 const createAttestationUncheckedExample = async () => {
@@ -247,7 +249,7 @@ This API lets you update root entity accounts in two ways. You can either update
 **Data Field Update**
 
 ````typescript
-import { attestation, State, UpdateRootAttestationParams } from 'attestation-protocol-ts'
+import { attestation, State, UpdateRootAttestationParams } from '@somedotone/attestation-protocol-ts'
 
 
 const updateRootDataFieldsExample = async () => {
@@ -278,7 +280,7 @@ updateRootDataFieldsExample();
 **Account Update**
 
 ````typescript
-import { attestation, UpdateRootAttestationParams } from 'attestation-protocol-ts'
+import { attestation, UpdateRootAttestationParams } from '@somedotone/attestation-protocol-ts'
 
 
 const updateRootAccountExample = async () => {
@@ -313,7 +315,7 @@ This API lets you update intermediate entity accounts in two ways. You can eithe
 **Data Field Update**
 
 ````typescript
-import { attestation, State, UpdateIntermediateAttestationParams } from 'attestation-protocol-ts'
+import { attestation, State, UpdateIntermediateAttestationParams } from '@somedotone/attestation-protocol-ts'
 
 
 const updateIntermediateDataFieldsExample = async () => {
@@ -347,7 +349,7 @@ updateIntermediateDataFieldsExample();
 **Account Update**
 
 ````typescript
-import { attestation, UpdateIntermediateAttestationParams } from 'attestation-protocol-ts'
+import { attestation, UpdateIntermediateAttestationParams } from '@somedotone/attestation-protocol-ts'
 
 
 const updateIntermediateAccountExample = async () => {
@@ -385,7 +387,7 @@ This API lets you update leaf entity accounts in two ways. You can either update
 **Data Field Update**
 
 ````typescript
-import { attestation, State, UpdateLeafAttestationParams } from 'attestation-protocol-ts'
+import { attestation, State, UpdateLeafAttestationParams } from '@somedotone/attestation-protocol-ts'
 
 
 const updateLeafDataFieldsExample = async () => {
@@ -419,7 +421,7 @@ updateLeafDataFieldsExample();
 **Account Update**
 
 ````typescript
-import { attestation, UpdateLeafAttestationParams } from 'attestation-protocol-ts'
+import { attestation, UpdateLeafAttestationParams } from '@somedotone/attestation-protocol-ts'
 
 
 const updateLeafAccountExample = async () => {
@@ -455,7 +457,7 @@ updateLeafAccountExample();
 This API revokes self set root attestations.
 
 ```typescript
-import { attestation, RevokeRootAttestationParams } from 'attestation-protocol-ts'
+import { attestation, RevokeRootAttestationParams } from '@somedotone/attestation-protocol-ts'
 
 
 const revokeRootAttestationExample = async () => {
@@ -486,7 +488,7 @@ revokeRootAttestationExample();
 This API revokes intermediate attestations in two ways. You can either self revoke an attestation set by another account to your account (an account from which you know the passphrase) or revoke an attestation created by you for another account.
 
 ```typescript
-import { attestation, RevokeIntermediateAttestationParams } from 'attestation-protocol-ts'
+import { attestation, RevokeIntermediateAttestationParams } from '@somedotone/attestation-protocol-ts'
 
 
 const revokeIntermediateAttestationExample = async () => {
@@ -519,7 +521,7 @@ revokeIntermediateAttestationExample();
 This API revokes leaf attestations in two ways. You can either self revoke an attestation set by another account to your account (an account from which you know the passphrase) or revoke an attestation created by you for another account.
 
 ```typescript
-import { attestation, RevokeLeafAttestationParams } from 'attestation-protocol-ts'
+import { attestation, RevokeLeafAttestationParams } from '@somedotone/attestation-protocol-ts'
 
 
 const revokeLeafAttestationExample = async () => {
@@ -552,7 +554,7 @@ revokeLeafAttestationExample();
 This API lets you revoke attestations without checking conditions. Use it with caution as it may result in invalid trust chains.
 
 ```typescript
-import { attestation, RevokeAttestationUncheckedParams } from 'attestation-protocol-ts'
+import { attestation, RevokeAttestationUncheckedParams } from '@somedotone/attestation-protocol-ts'
 
 
 const revokeAttestationUncheckedExample = async () => {
@@ -579,69 +581,69 @@ revokeAttestationUncheckedExample();
 ```
 
 
-### Claim
+### Data
 
-The Claim module handles claiming tasks. It provides the following APIs:
+The Data module handles the data signing and verification tasks. It provides the following APIs:
 
 ````typescript
-- createClaim: (params: CreateClaimParams, forTestnet?: boolean) => ClaimObject // forTestnet defaults to false
-- verifyClaim: (url: string, params: VerifyClaimParams, forTestnet?: boolean) => Promise<VerifyClaimResponse> // forTestnet defaults to false
+- signData: (params: SignDataParams, forTestnet?: boolean) => SignedData // forTestnet defaults to false
+- verifySignedData: (url: string, params: VerifySignedDataParams, forTestnet?: boolean) => Promise<VerifySignedDataResponse> // forTestnet defaults to false
 ````
 
 
-#### createClaim
+#### signData
 
-This API lets you create authenticated claim.
+This API lets you create a signed data object.
 
 ````typescript
-import { claim, CreateClaimParams } from 'attestation-protocol-ts'
+import { data, SignDataParams } from '@somedotone/attestation-protocol-ts'
 
 
-const createClaimExample = () => {
+const signDataExample = () => {
 
     /* set parameters */
-    const params: CreateClaimParams = {
+    const params: SignDataParams = {
         attestationContext: "exampleContext",
         attestationPath: [                      // [optional] trust chain up to the root account.
-            "ARDOR-INTE-RMED-IATE-ACCO1",       // Can be omitted if claim creator is root account
+            "ARDOR-INTE-RMED-IATE-ACCO1",       // Can be omitted if signed data creator is root account
             "ARDOR-INTE-RMED-IATE-ACCO2",
             "ARDOR-ROOT-ACCO-UNTX-XXXXX" 
         ], 
-        payload: "exampleClaimPayload",         // claim payload
-        passphrase: "<some passphrase>"         // passphrase of claim creator account
+        payload: "exampleDataPayload",          // user data to be signed
+        passphrase: "<some passphrase>"         // passphrase of signed data creator account
     };
 
-    /* create claim */
-    const claimObject = claim.createClaim(params, true);
+    /* create signed data object */
+    const signedData = data.signData(params, true);
 
-    /* claim object contains all necessary claim verification data */
-    console.log(claimObject.attestationContext);
-    console.log(claimObject.attestationPath);
-    console.log(claimObject.payload);
-    console.log(claimObject.creatorAccount);
-    console.log(claimObject.signature);
+    /* signed data object contains all necessary verification data */
+    console.log(signedData.attestationContext);
+    console.log(signedData.attestationPath);
+    console.log(signedData.payload);
+    console.log(signedData.creatorAccount);
+    console.log(signedData.signature);
 }
 
-createClaimExample();
+signDataExample();
 ````
 
 
-#### verifyClaim
+#### verifySignedData
 
-This API lets you verify the authenticity of an authenticated claims.
+This API lets you verify the origin and integrity of a signed data object.
 
 ````typescript
-import { claim, VerifyClaimParams, ClaimCheckParams, EntityCheckParams } from 'attestation-protocol-ts'
+import { data, VerifySignedDataParams, SignedDataCheckParams, EntityCheckParams } from '@somedotone/attestation-protocol-ts'
 
 
-const verifyClaimExample = async () => {
+const verifySignedDataExample = async () => {
 
-    /* [optional] create a user callback for custom claim checking logic */
-    const claimCheckCb = (claim: ClaimCheckParams): boolean => {
+    /* [optional] create a user callback for custom signed data checking logic */
+    const signedDataCheckCb = (params: SignedDataCheckParams): boolean => {
         
-        /* claim parameter contains the claim object and claim creation time */
-        console.log(claim.claim);
-        console.log(claim.creationTime);
+        /* params contains the signed data object and creation time */
+        console.log(params.signedData);
+        console.log(params.creationTime);
 
         return true; // must return true to continue verification. False throws an verification error
     };
@@ -661,26 +663,26 @@ const verifyClaimExample = async () => {
 
 
     /* set parameters */
-    const params: VerifyClaimParams = {
+    const params: VerifySignedDataParams = {
         trustedRootAccount: "ARDOR-TRUS-TEDR-OOTA-CCOUN",
-        claim: claimObject,                                 // claim to be verified. Created with createClaim API
-        claimCheckCallback: claimCheckCb,                   // [optional] user callback called while claim checking
+        signedData: signedDataObject,                       // signed data to be verified. Created with signData API
+        signedDataCheckCallback: signedDataCheckCb,         // [optional] user callback called while signed data checking
         entityCheckCallback: entityCheckCb                  // [optional] user callback called every time an entity is checked
     };
 
     try {
 
         /* create and emit request. Throws an error in case of failing verification */
-        const response = await claim.verifyClaim("https://testardor.jelurida.com", params, true);
+        const response = await data.verifySignedData("https://testardor.jelurida.com", params, true);
 
-        /* response implements the VerifyClaimResponse interface */
+        /* response implements the VerifySignedDataResponse interface */
         console.log(response.activeRootAccount);
         console.log(response.verifiedTrustChain);
 
     } catch (e) { /* see error handling */ }
 }
 
-verifyClaimExample();
+verifySignedDataExample();
 ````
 
 
@@ -696,7 +698,7 @@ The Entity module provides the possibility to retrieve account information.
 #### getEntity
 
 ````typescript
-import { entity, GetEntityParams } from 'attestation-protocol-ts'
+import { entity, GetEntityParams } from '@somedotone/attestation-protocol-ts'
 
 
 const getEntityExample = async () => {
@@ -734,7 +736,7 @@ getEntityExample();
 There is an unified error handling for all asynchronous APIs. Every API throws an error in case of any failures or unmet conditions. Every error implements the 'Error' interface of this library. The interface consist of two data fields. The *code* field contains a value of the 'ErrorCode' enum to indicate the error reason. The *description* field contains a human readable description of the cause of the thrown error.
 
 ````typescript
-import { entity, Error, ErrorCode, GetEntityParams } from 'attestation-protocol-ts'
+import { entity, Error, ErrorCode, GetEntityParams } from '@somedotone/attestation-protocol-ts'
 
 
 const errorHandlingExample = async () => {
@@ -773,22 +775,22 @@ errorHandlingExample();
 Each module is pre instantiated and importable via the lower case module name. If you need the class definition of a module, import it via the upper case name. For example:
 
 ````typescript
-import { claim, Claim, CreateClaimParams } from 'attestation-protocol-ts'
+import { SignDataParams, data, Data } from '@somedotone/attestation-protocol-ts'
 
 
-const params: CreateClaimParams = {
+const params: SignDataParams = {
     attestationContext: "exampleContext",
-    payload: "exampleClaimPayload",
+    payload: "exampleDataPayload",
     passphrase: "<some passphrase>"
 };
 
 
 /* use the default instance */
-const claimObject = claim.createClaim(params);
-console.log(claimObject);
+const signedData = data.signData(params);
+console.log(signedData);
 
 /* use your own instance */
-const myClaim = new Claim();
-const claimObject2 = myClaim.createClaim(params);
-console.log(claimObject2);
+const myData = new Data();
+const signedData2 = myData.signData(params);
+console.log(signedData2);
 ````

@@ -64,10 +64,10 @@ export enum ErrorCode {
     ROOT_ENTITY_IN_MIDDLE_OF_PATH,
 
     INVALID_SIGNATURE,
-    WRONG_CLAIM_CREATOR_ACCOUNT,
-    CLAIM_CREATOR_DEPRECATED,
+    WRONG_CREATOR_ACCOUNT,
+    CREATOR_ACCOUNT_DEPRECATED,
 
-    CLAIM_CALLBACK_ERROR,
+    SIGNED_DATA_CALLBACK_ERROR,
     ENTITY_CALLBACK_ERROR,
 
     TOO_MANY_DEPRECATION_HOPS,
@@ -196,7 +196,7 @@ export interface IAttestation {
 }
 
 
-export interface ClaimObject {
+export interface SignedData {
     payload: string;
     attestationPath: string[];
     attestationContext: string;
@@ -204,7 +204,7 @@ export interface ClaimObject {
     signature: string;
 }
 
-export interface CreateClaimParams {
+export interface SignDataParams {
     passphrase: string;
     attestationPath?: string[];
     attestationContext: string;
@@ -212,14 +212,14 @@ export interface CreateClaimParams {
 }
 
 
-export interface VerifyClaimParams {
-    claim: ClaimObject;
+export interface VerifySignedDataParams {
+    signedData: SignedData;
     trustedRootAccount: string;
-    claimCheckCallback?: (claim: ClaimCheckParams) => boolean;
+    signedDataCheckCallback?: (signedDataCheck: SignedDataCheckParams) => boolean;
     entityCheckCallback?: (entity: EntityCheckParams) => boolean;
 }
 
-export interface VerifyClaimResponse {
+export interface VerifySignedDataResponse {
     activeRootAccount: string;
     verifiedTrustChain: string[];
 }
@@ -232,15 +232,15 @@ export interface EntityCheckParams {
     protocolVersion: string;
 }
 
-export interface ClaimCheckParams {
-    claim: ClaimObject;
+export interface SignedDataCheckParams {
+    signedData: SignedData;
     creationTime: number;
 }
 
 
-export interface IClaim {
-    createClaim: (params: CreateClaimParams, forTestnet?: boolean) => ClaimObject;
-    verifyClaim: (url: string, params: VerifyClaimParams, forTestnet?: boolean) => Promise<VerifyClaimResponse>;
+export interface IData {
+    signData: (params: SignDataParams, forTestnet?: boolean) => SignedData;
+    verifySignedData: (url: string, params: VerifySignedDataParams, forTestnet?: boolean) => Promise<VerifySignedDataResponse>;
 }
 
 

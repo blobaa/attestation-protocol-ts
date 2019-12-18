@@ -21,7 +21,7 @@ const config = {
             runTests: true,
             runNodeDependentTests: false
         },
-        claimModule: {
+        dataModule: {
             runTests: true
         },
         entityModule: {

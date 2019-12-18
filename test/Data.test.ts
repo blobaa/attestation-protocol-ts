@@ -16,15 +16,15 @@
  */
 
 import { DecodeTokenParams, GetAccountPropertiesParams, SetAccountPropertyParams } from '@somedotone/ardor-ts';
-import { Claim, ClaimCheckParams, CreateClaimParams, EntityCheckParams, EntityType, Error, ErrorCode, State, VerifyClaimParams } from '../src/index';
+import { Data, SignedDataCheckParams, SignDataParams, EntityCheckParams, EntityType, Error, ErrorCode, State, VerifySignedDataParams } from '../src/index';
 import config from './config';
 import RequestMock from "./mocks/RequestMock";
 
 
-if(config.test.claimModule.runTests) {
-    describe('Claim module tests', () => {
+if(config.test.dataModule.runTests) {
+    describe('Data module tests', () => {
 
-        test('create / verify claim success', async () => {
+        test('sign / verify signed data success', async () => {
             const decodeTokenCallback = (params: DecodeTokenParams): { account: string, valid: boolean } => {
                 return {account: config.account.erin.address, valid: true};
             }
@@ -84,28 +84,28 @@ if(config.test.claimModule.runTests) {
                 return { context: 'none', dataFieldsString: 'none' };
             }
 
-            const testClaim = new Claim(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
+            const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
-            const createParams: CreateClaimParams = {
+            const signDataParams: SignDataParams = {
                 attestationContext: 'test-context',
                 attestationPath: [ config.account.david.address, config.account.charlie.address, config.account.bob.address, config.account.alice.address ],
-                payload: 'test-claim-payload',
+                payload: 'test-signed-data-payload',
                 passphrase: config.account.erin.secret
             };
 
-            const claimObject = testClaim.createClaim(createParams, true);
+            const signedData = testData.signData(signDataParams, true);
 
 
-            const claimCheckCb = (claim: ClaimCheckParams): boolean => {
-                expect(claim.claim.creatorAccount).toBe(config.account.erin.address);
-                expect(claim.claim.payload).toBe('test-claim-payload');
+            const signedDataCheckCb = (params: SignedDataCheckParams): boolean => {
+                expect(params.signedData.creatorAccount).toBe(config.account.erin.address);
+                expect(params.signedData.payload).toBe('test-signed-data-payload');
 
 
                 const timeWindow = 10 * 1000;
                 const currentTime = (new Date()).getTime();
-                expect(claim.creationTime + timeWindow).toBeGreaterThan(currentTime);
-                expect(claim.creationTime - timeWindow).toBeLessThan(currentTime);
+                expect(params.creationTime + timeWindow).toBeGreaterThan(currentTime);
+                expect(params.creationTime - timeWindow).toBeLessThan(currentTime);
 
                 return true;
             }
@@ -168,20 +168,20 @@ if(config.test.claimModule.runTests) {
             }
 
 
-            const verifyParams: VerifyClaimParams = {
+            const verifyParams: VerifySignedDataParams = {
                 trustedRootAccount: config.account.alice.address, 
-                claim: claimObject, 
-                claimCheckCallback: claimCheckCb, 
+                signedData: signedData, 
+                signedDataCheckCallback: signedDataCheckCb, 
                 entityCheckCallback: entityCheckCb
             };
 
-            const response = await testClaim.verifyClaim(config.node.url.testnet, verifyParams, true);
+            const response = await testData.verifySignedData(config.node.url.testnet, verifyParams, true);
             expect(response.activeRootAccount).toBe(config.account.alice.address);
             expect(String(response.verifiedTrustChain)).toBe(String([ config.account.erin.address, config.account.david.address, config.account.charlie.address, config.account.bob.address, config.account.alice.address ]));
         });
 
 
-        test('verifyClaim root attest leaf success', async () => {
+        test('verifySignedData root attest leaf success', async () => {
             const decodeTokenCallback = (params: DecodeTokenParams): { account: string, valid: boolean } => {
                 return {account: config.account.bob.address, valid: true};
             }
@@ -214,26 +214,26 @@ if(config.test.claimModule.runTests) {
                 return { context: 'none', dataFieldsString: 'none' };
             }
 
-            const testClaim = new Claim(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
+            const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
-            const createParams: CreateClaimParams = {
+            const signDataParams: SignDataParams = {
                 attestationContext: 'test-context',
                 attestationPath: [ config.account.alice.address ],
-                payload: 'test-claim-payload',
+                payload: 'test-signed-data-payload',
                 passphrase: config.account.bob.secret
             };
 
-            const claimObject = testClaim.createClaim(createParams, true);
+            const signedData = testData.signData(signDataParams, true);
 
 
-            const claimCheckCb = (claim: ClaimCheckParams): boolean => {
-                expect(claim.claim.creatorAccount).toBe(config.account.bob.address);
+            const signedDataCheckCb = (params: SignedDataCheckParams): boolean => {
+                expect(params.signedData.creatorAccount).toBe(config.account.bob.address);
 
                 const timeWindow = 10 * 1000;
                 const currentTime = (new Date()).getTime();
-                expect(claim.creationTime + timeWindow).toBeGreaterThan(currentTime);
-                expect(claim.creationTime - timeWindow).toBeLessThan(currentTime);
+                expect(params.creationTime + timeWindow).toBeGreaterThan(currentTime);
+                expect(params.creationTime - timeWindow).toBeLessThan(currentTime);
 
                 return true;
             }
@@ -265,20 +265,20 @@ if(config.test.claimModule.runTests) {
             }
 
 
-            const verifyParams: VerifyClaimParams = {
+            const verifyParams: VerifySignedDataParams = {
                 trustedRootAccount: config.account.alice.address, 
-                claim: claimObject, 
-                claimCheckCallback: claimCheckCb, 
+                signedData: signedData, 
+                signedDataCheckCallback: signedDataCheckCb, 
                 entityCheckCallback: entityCheckCb
             };
 
-            const response = await testClaim.verifyClaim(config.node.url.testnet, verifyParams, true);
+            const response = await testData.verifySignedData(config.node.url.testnet, verifyParams, true);
             expect(response.activeRootAccount).toBe(config.account.alice.address);
             expect(String(response.verifiedTrustChain)).toBe(String([ config.account.bob.address, config.account.alice.address ]));
         });
 
 
-        test('verifyClaim intermediate create claim success', async () => {
+        test('verifySignedData intermediate signed data success', async () => {
             const decodeTokenCallback = (params: DecodeTokenParams): { account: string, valid: boolean } => {
                 return {account: config.account.bob.address, valid: true};
             }
@@ -311,26 +311,26 @@ if(config.test.claimModule.runTests) {
                 return { context: 'none', dataFieldsString: 'none' };
             }
 
-            const testClaim = new Claim(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
+            const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
-            const createParams: CreateClaimParams = {
+            const signDataParams: SignDataParams = {
                 attestationContext: 'test-context',
                 attestationPath: [ config.account.alice.address ],
-                payload: 'test-claim-payload',
+                payload: 'test-signed-data-payload',
                 passphrase: config.account.bob.secret
             };
 
-            const claimObject = testClaim.createClaim(createParams, true);
+            const signedData = testData.signData(signDataParams, true);
 
 
-            const claimCheckCb = (claim: ClaimCheckParams): boolean => {
-                expect(claim.claim.creatorAccount).toBe(config.account.bob.address);
+            const signedDataCheckCb = (params: SignedDataCheckParams): boolean => {
+                expect(params.signedData.creatorAccount).toBe(config.account.bob.address);
 
                 const timeWindow = 10 * 1000;
                 const currentTime = (new Date()).getTime();
-                expect(claim.creationTime + timeWindow).toBeGreaterThan(currentTime);
-                expect(claim.creationTime - timeWindow).toBeLessThan(currentTime);
+                expect(params.creationTime + timeWindow).toBeGreaterThan(currentTime);
+                expect(params.creationTime - timeWindow).toBeLessThan(currentTime);
 
                 return true;
             }
@@ -362,20 +362,20 @@ if(config.test.claimModule.runTests) {
             }
 
 
-            const verifyParams: VerifyClaimParams = {
+            const verifyParams: VerifySignedDataParams = {
                 trustedRootAccount: config.account.alice.address, 
-                claim: claimObject, 
-                claimCheckCallback: claimCheckCb, 
+                signedData: signedData, 
+                signedDataCheckCallback: signedDataCheckCb, 
                 entityCheckCallback: entityCheckCb
             };
 
-            const response = await testClaim.verifyClaim(config.node.url.testnet, verifyParams, true);
+            const response = await testData.verifySignedData(config.node.url.testnet, verifyParams, true);
             expect(response.activeRootAccount).toBe(config.account.alice.address);
             expect(String(response.verifiedTrustChain)).toBe(String([ config.account.bob.address, config.account.alice.address ]));
         });
 
 
-        test('verifyClaim root create claim success', async () => {
+        test('verifySignedData root signed data success', async () => {
             const decodeTokenCallback = (params: DecodeTokenParams): { account: string, valid: boolean } => {
                 return {account: config.account.alice.address, valid: true};
             }
@@ -398,16 +398,16 @@ if(config.test.claimModule.runTests) {
                 return { context: 'none', dataFieldsString: 'none' };
             }
 
-            const testClaim = new Claim(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
+            const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
-            const claimCheckCb = (claim: ClaimCheckParams): boolean => {
-                expect(claim.claim.creatorAccount).toBe(config.account.alice.address);
+            const signedDataCheckCb = (params: SignedDataCheckParams): boolean => {
+                expect(params.signedData.creatorAccount).toBe(config.account.alice.address);
 
                 const timeWindow = 10 * 1000;
                 const currentTime = (new Date()).getTime();
-                expect(claim.creationTime + timeWindow).toBeGreaterThan(currentTime);
-                expect(claim.creationTime - timeWindow).toBeLessThan(currentTime);
+                expect(params.creationTime + timeWindow).toBeGreaterThan(currentTime);
+                expect(params.creationTime - timeWindow).toBeLessThan(currentTime);
 
                 return true;
             }
@@ -429,46 +429,46 @@ if(config.test.claimModule.runTests) {
             }
 
 
-            let createParams: CreateClaimParams = {
+            let signDataParams: SignDataParams = {
                 attestationContext: 'test-context',
-                payload: 'test-claim-payload',
+                payload: 'test-signed-data-payload',
                 passphrase: config.account.alice.secret
             };
 
-            let verifyParams: VerifyClaimParams = {
+            let verifyParams: VerifySignedDataParams = {
                 trustedRootAccount: config.account.alice.address, 
-                claim: testClaim.createClaim(createParams, true), 
-                claimCheckCallback: claimCheckCb, 
+                signedData: testData.signData(signDataParams, true), 
+                signedDataCheckCallback: signedDataCheckCb, 
                 entityCheckCallback: entityCheckCb
             };
 
-            let response = await testClaim.verifyClaim(config.node.url.testnet, verifyParams, true);
+            let response = await testData.verifySignedData(config.node.url.testnet, verifyParams, true);
             expect(response.activeRootAccount).toBe(config.account.alice.address);
             expect(String(response.verifiedTrustChain)).toBe(String([ config.account.alice.address ]));
 
 
             entCnt = 0;
             propCnt = 0;
-            createParams.attestationPath = [];
+            signDataParams.attestationPath = [];
 
-            verifyParams.claim = testClaim.createClaim(createParams, true);
-            response = await testClaim.verifyClaim(config.node.url.testnet, verifyParams, true);
+            verifyParams.signedData = testData.signData(signDataParams, true);
+            response = await testData.verifySignedData(config.node.url.testnet, verifyParams, true);
             expect(response.activeRootAccount).toBe(config.account.alice.address);
             expect(String(response.verifiedTrustChain)).toBe(String([ config.account.alice.address ]));
 
 
             entCnt = 0;
             propCnt = 0;
-            createParams.attestationPath = undefined;
+            signDataParams.attestationPath = undefined;
 
-            verifyParams.claim = testClaim.createClaim(createParams, true);
-            response = await testClaim.verifyClaim(config.node.url.testnet, verifyParams, true);
+            verifyParams.signedData = testData.signData(signDataParams, true);
+            response = await testData.verifySignedData(config.node.url.testnet, verifyParams, true);
             expect(response.activeRootAccount).toBe(config.account.alice.address);
             expect(String(response.verifiedTrustChain)).toBe(String([ config.account.alice.address ]));
         });
 
 
-        test('verifyClaim root in the middle of path error', async () => {
+        test('verifySignedData root in the middle of path error', async () => {
             const decodeTokenCallback = (params: DecodeTokenParams): { account: string, valid: boolean } => {
                 return {account: config.account.charlie.address, valid: true};
             }
@@ -501,21 +501,21 @@ if(config.test.claimModule.runTests) {
                 return { context: 'none', dataFieldsString: 'none' };
             }
 
-            const testClaim = new Claim(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
+            const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
-            const createParams: CreateClaimParams = {
+            const signDataParams: SignDataParams = {
                 attestationContext: 'test-context',
                 attestationPath: [ config.account.bob.address, config.account.alice.address ],
-                payload: 'test-claim-payload',
+                payload: 'test-signed-data-payload',
                 passphrase: config.account.charlie.secret
             };
 
-            const claimObject = testClaim.createClaim(createParams, true);
+            const signedData = testData.signData(signDataParams, true);
             
 
             try {
-                await testClaim.verifyClaim(config.node.url.testnet, { claim: claimObject, trustedRootAccount: config.account.alice.address }, true);
+                await testData.verifySignedData(config.node.url.testnet, { signedData: signedData, trustedRootAccount: config.account.alice.address }, true);
                 fail('should not reach here');
             } catch(e) {
                 const error = e as Error;
@@ -525,7 +525,7 @@ if(config.test.claimModule.runTests) {
         });
 
 
-        test('verifyClaim leaf as attestor error', async () => {
+        test('verifySignedData leaf as attestor error', async () => {
             const decodeTokenCallback = (params: DecodeTokenParams): { account: string, valid: boolean } => {
                 return { account: config.account.charlie.address, valid: true };
             }
@@ -558,21 +558,21 @@ if(config.test.claimModule.runTests) {
                 return { context: 'none', dataFieldsString: 'none' };
             }
 
-            const testClaim = new Claim(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
+            const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
-            const createParams: CreateClaimParams = {
+            const signDataParams: SignDataParams = {
                 attestationContext: 'test-context',
                 attestationPath: [ config.account.bob.address, config.account.alice.address ],
-                payload: 'test-claim-payload',
+                payload: 'test-signed-data-payload',
                 passphrase: config.account.charlie.secret
             };
 
-            const claimObject = testClaim.createClaim(createParams, true);
+            const signedData = testData.signData(signDataParams, true);
 
 
             try {
-                await testClaim.verifyClaim(config.node.url.testnet, { claim: claimObject, trustedRootAccount: config.account.alice.address }, true);
+                await testData.verifySignedData(config.node.url.testnet, { signedData: signedData, trustedRootAccount: config.account.alice.address }, true);
                 fail('should not reach here');
             } catch(e) {
                 const error = e as Error;
@@ -582,7 +582,7 @@ if(config.test.claimModule.runTests) {
         });
 
 
-        test('verifyClaim token invalid error', async () => {
+        test('verifySignedData token invalid error', async () => {
             const decodeTokenCallback = (params: DecodeTokenParams): { account: string, valid: boolean } => {
                 return {account: config.account.charlie.address, valid: false};
             }
@@ -594,21 +594,21 @@ if(config.test.claimModule.runTests) {
                 return { context: 'none', dataFieldsString: 'none' };
             }
 
-            const testClaim = new Claim(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
+            const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
-            const createParams: CreateClaimParams = {
+            const signDataParams: SignDataParams = {
                 attestationContext: 'test-context',
                 attestationPath: [ config.account.bob.address, config.account.alice.address ],
-                payload: 'test-claim-payload',
+                payload: 'test-signed-data-payload',
                 passphrase: config.account.charlie.secret
             };
 
-            const claimObject = testClaim.createClaim(createParams, true);
+            const signedData = testData.signData(signDataParams, true);
 
 
             try {
-                await testClaim.verifyClaim(config.node.url.testnet, { claim: claimObject, trustedRootAccount: config.account.alice.address }, true);
+                await testData.verifySignedData(config.node.url.testnet, { signedData: signedData, trustedRootAccount: config.account.alice.address }, true);
                 fail('should not reach here');
             } catch(e) {
                 const error = e as Error;
@@ -618,7 +618,7 @@ if(config.test.claimModule.runTests) {
         });
 
 
-        test('verifyClaim wrong claim creator error', async () => {
+        test('verifySignedData wrong signed data creator error', async () => {
             const decodeTokenCallback = (params: DecodeTokenParams): { account: string, valid: boolean } => {
                 return {account: config.account.bob.address, valid: true};
             }
@@ -630,31 +630,31 @@ if(config.test.claimModule.runTests) {
                 return { context: 'none', dataFieldsString: 'none' };
             }
 
-            const testClaim = new Claim(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
+            const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
-            const createParams: CreateClaimParams = {
+            const signDataParams: SignDataParams = {
                 attestationContext: 'test-context',
                 attestationPath: [ config.account.bob.address, config.account.alice.address ],
-                payload: 'test-claim-payload',
+                payload: 'test-signed-data-payload',
                 passphrase: config.account.charlie.secret
             };
 
-            const claimObject = testClaim.createClaim(createParams, true);
+            const signedData = testData.signData(signDataParams, true);
 
 
             try {
-                await testClaim.verifyClaim(config.node.url.testnet, { claim: claimObject, trustedRootAccount: config.account.alice.address }, true);
+                await testData.verifySignedData(config.node.url.testnet, { signedData: signedData, trustedRootAccount: config.account.alice.address }, true);
                 fail('should not reach here');
             } catch(e) {
                 const error = e as Error;
-                expect(error.code).toBe(ErrorCode.WRONG_CLAIM_CREATOR_ACCOUNT);
+                expect(error.code).toBe(ErrorCode.WRONG_CREATOR_ACCOUNT);
                 expect(error.description).toBeDefined();
             } 
         });
 
 
-        test('verifyClaim claim callback returned false error', async () => {
+        test('verifySignedData signed data callback returned false error', async () => {
             const decodeTokenCallback = (params: DecodeTokenParams): { account: string, valid: boolean } => {
                 return {account: config.account.charlie.address, valid: true};
             }
@@ -666,41 +666,41 @@ if(config.test.claimModule.runTests) {
                 return { context: 'none', dataFieldsString: 'none' };
             }
 
-            const testClaim = new Claim(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
+            const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
-            const createParams: CreateClaimParams = {
+            const signDataParams: SignDataParams = {
                 attestationContext: 'test-context',
-                payload: 'test-claim-payload',
+                payload: 'test-signed-data-payload',
                 passphrase: config.account.charlie.secret
             };
 
-            const claimObject = testClaim.createClaim(createParams, true);
+            const signedData = testData.signData(signDataParams, true);
 
 
-            const claimCheckCb = (claim: ClaimCheckParams): boolean => {
+            const signedDataCheckCb = (params: SignedDataCheckParams): boolean => {
                 return false;
             }
 
 
-            const verifyParams: VerifyClaimParams = {
+            const verifyParams: VerifySignedDataParams = {
                 trustedRootAccount: config.account.alice.address, 
-                claim: claimObject, 
-                claimCheckCallback: claimCheckCb
+                signedData: signedData, 
+                signedDataCheckCallback: signedDataCheckCb
             };
 
             try {
-                await testClaim.verifyClaim(config.node.url.testnet, verifyParams, true);
+                await testData.verifySignedData(config.node.url.testnet, verifyParams, true);
                 fail('should not reach here');
             } catch(e) {
                 const error = e as Error;
-                expect(error.code).toBe(ErrorCode.CLAIM_CALLBACK_ERROR);
+                expect(error.code).toBe(ErrorCode.SIGNED_DATA_CALLBACK_ERROR);
                 expect(error.description).toBeDefined();
             } 
         });
 
 
-        test('verifyClaim entity callback returned false error', async () => {
+        test('verifySignedData entity callback returned false error', async () => {
             const decodeTokenCallback = (params: DecodeTokenParams): { account: string, valid: boolean } => {
                 return {account: config.account.bob.address, valid: true};
             }
@@ -724,17 +724,17 @@ if(config.test.claimModule.runTests) {
                 return { context: 'none', dataFieldsString: 'none' };
             }
 
-            const testClaim = new Claim(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
+            const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
-            const createParams: CreateClaimParams = {
+            const signDataParams: SignDataParams = {
                 attestationContext: 'test-context',
                 attestationPath: [ config.account.alice.address ],
-                payload: 'test-claim-payload',
+                payload: 'test-signed-data-payload',
                 passphrase: config.account.bob.secret
             };
 
-            const claimObject = testClaim.createClaim(createParams, true);
+            const signedData = testData.signData(signDataParams, true);
 
 
             const entityCheckCb = (entity: EntityCheckParams): boolean => {
@@ -742,14 +742,14 @@ if(config.test.claimModule.runTests) {
             }
 
 
-            const verifyParams: VerifyClaimParams = {
+            const verifyParams: VerifySignedDataParams = {
                 trustedRootAccount: config.account.alice.address, 
-                claim: claimObject, 
+                signedData: signedData, 
                 entityCheckCallback: entityCheckCb
             };
 
             try {
-                await testClaim.verifyClaim(config.node.url.testnet, verifyParams, true);
+                await testData.verifySignedData(config.node.url.testnet, verifyParams, true);
                 fail('should not reach here');
             } catch(e) {
                 const error = e as Error;
@@ -759,7 +759,7 @@ if(config.test.claimModule.runTests) {
         });
 
 
-        test('verifyClaim deprecation success', async () => {
+        test('verifySignedData deprecation success', async () => {
             const decodeTokenCallback = (params: DecodeTokenParams): { account: string, valid: boolean } => {
                 return {account: config.account.erin.address, valid: true};
             }
@@ -819,17 +819,17 @@ if(config.test.claimModule.runTests) {
                 return { context: 'none', dataFieldsString: 'none' };
             }
 
-            const testClaim = new Claim(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
+            const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
-            const createParams: CreateClaimParams = {
+            const signDataParams: SignDataParams = {
                 attestationContext: 'test-context',
                 attestationPath: [ config.account.david.address, config.account.bob.address ],
-                payload: 'test-claim-deprecation-payload',
+                payload: 'test-signed-data-deprecation-payload',
                 passphrase: config.account.erin.secret
             };
 
-            const claimObject = testClaim.createClaim(createParams, true);
+            const signedData = testData.signData(signDataParams, true);
 
 
             let entCnt = 0;
@@ -889,19 +889,19 @@ if(config.test.claimModule.runTests) {
             }
 
 
-            const verifyParams: VerifyClaimParams = {
+            const verifyParams: VerifySignedDataParams = {
                 trustedRootAccount: config.account.alice.address, 
-                claim: claimObject, 
+                signedData: signedData, 
                 entityCheckCallback: entityCheckCb
             };
 
-            const response = await testClaim.verifyClaim(config.node.url.testnet, verifyParams, true);
+            const response = await testData.verifySignedData(config.node.url.testnet, verifyParams, true);
             expect(response.activeRootAccount).toBe(config.account.alice.address);
             expect(String(response.verifiedTrustChain)).toBe(String([ config.account.erin.address, config.account.david.address, config.account.charlie.address, config.account.bob.address, config.account.alice.address ]));
         });
 
 
-        test('verifyClaim multiple deprecation hops success', async () => {
+        test('verifySignedData multiple deprecation hops success', async () => {
             const decodeTokenCallback = (params: DecodeTokenParams): { account: string, valid: boolean } => {
                 return {account: config.account.frank.address, valid: true};
             }
@@ -968,17 +968,17 @@ if(config.test.claimModule.runTests) {
                 return { context: 'none', dataFieldsString: 'none' };
             }
 
-            const testClaim = new Claim(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
+            const testData = new Data(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
 
 
-            const createParams: CreateClaimParams = {
+            const signDataParams: SignDataParams = {
                 attestationContext: 'test-context',
                 attestationPath: [ config.account.erin.address, config.account.alice.address ],
-                payload: 'test-claim-deprecation-payload',
+                payload: 'test-signed-data-deprecation-payload',
                 passphrase: config.account.frank.secret
             };
 
-            const claimObject = testClaim.createClaim(createParams, true);
+            const signedData = testData.signData(signDataParams, true);
 
 
             let entCnt = 0;
@@ -1048,19 +1048,19 @@ if(config.test.claimModule.runTests) {
             }
 
 
-            const verifyParams: VerifyClaimParams = {
+            const verifyParams: VerifySignedDataParams = {
                 trustedRootAccount: config.account.alice.address, 
-                claim: claimObject, 
+                signedData: signedData, 
                 entityCheckCallback: entityCheckCb
             };
 
-            const response = await testClaim.verifyClaim(config.node.url.testnet, verifyParams, true);
+            const response = await testData.verifySignedData(config.node.url.testnet, verifyParams, true);
             expect(response.activeRootAccount).toBe(config.account.alice.address);
             expect(String(response.verifiedTrustChain)).toBe(String([ config.account.frank.address, config.account.erin.address, config.account.david.address, config.account.charlie.address, config.account.bob.address, config.account.alice.address ]));
         });
 
 
-        test('verifyClaim too many deprecation hops error', async () => {
+        test('verifySignedData too many deprecation hops error', async () => {
             const decodeTokenCallback = (params: DecodeTokenParams): { account: string, valid: boolean } => {
                 return {account: config.account.charlie.address, valid: true};
             }
@@ -1088,20 +1088,20 @@ if(config.test.claimModule.runTests) {
                 return { context: 'none', dataFieldsString: 'none' };
             }
 
-            const testClaim = new Claim(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
+            const testData = new Data(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
 
 
-            const createParams: CreateClaimParams = {
+            const signDataParams: SignDataParams = {
                 attestationContext: 'test-context',
                 attestationPath: [ config.account.bob.address ],
-                payload: 'test-claim-payload',
+                payload: 'test-signed-data-payload',
                 passphrase: config.account.charlie.secret
             };
 
-            const claimObject = testClaim.createClaim(createParams, true);
+            const signedData = testData.signData(signDataParams, true);
 
             try {
-                await testClaim.verifyClaim(config.node.url.testnet, { claim: claimObject, trustedRootAccount: config.account.bob.address }, true);
+                await testData.verifySignedData(config.node.url.testnet, { signedData: signedData, trustedRootAccount: config.account.bob.address }, true);
                 fail('should not reach here');
             } catch(e) {
                 const error = e as Error;
@@ -1111,7 +1111,7 @@ if(config.test.claimModule.runTests) {
         });
 
 
-        test('verifyClaim trusted root not found error', async () => {
+        test('verifySignedData trusted root not found error', async () => {
             const decodeTokenCallback = (params: DecodeTokenParams): { account: string, valid: boolean } => {
                 return {account: config.account.bob.address, valid: true};
             }
@@ -1142,21 +1142,21 @@ if(config.test.claimModule.runTests) {
                 return { context: 'none', dataFieldsString: 'none' };
             }
 
-            const testClaim = new Claim(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
+            const testData = new Data(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
 
 
-            const createParams: CreateClaimParams = {
+            const signDataParams: SignDataParams = {
                 attestationContext: 'test-context',
                 attestationPath: [ config.account.alice.address ],
-                payload: 'test-claim-payload',
+                payload: 'test-signed-data-payload',
                 passphrase: config.account.bob.secret
             };
 
-            const claimObject = testClaim.createClaim(createParams, true);
+            const signedData = testData.signData(signDataParams, true);
 
 
             try {
-                await testClaim.verifyClaim(config.node.url.testnet, {trustedRootAccount: config.account.bob.address, claim: claimObject}, true);
+                await testData.verifySignedData(config.node.url.testnet, {trustedRootAccount: config.account.bob.address, signedData: signedData}, true);
                 fail('should not reach here');
             } catch(e) {
                 const error = e as Error;
@@ -1166,7 +1166,7 @@ if(config.test.claimModule.runTests) {
         });
 
 
-        test('verifyClaim trusted root is deprecated success', async () => {
+        test('verifySignedData trusted root is deprecated success', async () => {
             const decodeTokenCallback = (params: DecodeTokenParams): { account: string, valid: boolean } => {
                 return {account: config.account.charlie.address, valid: true};
             }
@@ -1206,26 +1206,26 @@ if(config.test.claimModule.runTests) {
                 return { context: 'none', dataFieldsString: 'none' };
             }
 
-            const testClaim = new Claim(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
+            const testData = new Data(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
 
 
-            const createParams: CreateClaimParams = {
+            const signDataParams: SignDataParams = {
                 attestationContext: 'test-context',
                 attestationPath: [ config.account.bob.address ],
-                payload: 'test-claim-payload',
+                payload: 'test-signed-data-payload',
                 passphrase: config.account.charlie.secret
             };
 
-            const claimObject = testClaim.createClaim(createParams, true);
+            const signedData = testData.signData(signDataParams, true);
 
 
-            const response = await testClaim.verifyClaim(config.node.url.testnet, {trustedRootAccount: config.account.bob.address, claim: claimObject}, true);
+            const response = await testData.verifySignedData(config.node.url.testnet, {trustedRootAccount: config.account.bob.address, signedData: signedData}, true);
             expect(response.activeRootAccount).toBe(config.account.alice.address);
             expect(response.verifiedTrustChain).toEqual(expect.arrayContaining([ config.account.bob.address ]));
         });
 
 
-        test('verifyClaim claim creator is deprecated error', async () => {
+        test('verifySignedData signed data creator is deprecated error', async () => {
             const decodeTokenCallback = (params: DecodeTokenParams): { account: string, valid: boolean } => {
                 return {account: config.account.bob.address, valid: true};
             }
@@ -1246,25 +1246,25 @@ if(config.test.claimModule.runTests) {
                 return { context: 'none', dataFieldsString: 'none' };
             }
 
-            const testClaim = new Claim(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
+            const testData = new Data(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
 
 
-            const createParams: CreateClaimParams = {
+            const signDataParams: SignDataParams = {
                 attestationContext: 'test-context',
                 attestationPath: [ config.account.alice.address ],
-                payload: 'test-claim-payload',
+                payload: 'test-signed-data-payload',
                 passphrase: config.account.bob.secret
             };
 
-            const claimObject = testClaim.createClaim(createParams, true);
+            const signedData = testData.signData(signDataParams, true);
 
 
             try {
-                await testClaim.verifyClaim(config.node.url.testnet, {trustedRootAccount: config.account.alice.address, claim: claimObject}, true);
+                await testData.verifySignedData(config.node.url.testnet, {trustedRootAccount: config.account.alice.address, signedData: signedData}, true);
                 fail('should not reach here');
             } catch(e) {
                 const error = e as Error;
-                expect(error.code).toBe(ErrorCode.CLAIM_CREATOR_DEPRECATED);
+                expect(error.code).toBe(ErrorCode.CREATOR_ACCOUNT_DEPRECATED);
                 expect(error.description).toBeDefined();
             } 
         });
