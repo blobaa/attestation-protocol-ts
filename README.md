@@ -115,7 +115,7 @@ const createRootAttestationExample = async () => {
 
     /* set parameters */
     const params: CreateRootAttestationParams = {
-        attestationContext: "exampleContext"
+        attestationContext: "exampleContext",
         payload: "exampleAccountPayload",       // [optional] payload data field (see Attestation Protocol)
         
         passphrase: "<some passphrase>"         // passphrase of account to be self attested
