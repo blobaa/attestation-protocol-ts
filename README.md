@@ -36,9 +36,10 @@ To use it as a dependency, create an *.npmrc* file in the same directory as your
 
 ````
 @project-ap:registry=https://npm.pkg.github.com/project-ap
+@somedotone:registry=https://npm.pkg.github.com/somedotone
 ```` 
 
-This tells npm to use the GitHub registry for scoped project-ap packages.
+This tells npm to use the GitHub registry for scoped packages.
 You can now install the npm package via
 
 ````
