@@ -20,6 +20,9 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
+  "bundledDependencies": [
+    "@somedotone/ardor-ts"
+  ],
   "devDependencies": {
     "@types/jest": "^24.0.23",
     "@types/node": "^12.12.14",
