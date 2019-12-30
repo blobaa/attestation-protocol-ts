@@ -642,9 +642,9 @@ const verifySignedDataExample = async () => {
     /* [optional] create a user callback for custom signed data checking logic */
     const signedDataCheckCb = (params: SignedDataCheckParams): boolean => {
         
-        /* params contains the signed data object and creation time */
+        /* params contains the signed data object and signature time */
         console.log(params.signedData);
-        console.log(params.creationTime);
+        console.log(params.signatureTime);
 
         return true; // must return true to continue verification. False throws an verification error
     };

@@ -234,7 +234,7 @@ export interface EntityCheckParams {
 
 export interface SignedDataCheckParams {
     signedData: SignedData;
-    creationTime: number;
+    signatureTime: number;
 }
 
 

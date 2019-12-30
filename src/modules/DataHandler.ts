@@ -83,7 +83,7 @@ export default class DataHandler implements IData {
 
             const signedDataCheckParams: SignedDataCheckParams = {
                 signedData: signedData,
-                creationTime: time.convertArdorToUnixTimestamp(tokenResponse.timestamp, forTestnet)
+                signatureTime: time.convertArdorToUnixTimestamp(tokenResponse.timestamp, forTestnet)
             };
 
             if(!signedDataCheckCallback(signedDataCheckParams)) return Promise.reject({ code: ErrorCode.SIGNED_DATA_CALLBACK_ERROR, description: "Data object check callback error. Your callback returned false" });

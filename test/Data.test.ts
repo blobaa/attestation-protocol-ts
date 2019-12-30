@@ -104,8 +104,8 @@ if(config.test.dataModule.runTests) {
 
                 const timeWindow = 10 * 1000;
                 const currentTime = (new Date()).getTime();
-                expect(params.creationTime + timeWindow).toBeGreaterThan(currentTime);
-                expect(params.creationTime - timeWindow).toBeLessThan(currentTime);
+                expect(params.signatureTime + timeWindow).toBeGreaterThan(currentTime);
+                expect(params.signatureTime - timeWindow).toBeLessThan(currentTime);
 
                 return true;
             }
@@ -232,8 +232,8 @@ if(config.test.dataModule.runTests) {
 
                 const timeWindow = 10 * 1000;
                 const currentTime = (new Date()).getTime();
-                expect(params.creationTime + timeWindow).toBeGreaterThan(currentTime);
-                expect(params.creationTime - timeWindow).toBeLessThan(currentTime);
+                expect(params.signatureTime + timeWindow).toBeGreaterThan(currentTime);
+                expect(params.signatureTime - timeWindow).toBeLessThan(currentTime);
 
                 return true;
             }
@@ -329,8 +329,8 @@ if(config.test.dataModule.runTests) {
 
                 const timeWindow = 10 * 1000;
                 const currentTime = (new Date()).getTime();
-                expect(params.creationTime + timeWindow).toBeGreaterThan(currentTime);
-                expect(params.creationTime - timeWindow).toBeLessThan(currentTime);
+                expect(params.signatureTime + timeWindow).toBeGreaterThan(currentTime);
+                expect(params.signatureTime - timeWindow).toBeLessThan(currentTime);
 
                 return true;
             }
@@ -406,8 +406,8 @@ if(config.test.dataModule.runTests) {
 
                 const timeWindow = 10 * 1000;
                 const currentTime = (new Date()).getTime();
-                expect(params.creationTime + timeWindow).toBeGreaterThan(currentTime);
-                expect(params.creationTime - timeWindow).toBeLessThan(currentTime);
+                expect(params.signatureTime + timeWindow).toBeGreaterThan(currentTime);
+                expect(params.signatureTime - timeWindow).toBeLessThan(currentTime);
 
                 return true;
             }
