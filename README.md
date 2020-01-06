@@ -1,6 +1,6 @@
 # attestation-protocol-ts
 
-An implementation of the [Attestation Protocol](https://github.com/project-ap/documentation/wiki/Attestation-Protocol) written in [TypeScript](https://www.typescriptlang.org).
+An implementation of the [Attestation Protocol](https://github.com/blobaa/documentation/wiki/Attestation-Protocol) written in [TypeScript](https://www.typescriptlang.org).
 
 
 - [attestation-protocol-ts](#attestation-protocol-ts)
@@ -35,7 +35,7 @@ At the current state this library is published to the GitHub npm registry only.
 To use it as a dependency, create an *.npmrc* file in the same directory as your *package.json* and add the following line 
 
 ````
-@project-ap:registry=https://npm.pkg.github.com/project-ap
+@blobaa:registry=https://npm.pkg.github.com/blobaa
 @somedotone:registry=https://npm.pkg.github.com/somedotone
 ```` 
 
@@ -43,10 +43,10 @@ This tells npm to use the GitHub registry for scoped packages.
 You can now install the npm package via
 
 ````
-npm install @project-ap/attestation-protocol-ts@<release version>
+npm install @blobaa/attestation-protocol-ts@<release version>
 ````
 
-More information can be found at the [npm package](https://github.com/project-ap/attestation-protocol-ts/packages/82302) description and [this medium post](https://medium.com/@crysfel/using-different-registries-in-yarn-and-npm-766541d6f851) about multiple registry usage.
+More information can be found at the [npm package](https://github.com/blobaa/attestation-protocol-ts/packages/82302) description and [this medium post](https://medium.com/@crysfel/using-different-registries-in-yarn-and-npm-766541d6f851) about multiple registry usage.
 
 
 
@@ -108,7 +108,7 @@ Use the *createAttestationUnchecked* and *revokeAttestationUnchecked* APIs for b
 This API lets you create self attestations and therefore root entities for trust chains.
 
 ````typescript
-import { attestation, CreateRootAttestationParams } from '@project-ap/attestation-protocol-ts'
+import { attestation, CreateRootAttestationParams } from '@blobaa/attestation-protocol-ts'
 
 
 const createRootAttestationExample = async () => {
@@ -141,7 +141,7 @@ createRootAttestationExample();
 This API creates intermediate attestations based on a root or intermediate account. It creates an intermediate chain link in a trust chain.
 
 ````typescript
-import { attestation, CreateIntermediateAttestationParams } from '@project-ap/attestation-protocol-ts'
+import { attestation, CreateIntermediateAttestationParams } from '@blobaa/attestation-protocol-ts'
 
 
 const createIntermediateAttestationExample = async () => {
@@ -177,7 +177,7 @@ createIntermediateAttestationExample();
 This API creates leaf attestations based on a root or intermediate account. It creates the bottom end of a trust chain.
 
 ````typescript
-import { attestation, CreateLeafAttestationParams } from '@project-ap/attestation-protocol-ts'
+import { attestation, CreateLeafAttestationParams } from '@blobaa/attestation-protocol-ts'
 
 
 const createLeafAttestationExample = async () => {
@@ -213,7 +213,7 @@ createLeafAttestationExample();
 This API lets you create attestations without checking conditions. Use it with caution as it may result in invalid trust chains.
 
 ````typescript
-import { attestation, CreateAttestationUncheckedParams, EntityType } from '@project-ap/attestation-protocol-ts'
+import { attestation, CreateAttestationUncheckedParams, EntityType } from '@blobaa/attestation-protocol-ts'
 
 
 const createAttestationUncheckedExample = async () => {
@@ -250,7 +250,7 @@ This API lets you update root entity accounts in two ways. You can either update
 **Data Field Update**
 
 ````typescript
-import { attestation, State, UpdateRootAttestationParams } from '@project-ap/attestation-protocol-ts'
+import { attestation, State, UpdateRootAttestationParams } from '@blobaa/attestation-protocol-ts'
 
 
 const updateRootDataFieldsExample = async () => {
@@ -281,7 +281,7 @@ updateRootDataFieldsExample();
 **Account Update**
 
 ````typescript
-import { attestation, UpdateRootAttestationParams } from '@project-ap/attestation-protocol-ts'
+import { attestation, UpdateRootAttestationParams } from '@blobaa/attestation-protocol-ts'
 
 
 const updateRootAccountExample = async () => {
@@ -316,7 +316,7 @@ This API lets you update intermediate entity accounts in two ways. You can eithe
 **Data Field Update**
 
 ````typescript
-import { attestation, State, UpdateIntermediateAttestationParams } from '@project-ap/attestation-protocol-ts'
+import { attestation, State, UpdateIntermediateAttestationParams } from '@blobaa/attestation-protocol-ts'
 
 
 const updateIntermediateDataFieldsExample = async () => {
@@ -350,7 +350,7 @@ updateIntermediateDataFieldsExample();
 **Account Update**
 
 ````typescript
-import { attestation, UpdateIntermediateAttestationParams } from '@project-ap/attestation-protocol-ts'
+import { attestation, UpdateIntermediateAttestationParams } from '@blobaa/attestation-protocol-ts'
 
 
 const updateIntermediateAccountExample = async () => {
@@ -388,7 +388,7 @@ This API lets you update leaf entity accounts in two ways. You can either update
 **Data Field Update**
 
 ````typescript
-import { attestation, State, UpdateLeafAttestationParams } from '@project-ap/attestation-protocol-ts'
+import { attestation, State, UpdateLeafAttestationParams } from '@blobaa/attestation-protocol-ts'
 
 
 const updateLeafDataFieldsExample = async () => {
@@ -422,7 +422,7 @@ updateLeafDataFieldsExample();
 **Account Update**
 
 ````typescript
-import { attestation, UpdateLeafAttestationParams } from '@project-ap/attestation-protocol-ts'
+import { attestation, UpdateLeafAttestationParams } from '@blobaa/attestation-protocol-ts'
 
 
 const updateLeafAccountExample = async () => {
@@ -458,7 +458,7 @@ updateLeafAccountExample();
 This API revokes self set root attestations.
 
 ```typescript
-import { attestation, RevokeRootAttestationParams } from '@project-ap/attestation-protocol-ts'
+import { attestation, RevokeRootAttestationParams } from '@blobaa/attestation-protocol-ts'
 
 
 const revokeRootAttestationExample = async () => {
@@ -489,7 +489,7 @@ revokeRootAttestationExample();
 This API revokes intermediate attestations in two ways. You can either self revoke an attestation set by another account to your account (an account from which you know the passphrase) or revoke an attestation created by you for another account.
 
 ```typescript
-import { attestation, RevokeIntermediateAttestationParams } from '@project-ap/attestation-protocol-ts'
+import { attestation, RevokeIntermediateAttestationParams } from '@blobaa/attestation-protocol-ts'
 
 
 const revokeIntermediateAttestationExample = async () => {
@@ -522,7 +522,7 @@ revokeIntermediateAttestationExample();
 This API revokes leaf attestations in two ways. You can either self revoke an attestation set by another account to your account (an account from which you know the passphrase) or revoke an attestation created by you for another account.
 
 ```typescript
-import { attestation, RevokeLeafAttestationParams } from '@project-ap/attestation-protocol-ts'
+import { attestation, RevokeLeafAttestationParams } from '@blobaa/attestation-protocol-ts'
 
 
 const revokeLeafAttestationExample = async () => {
@@ -555,7 +555,7 @@ revokeLeafAttestationExample();
 This API lets you revoke attestations without checking conditions. Use it with caution as it may result in invalid trust chains.
 
 ```typescript
-import { attestation, RevokeAttestationUncheckedParams } from '@project-ap/attestation-protocol-ts'
+import { attestation, RevokeAttestationUncheckedParams } from '@blobaa/attestation-protocol-ts'
 
 
 const revokeAttestationUncheckedExample = async () => {
@@ -597,7 +597,7 @@ The Data module handles the data signing and verification tasks. It provides the
 This API lets you create a signed data object.
 
 ````typescript
-import { data, SignDataParams } from '@project-ap/attestation-protocol-ts'
+import { data, SignDataParams } from '@blobaa/attestation-protocol-ts'
 
 
 const signDataExample = () => {
@@ -634,7 +634,7 @@ signDataExample();
 This API lets you verify the origin and integrity of a signed data object.
 
 ````typescript
-import { data, VerifySignedDataParams, SignedDataCheckParams, EntityCheckParams } from '@project-ap/attestation-protocol-ts'
+import { data, VerifySignedDataParams, SignedDataCheckParams, EntityCheckParams } from '@blobaa/attestation-protocol-ts'
 
 
 const verifySignedDataExample = async () => {
@@ -699,7 +699,7 @@ The Entity module provides the possibility to retrieve account information.
 #### getEntity
 
 ````typescript
-import { entity, GetEntityParams } from '@project-ap/attestation-protocol-ts'
+import { entity, GetEntityParams } from '@blobaa/attestation-protocol-ts'
 
 
 const getEntityExample = async () => {
@@ -737,7 +737,7 @@ getEntityExample();
 There is an unified error handling for all asynchronous APIs. Every API throws an error in case of any failures or unmet conditions. Every error implements the 'Error' interface of this library. The interface consist of two data fields. The *code* field contains a value of the 'ErrorCode' enum to indicate the error reason. The *description* field contains a human readable description of the cause of the thrown error.
 
 ````typescript
-import { entity, Error, ErrorCode, GetEntityParams } from '@project-ap/attestation-protocol-ts'
+import { entity, Error, ErrorCode, GetEntityParams } from '@blobaa/attestation-protocol-ts'
 
 
 const errorHandlingExample = async () => {
@@ -776,7 +776,7 @@ errorHandlingExample();
 Each module is pre instantiated and importable via the lower case module name. If you need the class definition of a module, import it via the upper case name. For example:
 
 ````typescript
-import { SignDataParams, data, Data } from '@project-ap/attestation-protocol-ts'
+import { SignDataParams, data, Data } from '@blobaa/attestation-protocol-ts'
 
 
 const params: SignDataParams = {
