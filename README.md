@@ -27,7 +27,8 @@ An implementation of the [Attestation Protocol](https://github.com/blobaa/docume
       - [getEntity](#getentity)
     - [Error Handling](#error-handling)
   - [Module Instantiation](#module-instantiation)
-  - [License](#license)
+  - [Licensing](#licensing)
+    - [Dual-License](#dual-license)
 
 
 ## Install
@@ -50,25 +51,18 @@ npm install @blobaa/attestation-protocol-ts@<release version>
 More information can be found at the [npm package](https://github.com/blobaa/attestation-protocol-ts/packages/82302) description and [this medium post](https://medium.com/@crysfel/using-different-registries-in-yarn-and-npm-766541d6f851) about multiple registry usage.
 
 
-
 ## Test
 
-browser:
-````
-npm run test-browser
-````
+Clone the repo and run the following commands:
 
-node:
-````
-npm run test-node
-````
-
-`npm test` runs both tests.
+- browser: `npm run test-browser`
+- node: `npm run test-node`
+- both: `npm test`
 
 
 ## General
 
-This library uses the [ardor-ts](https://github.com/somedotone/ardor-ts) package to interact with the [Ardor](ardorplatform.org/) Blockchain. At the current state there is no child chain and fee configuration possible. It uses the default ardor-ts configuration and therefore the IGNIS child chain and automatic fee calculation.
+This library uses the [ardor-ts](https://github.com/somedotone/ardor-ts) package to interact with the [Ardor](https://ardorplatform.org) Blockchain. At the current state there is no child chain and fee configuration possible. It uses the default ardor-ts configuration and therefore the IGNIS child chain and automatic fee calculation.
 
 There are lots of tests in the test folder. Have a look if you need some additional examples of how to use the APIs.
 
@@ -798,9 +792,14 @@ console.log(signedData2);
 ````
 
 
-## License
+## Licensing
 
-attestation-protocol-ts source code ("The Software") is licensed under both GNU Affero General Public License v3.0 or later and a proprietary license that can be arranged with me. In practical sense, this means:
+### Dual-License
+
+attestation-protocol-ts source code ("The Software") is licensed under **both** GNU Affero General Public License v3.0 or later **and** a proprietary license that can be arranged with me. In practical sense, this means:
 
 - If you are developing Open Source Software (OSS) based on attestation-protocol-ts, chances are you will be able to use attestation-protocol-ts freely under AGPL. Please double check [here](https://www.gnu.org/licenses/agpl-3.0.en.html) for OSS license compatibility with AGPL.
 - Alternatively, if you are unable to release your application as Open Source Software, you may arrange alternative licensing with me. Just send your inquiry to a_aldemir@hotmail.de to discuss this option.
+
+____
+Enjoy :)
