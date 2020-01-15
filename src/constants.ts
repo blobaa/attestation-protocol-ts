@@ -31,6 +31,7 @@ export const SIGNED_DATA_SEPARATOR = "|";
 export const ATTESTATION_PATH_SEPARATOR = ",";
 
 export const MAX_DEPRECATION_HOPS = 20;
+export const REDIRECT_ACCOUNT_CHARACTER_LENGTH = 20;
 
 
 export const noError: Error = {

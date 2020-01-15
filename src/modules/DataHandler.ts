@@ -45,11 +45,11 @@ export default class DataHandler implements IData {
         const creatorAccount = account.convertPassphraseToAccountRs(params.passphrase);
 
         const signedData: SignedData = {
-            payload: params.payload,
             attestationContext: params.attestationContext,
             attestationPath: params.attestationPath && params.attestationPath || [ creatorAccount ],
-            signature: account.generateToken(tokenDataString, params.passphrase, forTestnet),
-            creatorAccount
+            creatorAccount,
+            payload: params.payload,
+            signature: account.generateToken(tokenDataString, params.passphrase, forTestnet)
         };
 
         return signedData;
@@ -69,7 +69,8 @@ export default class DataHandler implements IData {
     private defaultSignedDataCb = (signedDataCheck: SignedDataCheckParams): boolean => true;
     private defaultEntityCb = (entity: EntityCheckParams): boolean => true;
 
-    private checkSignedDataObject = async (url: string, signedData: SignedData, signedDataCheckCallback: (signedDataCheck: SignedDataCheckParams) => boolean, forTestnet: boolean): Promise<void> => {
+    private checkSignedDataObject = async (url: string, signedData: SignedData,
+                                           signedDataCheckCallback: (signedDataCheck: SignedDataCheckParams) => boolean, forTestnet: boolean): Promise<void> => {
         try {
             const params: DecodeTokenParams = {
                 data: TokenData.createTokenDataString(signedData.attestationPath, signedData.attestationContext, signedData.payload),
@@ -77,23 +78,34 @@ export default class DataHandler implements IData {
             };
 
             const tokenResponse = await this.request.decodeToken(url, params);
-            if (!tokenResponse.valid) return Promise.reject({ code: ErrorCode.INVALID_SIGNATURE, description: "Invalid signature token. The signature does not belong to the data object" });
-            if (tokenResponse.accountRS !== signedData.creatorAccount) return Promise.reject({ code: ErrorCode.WRONG_CREATOR_ACCOUNT, description: "Wrong creator account. The specified creator account '" + signedData.creatorAccount + "' does not match with the calculated account '" + tokenResponse.accountRS + "'." });
+            if (!tokenResponse.valid) return Promise.reject({
+                    code: ErrorCode.INVALID_SIGNATURE,
+                    description: "Invalid signature token. The signature does not belong to the data object"
+                });
+            if (tokenResponse.accountRS !== signedData.creatorAccount) return Promise.reject({
+                    code: ErrorCode.WRONG_CREATOR_ACCOUNT,
+                    description: "Wrong creator account. \
+The specified creator account '" + signedData.creatorAccount + "' does not match with the calculated account '" + tokenResponse.accountRS + "'."
+                });
 
 
             const signedDataCheckParams: SignedDataCheckParams = {
-                signedData,
-                signatureTime: time.convertArdorToUnixTimestamp(tokenResponse.timestamp, forTestnet)
+                signatureTime: time.convertArdorToUnixTimestamp(tokenResponse.timestamp, forTestnet),
+                signedData
             };
 
-            if (!signedDataCheckCallback(signedDataCheckParams)) return Promise.reject({ code: ErrorCode.SIGNED_DATA_CALLBACK_ERROR, description: "Data object check callback error. Your callback returned false" });
+            if (!signedDataCheckCallback(signedDataCheckParams)) return Promise.reject({
+                    code: ErrorCode.SIGNED_DATA_CALLBACK_ERROR,
+                    description: "Data object check callback error. Your callback returned false"
+                });
 
         } catch (error) {
             return Promise.reject(Helper.getError(error));
         }
     }
 
-    private parseTrustChain = async (url: string, signedData: SignedData, trustedRoot: string, entityCheckCallback: (entity: EntityCheckParams) => boolean): Promise<{activeRoot: string, parsedChain: string[]}> => {
+    private parseTrustChain = async (url: string, signedData: SignedData, trustedRoot: string,
+                                     entityCheckCallback: (entity: EntityCheckParams) => boolean): Promise<{ activeRoot: string, parsedChain: string[] }> => {
         let trustedRootFound = false;
         const trustPath = this.setTrustPath(signedData);
         const verificationPath: string[] = [];
@@ -113,7 +125,10 @@ export default class DataHandler implements IData {
                 dataFields = await this.getAndCheckDataFields(url, attestedAccount, attestor, signedData.attestationContext, verificationParams.state);
 
                 if (dataFields.state === State.DEPRECATED && deprecatedEntityType === undefined) deprecatedEntityType = dataFields.entityType;
-                if (deprecatedEntityType !== undefined && deprecatedEntityType !== dataFields.entityType) return Promise.reject({ code: ErrorCode.ENTITY_MISMATCH, description: "Entity mismatch. The entity type of redirect account '" + attestedAccount + "' mismatches from its origin account." });
+                if (deprecatedEntityType !== undefined && deprecatedEntityType !== dataFields.entityType) return Promise.reject({
+                        code: ErrorCode.ENTITY_MISMATCH,
+                        description: "Entity mismatch. The entity type of redirect account '" + attestedAccount + "' mismatches from its origin account."
+                    });
 
                 if (verificationParams.state === TrustPathState.END && attestedAccount === trustedRoot) trustedRootFound = true;
 
@@ -122,13 +137,19 @@ export default class DataHandler implements IData {
                     account: attestedAccount,
                     entityType: dataFields.entityType,
                     payload: dataFields.payload,
-                    state: dataFields.state,
-                    protocolVersion: dataFields.version
+                    protocolVersion: dataFields.version,
+                    state: dataFields.state
                 };
-                if (!entityCheckCallback(entity)) return Promise.reject({ code: ErrorCode.ENTITY_CALLBACK_ERROR, description: "Entity check callback error. Your callback returned false" });
+                if (!entityCheckCallback(entity)) return Promise.reject({
+                        code: ErrorCode.ENTITY_CALLBACK_ERROR,
+                        description: "Entity check callback error. Your callback returned false"
+                    });
 
 
-                if (deprecationHops >= MAX_DEPRECATION_HOPS) return Promise.reject({ code: ErrorCode.TOO_MANY_DEPRECATION_HOPS, description: "Too many deprecation hops. Processed too many deprecation hops for account '" + verificationParams.attestedAccount + "'." });
+                if (deprecationHops >= MAX_DEPRECATION_HOPS) return Promise.reject({
+                        code: ErrorCode.TOO_MANY_DEPRECATION_HOPS,
+                        description: "Too many deprecation hops. Processed too many deprecation hops for account '" + verificationParams.attestedAccount + "'."
+                    });
 
 
                 attestedAccount = ACCOUNT_PREFIX + dataFields.redirectAccount;
@@ -139,12 +160,16 @@ export default class DataHandler implements IData {
 
         }
 
-        if (!trustedRootFound) return Promise.reject({ code: ErrorCode.TRUSTED_ROOT_NOT_FOUND, description: "Trusted root not found. Your specified trusted root account '" + trustedRoot + "' could not be found." });
+        if (!trustedRootFound) return Promise.reject({
+                code: ErrorCode.TRUSTED_ROOT_NOT_FOUND,
+                description: "Trusted root not found. Your specified trusted root account '" + trustedRoot + "' could not be found."
+            });
         return Promise.resolve({ activeRoot: verificationPath[verificationPath.length - 1], parsedChain: verificationPath });
     }
 
     private setTrustPath = (signedData: SignedData): string[] => {
-        return this.isCreatorAccountRoot(signedData) ? [ signedData.creatorAccount ] : signedData.attestationPath && [ signedData.creatorAccount, ...signedData.attestationPath ] || [];
+        return this.isCreatorAccountRoot(signedData) ? [ signedData.creatorAccount ]
+                                                     : signedData.attestationPath && [ signedData.creatorAccount, ...signedData.attestationPath ] || [];
     }
 
     private isCreatorAccountRoot = (signedData: SignedData): boolean => {
@@ -153,40 +178,59 @@ export default class DataHandler implements IData {
 
     private setVerificationParameter = (trustPath: string[], counter: number): {attestor: string, attestedAccount: string, state: TrustPathState} => {
         if (counter === trustPath.length - 1) return {
-                attestor: trustPath[counter],
                 attestedAccount: trustPath[counter],
+                attestor: trustPath[counter],
                 state: TrustPathState.END
             };
         else if (counter === 0) return {
-                attestor: trustPath[counter + 1],
                 attestedAccount: trustPath[counter],
+                attestor: trustPath[counter + 1],
                 state: TrustPathState.BEGIN
             };
         else return {
-                attestor: trustPath[counter + 1],
                 attestedAccount: trustPath[counter],
+                attestor: trustPath[counter + 1],
                 state: TrustPathState.ONGOING
             };
     }
 
-    private getAndCheckDataFields = async (url: string, attestedAccount: string, attestorAccount: string, attestationContext: string, state: TrustPathState): Promise<DataFields> => {
+    private getAndCheckDataFields = async (url: string, attestedAccount: string, attestorAccount: string,
+                                           attestationContext: string, state: TrustPathState): Promise<DataFields> => {
         try {
             const dataFields = new DataFields();
             dataFields.attestationContext = attestationContext;
 
             const response = await this.request.getAccountProperties(url, { setter: attestorAccount, recipient: attestedAccount, property: dataFields.attestationContext });
             const propertyObject = response.properties[0];
-            if (!propertyObject) return Promise.reject({code: ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND, description: "Attestation context not found. Attestation context '" + dataFields.attestationContext + "' could not be found at account '" + attestedAccount + "' set by attestor ' " + attestorAccount + "'."});
+            if (!propertyObject) return Promise.reject({
+                    code: ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND,
+                    description: "Attestation context not found. Attestation context '" + dataFields.attestationContext + "' could not be found at account '" + attestedAccount + "' set by attestor ' " + attestorAccount + "'."
+                });
 
             const error = dataFields.consumeDataFieldString(propertyObject.value);
             if (error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
 
-            if (dataFields.entityType === EntityType.LEAF && state !== TrustPathState.BEGIN) return Promise.reject({code: ErrorCode.LEAF_ATTESTOR_NOT_ALLOWED, description: "Leaf entity cannot attest. Account '" + attestedAccount + "' tries to act as attestor but is a leaf entity"});
-            if (dataFields.entityType !== EntityType.ROOT && state === TrustPathState.END) return Promise.reject({code: ErrorCode.END_ENTITY_NOT_ROOT, description: "Trust path doesn't end with root entity. Account '" + attestedAccount + "' is not a root entity"});
-            if (dataFields.entityType === EntityType.ROOT && state !== TrustPathState.END) return Promise.reject({code: ErrorCode.ROOT_ENTITY_IN_MIDDLE_OF_PATH, description: "Root entity in the middle of the trust path. Account '" + attestedAccount + "' was detected in the middle of the trust path but is a root entity"});
+            if (dataFields.entityType === EntityType.LEAF && state !== TrustPathState.BEGIN) return Promise.reject({
+                    code: ErrorCode.LEAF_ATTESTOR_NOT_ALLOWED,
+                    description: "Leaf entity cannot attest. Account '" + attestedAccount + "' tries to act as attestor but is a leaf entity"
+                });
+            if (dataFields.entityType !== EntityType.ROOT && state === TrustPathState.END) return Promise.reject({
+                    code: ErrorCode.END_ENTITY_NOT_ROOT,
+                    description: "Trust path doesn't end with root entity. Account '" + attestedAccount + "' is not a root entity"
+                });
+            if (dataFields.entityType === EntityType.ROOT && state !== TrustPathState.END) return Promise.reject({
+                    code: ErrorCode.ROOT_ENTITY_IN_MIDDLE_OF_PATH,
+                    description: "Root entity in the middle of the trust path. Account '" + attestedAccount + "' was detected in the middle of the trust path but is a root entity"
+                });
 
-            if (dataFields.state === State.INACTIVE) return Promise.reject({code: ErrorCode.ENTITY_INACTIVE, description: "Entity inactive. Account '" + attestedAccount + "' is inactive."});
-            if (dataFields.state === State.DEPRECATED && state === TrustPathState.BEGIN) return Promise.reject({code: ErrorCode.CREATOR_ACCOUNT_DEPRECATED, description: "Creator account deprecated. The data object creator account '" + attestedAccount + "' is deprecated."});
+            if (dataFields.state === State.INACTIVE) return Promise.reject({
+                    code: ErrorCode.ENTITY_INACTIVE,
+                    description: "Entity inactive. Account '" + attestedAccount + "' is inactive."
+                });
+            if (dataFields.state === State.DEPRECATED && state === TrustPathState.BEGIN) return Promise.reject({
+                    code: ErrorCode.CREATOR_ACCOUNT_DEPRECATED,
+                    description: "Creator account deprecated. The data object creator account '" + attestedAccount + "' is deprecated."
+                });
 
             return dataFields;
         } catch (error) {

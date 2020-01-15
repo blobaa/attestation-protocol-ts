@@ -4,16 +4,21 @@
         "tslint:recommended"
     ],
     "rules": {
-        "trailing-comma": false,
+        "curly": false,
+        "interface-over-type-literal": false,
         "no-consecutive-blank-lines": [ true, 3 ],
-        "max-line-length": [ false, { 
-                "limit": 120, 
+        "variable-name": [ true, "allow-leading-underscore" ],
+        "arrow-parens": [ true, "ban-single-arg-parens" ],
+        "trailing-comma": [ true, {
+                "multiline": "never",
+                "singleline": "never"
+            }
+        ],
+        "max-line-length": [ true, { 
+                "limit": 180, 
                 "ignore-pattern": "^import |^export {(.*?)}"
             } 
         ],
-        "variable-name": [ true, "allow-leading-underscore" ],
-        "curly": false,
-        "interface-over-type-literal": false,
         "member-ordering": [ true, {
                 "order": [
                     "private-static-field",
@@ -23,7 +28,6 @@
                     "public-constructor"
                 ]
             }
-        ],
-        "arrow-parens": [ true, "ban-single-arg-parens" ]
+        ]
     }
 }

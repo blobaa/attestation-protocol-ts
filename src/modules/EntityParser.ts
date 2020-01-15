@@ -15,9 +15,9 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { account, IRequest, Request } from "@somedotone/ardor-ts";
+import { IRequest, Request } from "@somedotone/ardor-ts";
 import { ErrorCode } from "..";
-import { EntityType, GetEntityParams, GetEntityResponse, IEntity, State } from "../types";
+import { GetEntityParams, GetEntityResponse, IEntity } from "../types";
 import DataFields from "./lib/DataFields";
 import Helper from "./lib/Helper";
 
@@ -41,7 +41,10 @@ export default class EntityParser implements IEntity {
             const attestor = params.attestor && params.attestor || params.account;
             const response = await this.request.getAccountProperties(url, { setter: attestor, recipient: params.account, property: dataFields.attestationContext });
             const propertyObject = response.properties[0];
-            if (!propertyObject) return Promise.reject({ code: ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND, description: "Attestation context not found. The specified attestation context could not be found at account '" + params.account + "'."  });
+            if (!propertyObject) return Promise.reject({
+                    code: ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND,
+                    description: "Attestation context not found. The specified attestation context could not be found at account '" + params.account + "'."
+                });
 
             const error = dataFields.consumeDataFieldString(propertyObject.value);
             if (error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
@@ -51,10 +54,10 @@ export default class EntityParser implements IEntity {
                 account: params.account,
                 attestationContext: dataFields.attestationContext,
                 entityType: dataFields.entityType,
-                state: dataFields.state,
                 payload: dataFields.payload,
                 protocolVersion: dataFields.version,
-                redirectAccount: dataFields.redirectAccount
+                redirectAccount: dataFields.redirectAccount,
+                state: dataFields.state
             };
 
             return Promise.resolve(entity);
