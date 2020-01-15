@@ -1,11 +1,11 @@
-# attestation-protocol-ts
+# Attestation Protocol TypeScript
 
 An implementation of the [Attestation Protocol](https://github.com/blobaa/documentation/wiki/Attestation-Protocol) written in [TypeScript](https://www.typescriptlang.org).
 
 
-- [attestation-protocol-ts](#attestation-protocol-ts)
-  - [Install](#install)
-  - [Test](#test)
+- [Attestation Protocol TypeScript](#attestation-protocol-typescript)
+  - [Installation](#installation)
+  - [Development](#development)
   - [General](#general)
   - [APIs](#apis)
     - [Attestation](#attestation)
@@ -31,7 +31,7 @@ An implementation of the [Attestation Protocol](https://github.com/blobaa/docume
     - [Dual-License](#dual-license)
 
 
-## Install
+## Installation
 
 At the current state this library is published to the GitHub npm registry only.
 To use it as a dependency, create an *.npmrc* file in the same directory as your *package.json* and add the following line 
@@ -51,9 +51,26 @@ npm install @blobaa/attestation-protocol-ts@<release version>
 More information can be found at the [npm package](https://github.com/blobaa/attestation-protocol-ts/packages/82302) description and [this medium post](https://medium.com/@crysfel/using-different-registries-in-yarn-and-npm-766541d6f851) about multiple registry usage.
 
 
-## Test
+## Development
 
-Clone the repo and run the following commands:
+You need to have [Node.js](https://nodejs.org/en/) installed.
+
+To **initialize** the project just clone this repository and run
+```
+npm install
+```
+
+For **linting** run 
+```
+npm run lint
+```
+
+You can try to **autofix lint errors** with
+```
+npm run fix-lint
+```
+
+For **unit testing** run the following associated commands
 
 - browser: `npm run test-browser`
 - node: `npm run test-node`
