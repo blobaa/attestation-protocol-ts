@@ -38,8 +38,12 @@ export default class EntityParser implements IEntity {
             const dataFields = new DataFields();
             dataFields.attestationContext = params.attestationContext;
 
-            const attestor = params.attestor && params.attestor || params.account;
-            const response = await this.request.getAccountProperties(url, { setter: attestor, recipient: params.account, property: dataFields.attestationContext });
+            const attestor = (params.attestor && params.attestor) || params.account;
+            const response = await this.request.getAccountProperties(url, {
+                    setter: attestor,
+                    recipient: params.account,
+                    property: dataFields.attestationContext
+                });
             const propertyObject = response.properties[0];
             if (!propertyObject) return Promise.reject({
                     code: ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND,

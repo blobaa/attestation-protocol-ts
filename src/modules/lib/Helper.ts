@@ -21,8 +21,8 @@ import { Error, ErrorCode, objectAny } from "../../types";
 export default class {
 
     public static getError = (error: objectAny): Error => {
-        if (error.syscall) return { code:
-                ErrorCode.CONNECTION_ERROR,
+        if (error.syscall) return {
+                code: ErrorCode.CONNECTION_ERROR,
                 description: "Connection error. Could not connect to node."
             };
         if (error.errorCode) return {

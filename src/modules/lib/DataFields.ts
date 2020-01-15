@@ -30,7 +30,6 @@ enum DataField {
 
 
 export default class DataFields {
-
     private _attestationContext = "";
 
     public version = PROTOCOL_VERSION;
@@ -42,21 +41,24 @@ export default class DataFields {
 
 
     constructor(dataFields?: DataFields) {
-        this.attestationContext = dataFields && dataFields.attestationContext || "";
-        this.version = dataFields && dataFields.version || PROTOCOL_VERSION;
-        this.entityType = dataFields && dataFields.entityType || EntityType.LEAF;
-        this.state = dataFields && dataFields.state || State.INACTIVE;
-        this.redirectAccount = dataFields && dataFields.redirectAccount || DUMMY_ACCOUNT_RS;
-        this.payload = dataFields && dataFields.payload || "";
+        this.attestationContext = (dataFields && dataFields.attestationContext) || "";
+        this.version = (dataFields && dataFields.version) || PROTOCOL_VERSION;
+        this.entityType = (dataFields && dataFields.entityType) || EntityType.LEAF;
+        this.state = (dataFields && dataFields.state) || State.INACTIVE;
+        this.redirectAccount = (dataFields && dataFields.redirectAccount) || DUMMY_ACCOUNT_RS;
+        this.payload = (dataFields && dataFields.payload) || "";
     }
+
+
+    /*eslint-disable @typescript-eslint/explicit-function-return-type*/
+    get attestationContext() {
+        return this._attestationContext;
+    }
+    /*eslint-enable @typescript-eslint/explicit-function-return-type*/
 
 
     set attestationContext(value: string) {
         this._attestationContext = this.setAttestationContext(value);
-    }
-
-    get attestationContext() {
-        return this._attestationContext;
     }
 
     public setAttestationContext = (context: string): string => {

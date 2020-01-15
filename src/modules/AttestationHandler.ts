@@ -52,7 +52,7 @@ export default class AttestationHandler implements IAttestation {
 
         if (!skipChecks) {
             const myAccount = account.convertPassphraseToAccountRs(params.passphrase);
-            const attestorAccount = params.myAttestorAccount && params.myAttestorAccount || myAccount;
+            const attestorAccount = (params.myAttestorAccount && params.myAttestorAccount) || myAccount;
 
             if (this.isNotRootAttestation(params)) {
                 if (myAccount === this.getRecipient(params)) return Promise.reject({
@@ -88,7 +88,11 @@ export default class AttestationHandler implements IAttestation {
         try {
             dataFields.attestationContext = attestationContext;
 
-            const response = await this.request.getAccountProperties(url, { setter: attestorAccount, recipient: myAccount, property: dataFields.attestationContext });
+            const response = await this.request.getAccountProperties(url, {
+                    setter: attestorAccount,
+                    recipient: myAccount,
+                    property: dataFields.attestationContext
+                });
             const propertyObject = response.properties[0];
             if (!propertyObject) return {
                     code: ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND,
@@ -128,8 +132,7 @@ export default class AttestationHandler implements IAttestation {
             const propertyObject = response.properties[0];
             if (propertyObject) return {
                     code: ErrorCode.ATTESTATION_CONTEXT_ALREADY_SET,
-                    description: "Attestation context already set. \
-The new account already has a property with name '" + attestationContext + "' set by account '" + attestorAccount + "'."
+                    description: "Attestation context already set. The new account already has a property with name '" + attestationContext + "' set by account '" + attestorAccount + "'."
                 };
 
         } catch (error) {
@@ -139,7 +142,8 @@ The new account already has a property with name '" + attestationContext + "' se
         return noError;
     }
 
-    private createAttestationTransaction = async (url: string, passphrase: string, accountToAttest: string, dataFields: DataFields ): Promise<SetAccountPropertyResponse> => {
+    private createAttestationTransaction = async (url: string, passphrase: string,
+                                                  accountToAttest: string, dataFields: DataFields ): Promise<SetAccountPropertyResponse> => {
         const propertyRequestParams: SetAccountPropertyParams = {
             chain: ChainId.IGNIS,
             property: dataFields.attestationContext,
@@ -211,7 +215,7 @@ The new account already has a property with name '" + attestationContext + "' se
         if (params.newState) isStateUpdate = true;
 
         const myAccount = account.convertPassphraseToAccountRs(params.passphrase);
-        const attestorAccount = params.myAttestorAccount && params.myAttestorAccount || myAccount;
+        const attestorAccount = (params.myAttestorAccount && params.myAttestorAccount) || myAccount;
         const attestationContext = ownDataFields.setAttestationContext(params.attestationContext);
 
         let error = await this.checkOwnEntityAndState(url, myAccount, attestorAccount, attestationContext, ownDataFields, isStateUpdate, entity);
@@ -221,7 +225,8 @@ The new account already has a property with name '" + attestationContext + "' se
         let oldDataFields = new DataFields();
 
         if (entity !== EntityType.ROOT) {
-            error = await this.checkAttestedEntityAndState(url, this.getRecipient(params), myAccount, ownDataFields.attestationContext, oldDataFields, isStateUpdate, entity);
+            const recipient = this.getRecipient(params);
+            error = await this.checkAttestedEntityAndState(url, recipient, myAccount, ownDataFields.attestationContext, oldDataFields, isStateUpdate, entity);
             if (error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
         } else {
             oldDataFields = ownDataFields;
@@ -292,7 +297,11 @@ The new account already has a property with name '" + attestationContext + "' se
         try {
             dataFields.attestationContext = attestationContext;
 
-            const response = await this.request.getAccountProperties(url, { recipient: attestedAccount, setter: attestor, property: dataFields.attestationContext });
+            const response = await this.request.getAccountProperties(url, {
+                    recipient: attestedAccount,
+                    setter: attestor,
+                    property: dataFields.attestationContext
+                });
             const propertyObject = response.properties[0];
             if (!propertyObject) return {
                     code: ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND,
@@ -333,8 +342,7 @@ The new account already has a property with name '" + attestationContext + "' se
             const response = await this.request.getAccountProperties(url, { recipient: newAccount, property: attestationContext, setter: myAccount });
             if (response.properties.length !== 0) return Promise.resolve({
                     code: ErrorCode.ATTESTATION_CONTEXT_ALREADY_SET,
-                    description: "Attestation context already set. \
-The new account '" + newAccount + "' already has a property with the name '" + myAccount + "' set by '" + attestationContext + "'."
+                    description: "Attestation context already set. The new account '" + newAccount + "' already has a property with the name '" + myAccount + "' set by '" + attestationContext + "'."
                 });
             return Promise.resolve(noError);
         } catch (error) {
@@ -375,7 +383,7 @@ The new account '" + newAccount + "' already has a property with the name '" + m
     private revokeAttestation = async (url: string, params: objectAny, entityType: EntityType, skipChecks= false): Promise<DeleteAccountPropertyResponse> => {
         const dataFields = new DataFields();
         dataFields.attestationContext = params.attestationContext;
-        let recipient = params.account && params.account || "";
+        let recipient = (params.account && params.account) || "";
 
 
         if (!skipChecks) {
@@ -392,9 +400,14 @@ The new account '" + newAccount + "' already has a property with the name '" + m
         return this.createRevokeTransaction(url, params.passphrase, recipient, dataFields.attestationContext);
     }
 
-    private checkRevokeAttestation = async (url: string, attestedAccount: string, attestorAccount: string, attestationContext: string, entityType: EntityType): Promise<Error> => {
+    private checkRevokeAttestation = async (url: string, attestedAccount: string, attestorAccount: string,
+                                            attestationContext: string, entityType: EntityType): Promise<Error> => {
         try {
-            const response = await this.request.getAccountProperties(url, { setter: attestorAccount, recipient: attestedAccount, property: attestationContext });
+            const response = await this.request.getAccountProperties(url, {
+                    setter: attestorAccount,
+                    recipient: attestedAccount,
+                    property: attestationContext
+                });
             const propertyObject = response.properties[0];
             if (!propertyObject) return {
                     code: ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND,
@@ -421,7 +434,8 @@ The new account '" + newAccount + "' already has a property with the name '" + m
         return noError;
     }
 
-    private createRevokeTransaction = (url: string, passphrase: string, attestedAccount: string, attestationContext: string): Promise<SetAccountPropertyResponse> => {
+    private createRevokeTransaction = (url: string, passphrase: string,
+                                       attestedAccount: string, attestationContext: string): Promise<SetAccountPropertyResponse> => {
         const propertyRequestParams: DeleteAccountPropertyParams = {
             chain: ChainId.IGNIS,
             property: attestationContext,

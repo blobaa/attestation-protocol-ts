@@ -1,5 +1,3 @@
-import { type } from "os";
-
 /*
  *  Copyright (C) 2019  Attila Aldemir <a_aldemir@hotmail.de>
  *
@@ -17,8 +15,9 @@ import { type } from "os";
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*eslint-disable @typescript-eslint/no-explicit-any*/
 export type objectAny = {[name: string]: any};
-
+/*eslint-enable @typescript-eslint/no-explicit-any*/
 
 export type Error = {
     code: ErrorCode;

@@ -46,7 +46,7 @@ export default class DataHandler implements IData {
 
         const signedData: SignedData = {
             attestationContext: params.attestationContext,
-            attestationPath: params.attestationPath && params.attestationPath || [ creatorAccount ],
+            attestationPath: (params.attestationPath && params.attestationPath) || [ creatorAccount ],
             creatorAccount,
             payload: params.payload,
             signature: account.generateToken(tokenDataString, params.passphrase, forTestnet)
@@ -57,20 +57,20 @@ export default class DataHandler implements IData {
 
 
     public verifySignedData = async (url: string, params: VerifySignedDataParams, forTestnet = false): Promise<VerifySignedDataResponse> => {
-        const signedDataCheckCallback = params.signedDataCheckCallback && params.signedDataCheckCallback || this.defaultSignedDataCb;
-        const entityCheckCallback = params.entityCheckCallback && params.entityCheckCallback || this.defaultEntityCb;
+        const signedDataCheckCallback = (params.signedDataCheckCallback && params.signedDataCheckCallback) || this.defaultSignedDataCb;
+        const entityCheckCallback = (params.entityCheckCallback && params.entityCheckCallback) || this.defaultEntityCb;
 
         await this.checkSignedDataObject(url, params.signedData, signedDataCheckCallback, forTestnet);
         const trustChainResponse = await this.parseTrustChain(url, params.signedData, params.trustedRootAccount, entityCheckCallback);
 
-        return Promise.resolve({activeRootAccount: trustChainResponse.activeRoot, verifiedTrustChain: trustChainResponse.parsedChain});
+        return Promise.resolve({ activeRootAccount: trustChainResponse.activeRoot, verifiedTrustChain: trustChainResponse.parsedChain });
     }
 
-    private defaultSignedDataCb = (signedDataCheck: SignedDataCheckParams): boolean => true;
-    private defaultEntityCb = (entity: EntityCheckParams): boolean => true;
+    private defaultSignedDataCb = (): boolean => true;
+    private defaultEntityCb = (): boolean => true;
 
-    private checkSignedDataObject = async (url: string, signedData: SignedData,
-                                           signedDataCheckCallback: (signedDataCheck: SignedDataCheckParams) => boolean, forTestnet: boolean): Promise<void> => {
+    private checkSignedDataObject = async (url: string, signedData: SignedData, signedDataCheckCallback: (signedDataCheck: SignedDataCheckParams) => boolean,
+                                           forTestnet: boolean): Promise<void> => {
         try {
             const params: DecodeTokenParams = {
                 data: TokenData.createTokenDataString(signedData.attestationPath, signedData.attestationContext, signedData.payload),
@@ -84,8 +84,7 @@ export default class DataHandler implements IData {
                 });
             if (tokenResponse.accountRS !== signedData.creatorAccount) return Promise.reject({
                     code: ErrorCode.WRONG_CREATOR_ACCOUNT,
-                    description: "Wrong creator account. \
-The specified creator account '" + signedData.creatorAccount + "' does not match with the calculated account '" + tokenResponse.accountRS + "'."
+                    description: "Wrong creator account. The specified creator account '" + signedData.creatorAccount + "' does not match with the calculated account '" + tokenResponse.accountRS + "'."
                 });
 
 
@@ -105,7 +104,7 @@ The specified creator account '" + signedData.creatorAccount + "' does not match
     }
 
     private parseTrustChain = async (url: string, signedData: SignedData, trustedRoot: string,
-                                     entityCheckCallback: (entity: EntityCheckParams) => boolean): Promise<{ activeRoot: string, parsedChain: string[] }> => {
+                                     entityCheckCallback: (entity: EntityCheckParams) => boolean): Promise<{ activeRoot: string; parsedChain: string[] }> => {
         let trustedRootFound = false;
         const trustPath = this.setTrustPath(signedData);
         const verificationPath: string[] = [];
@@ -169,14 +168,14 @@ The specified creator account '" + signedData.creatorAccount + "' does not match
 
     private setTrustPath = (signedData: SignedData): string[] => {
         return this.isCreatorAccountRoot(signedData) ? [ signedData.creatorAccount ]
-                                                     : signedData.attestationPath && [ signedData.creatorAccount, ...signedData.attestationPath ] || [];
+                                                     : (signedData.attestationPath && [ signedData.creatorAccount, ...signedData.attestationPath ]) || [];
     }
 
     private isCreatorAccountRoot = (signedData: SignedData): boolean => {
         return (!signedData.attestationPath || signedData.attestationPath.length === 0 || signedData.attestationPath[0] === signedData.creatorAccount);
     }
 
-    private setVerificationParameter = (trustPath: string[], counter: number): {attestor: string, attestedAccount: string, state: TrustPathState} => {
+    private setVerificationParameter = (trustPath: string[], counter: number): {attestor: string; attestedAccount: string; state: TrustPathState} => {
         if (counter === trustPath.length - 1) return {
                 attestedAccount: trustPath[counter],
                 attestor: trustPath[counter],
@@ -200,7 +199,11 @@ The specified creator account '" + signedData.creatorAccount + "' does not match
             const dataFields = new DataFields();
             dataFields.attestationContext = attestationContext;
 
-            const response = await this.request.getAccountProperties(url, { setter: attestorAccount, recipient: attestedAccount, property: dataFields.attestationContext });
+            const response = await this.request.getAccountProperties(url, {
+                    setter: attestorAccount,
+                    recipient: attestedAccount,
+                    property: dataFields.attestationContext
+                });
             const propertyObject = response.properties[0];
             if (!propertyObject) return Promise.reject({
                     code: ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND,
