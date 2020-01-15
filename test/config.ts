@@ -32,7 +32,7 @@ const config = {
         url: {
             testnet: 'https://testardor.jelurida.com',
             mainnet: 'https://ardor.jelurida.com'
-        } 
+        }
     },
     account: {
         alice: {

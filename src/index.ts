@@ -15,13 +15,14 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+/* eslint-disable max-classes-per-file */
 import AttestationHandler from "./modules/AttestationHandler";
 import DataHandler from "./modules/DataHandler";
 import EntityParser from "./modules/EntityParser";
 import { IAttestation, IData, IEntity } from "./types";
 
 export * from "./types";
-
 
 export const attestation: IAttestation = new AttestationHandler();
 export const data: IData = new DataHandler();
@@ -30,4 +31,3 @@ export const entity: IEntity = new EntityParser();
 export class Attestation extends AttestationHandler {}
 export class Data extends DataHandler {}
 export class Entity extends EntityParser {}
-

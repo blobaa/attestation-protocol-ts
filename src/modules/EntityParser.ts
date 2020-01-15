@@ -16,10 +16,10 @@
  */
 
 import { IRequest, Request } from "@somedotone/ardor-ts";
-import { ErrorCode } from "..";
 import { GetEntityParams, GetEntityResponse, IEntity } from "../types";
 import DataFields from "./lib/DataFields";
 import Helper from "./lib/Helper";
+import { ErrorCode } from "..";
 
 
 export default class EntityParser implements IEntity {

@@ -20,15 +20,18 @@ import { DecodeTokenParams, DecodeTokenResponse, GetAccountPropertiesParams, Get
 
 export default class RequestMock extends Request {
     private readonly defaultResponse = { requestProcessingTime: 0, fullHash: "dummy" };
-    
+
     private setAccPropCallback: (params: SetAccountPropertyParams) => void;
-    private getAccPropCallback: (params: GetAccountPropertiesParams) => { context: string, dataFieldsString: string };
+    private getAccPropCallback: (params: GetAccountPropertiesParams) => { context: string; dataFieldsString: string };
     private deleteAccPropCallback: (params: DeleteAccountPropertyParams) => void;
-    private decodeTokenCallback: (params: DecodeTokenParams) => { account: string, valid: boolean };
+    private decodeTokenCallback: (params: DecodeTokenParams) => { account: string; valid: boolean };
 
 
 
-    constructor(getAccPropCallback?: (params: GetAccountPropertiesParams) => { context: string, dataFieldsString: string }, setAccPropCallback?: (params: SetAccountPropertyParams) => void, decodeTokenCallback?: (params: DecodeTokenParams) => { account: string, valid: boolean }, deleteAccPropCallback?: (params: DeleteAccountPropertyParams) => void) {
+    constructor(getAccPropCallback?: (params: GetAccountPropertiesParams) => { context: string; dataFieldsString: string },
+                setAccPropCallback?: (params: SetAccountPropertyParams) => void,
+                decodeTokenCallback?: (params: DecodeTokenParams) => { account: string; valid: boolean },
+                deleteAccPropCallback?: (params: DeleteAccountPropertyParams) => void) {
         super();
         this.getAccPropCallback = getAccPropCallback || this.defaultGetAccPropCallback;
         this.setAccPropCallback = setAccPropCallback || this.defaultSetAccPropCallback;
@@ -36,10 +39,10 @@ export default class RequestMock extends Request {
         this.decodeTokenCallback = decodeTokenCallback || this.defaultDecodeTokenCallback;
     }
 
-    private defaultGetAccPropCallback = (params: GetAccountPropertiesParams): { context: string, dataFieldsString: string } => { return {context: "", dataFieldsString: "" }}
+    private defaultGetAccPropCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => { return { context: "", dataFieldsString: "" }}
     private defaultSetAccPropCallback = (params: SetAccountPropertyParams): void => {}
     private defaultDeleteAccPropCallback = (params: DeleteAccountPropertyParams): void => {}
-    private defaultDecodeTokenCallback = (params: DecodeTokenParams): { account: string, valid: boolean } => { return { account: "none", valid: true}}
+    private defaultDecodeTokenCallback = (params: DecodeTokenParams): { account: string; valid: boolean } => { return { account: "none", valid: true }}
 
 
     public getAccountProperties = (url: string, params: GetAccountPropertiesParams): Promise<GetAccountPropertiesResponse> => {
@@ -48,18 +51,20 @@ export default class RequestMock extends Request {
     }
 
     private assembleAccountPropertyResponse = (property: string, value: string): GetAccountPropertiesResponse => {
-        let resp = {
+        const resp = {
             recipientRS: "",
             recipient: "",
             requestProcessingTime: 0,
+            /*eslint-disable @typescript-eslint/no-explicit-any*/
             properties: [] as any
+            /*eslint-enable @typescript-eslint/no-explicit-any*/
         };
-        if(value !== 'none') {
+        if (value !== 'none') {
             resp.properties.push({
                 setterRS: "",
-                property: property,
+                property,
                 setter: "",
-                value: value
+                value
             });
         }
         return resp as GetAccountPropertiesResponse;
@@ -89,8 +94,7 @@ export default class RequestMock extends Request {
             accountRS: _account,
             requestProcessingTime: 42,
             timestamp: time.convertUnixToArdorTimestamp((new Date()).getTime(), true),
-            valid: valid
+            valid
         };
     }
-    
 }
