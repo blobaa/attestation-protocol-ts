@@ -1,0 +1,29 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "rules": {
+        "trailing-comma": false,
+        "no-consecutive-blank-lines": [ true, 3 ],
+        "max-line-length": [ false, { 
+                "limit": 120, 
+                "ignore-pattern": "^import |^export {(.*?)}"
+            } 
+        ],
+        "variable-name": [ true, "allow-leading-underscore" ],
+        "curly": false,
+        "interface-over-type-literal": false,
+        "member-ordering": [ true, {
+                "order": [
+                    "private-static-field",
+                    "private-instance-field",
+                    "public-static-field",
+                    "public-instance-field",
+                    "public-constructor"
+                ]
+            }
+        ],
+        "arrow-parens": [ true, "ban-single-arg-parens" ]
+    }
+}

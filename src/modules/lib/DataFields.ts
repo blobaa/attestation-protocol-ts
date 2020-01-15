@@ -55,13 +55,12 @@ export default class DataFields {
         this._attestationContext = this.setAttestationContext(value);
     }
 
-    public setAttestationContext = (context: string): string => {
-        return context.startsWith(PROTOCOL_IDENTIFIER) ? context : PROTOCOL_IDENTIFIER + context;
-    }
-
-
     get attestationContext() {
         return this._attestationContext;
+    }
+
+    public setAttestationContext = (context: string): string => {
+        return context.startsWith(PROTOCOL_IDENTIFIER) ? context : PROTOCOL_IDENTIFIER + context;
     }
 
 

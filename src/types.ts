@@ -1,3 +1,5 @@
+import { type } from "os";
+
 /*
  *  Copyright (C) 2019  Attila Aldemir <a_aldemir@hotmail.de>
  *
@@ -18,7 +20,7 @@
 export type objectAny = {[name: string]: any};
 
 
-export interface Error {
+export type Error = {
     code: ErrorCode;
     description: string;
 }
@@ -91,13 +93,13 @@ export enum State {
 }
 
 
-export interface CreateRootAttestationParams {
+export type CreateRootAttestationParams = {
     passphrase: string;
     attestationContext: string;
     payload?: string;
 }
 
-export interface CreateIntermediateAttestationParams {
+export type CreateIntermediateAttestationParams = {
     passphrase: string;
     attestationContext: string;
     intermediateAccount: string;
@@ -105,7 +107,7 @@ export interface CreateIntermediateAttestationParams {
     payload?: string;
 }
 
-export interface CreateLeafAttestationParams {
+export type CreateLeafAttestationParams = {
     passphrase: string;
     attestationContext: string;
     leafAccount: string;
@@ -113,7 +115,7 @@ export interface CreateLeafAttestationParams {
     payload?: string;
 }
 
-export interface CreateAttestationUncheckedParams {
+export type CreateAttestationUncheckedParams = {
     passphrase: string;
     attestationContext: string;
     account: string;
@@ -121,12 +123,12 @@ export interface CreateAttestationUncheckedParams {
     payload?: string;
 }
 
-export interface AttestationResponse {
+export type AttestationResponse = {
     transactionId: string;
 }
 
 
-export interface UpdateRootAttestationParams {
+export type UpdateRootAttestationParams = {
     passphrase: string;
     attestationContext: string;
     newPayload?: string;
@@ -134,7 +136,7 @@ export interface UpdateRootAttestationParams {
     newRootAccount?: string;
 }
 
-export interface UpdateIntermediateAttestationParams {
+export type UpdateIntermediateAttestationParams = {
     passphrase: string;
     attestationContext: string;
     intermediateAccount: string;
@@ -144,7 +146,7 @@ export interface UpdateIntermediateAttestationParams {
     newIntermediateAccount?: string;
 }
 
-export interface UpdateLeafAttestationParams {
+export type UpdateLeafAttestationParams = {
     passphrase: string;
     attestationContext: string;
     leafAccount: string;
@@ -155,24 +157,24 @@ export interface UpdateLeafAttestationParams {
 }
 
 
-export interface RevokeRootAttestationParams {
+export type RevokeRootAttestationParams = {
     passphrase: string;
     attestationContext: string;
 }
 
-export interface RevokeIntermediateAttestationParams {
+export type RevokeIntermediateAttestationParams = {
     passphrase: string;
     attestationContext: string;
     intermediateAccount?: string;
 }
 
-export interface RevokeLeafAttestationParams {
+export type RevokeLeafAttestationParams = {
     passphrase: string;
     attestationContext: string;
     leafAccount?: string;
 }
 
-export interface RevokeAttestationUncheckedParams {
+export type RevokeAttestationUncheckedParams = {
     passphrase: string;
     attestationContext: string;
     account: string;
@@ -196,7 +198,7 @@ export interface IAttestation {
 }
 
 
-export interface SignedData {
+export type SignedData = {
     payload: string;
     attestationPath: string[];
     attestationContext: string;
@@ -204,7 +206,7 @@ export interface SignedData {
     signature: string;
 }
 
-export interface SignDataParams {
+export type SignDataParams = {
     passphrase: string;
     attestationPath?: string[];
     attestationContext: string;
@@ -212,19 +214,19 @@ export interface SignDataParams {
 }
 
 
-export interface VerifySignedDataParams {
+export type VerifySignedDataParams = {
     signedData: SignedData;
     trustedRootAccount: string;
     signedDataCheckCallback?: (signedDataCheck: SignedDataCheckParams) => boolean;
     entityCheckCallback?: (entity: EntityCheckParams) => boolean;
 }
 
-export interface VerifySignedDataResponse {
+export type VerifySignedDataResponse = {
     activeRootAccount: string;
     verifiedTrustChain: string[];
 }
 
-export interface EntityCheckParams {
+export type EntityCheckParams = {
     account: string;
     entityType: EntityType;
     state: State;
@@ -232,7 +234,7 @@ export interface EntityCheckParams {
     protocolVersion: string;
 }
 
-export interface SignedDataCheckParams {
+export type SignedDataCheckParams = {
     signedData: SignedData;
     signatureTime: number;
 }
@@ -244,13 +246,13 @@ export interface IData {
 }
 
 
-export interface GetEntityParams {
+export type GetEntityParams = {
     account: string;
     attestor?: string;
     attestationContext: string;
 }
 
-export interface GetEntityResponse {
+export type GetEntityResponse = {
     account: string;
     attestationContext: string;
     entityType: EntityType;

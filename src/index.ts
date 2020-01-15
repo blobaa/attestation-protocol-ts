@@ -27,6 +27,8 @@ export const attestation: IAttestation = new AttestationHandler();
 export const data: IData = new DataHandler();
 export const entity: IEntity = new EntityParser();
 
+/* tslint:disable:max-classes-per-file */
 export class Attestation extends AttestationHandler {};
 export class Data extends DataHandler {};
 export class Entity extends EntityParser {};
+/* tslint:enable:max-classes-per-file */

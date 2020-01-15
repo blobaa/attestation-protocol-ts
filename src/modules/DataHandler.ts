@@ -49,7 +49,7 @@ export default class DataHandler implements IData {
             attestationContext: params.attestationContext,
             attestationPath: params.attestationPath && params.attestationPath || [ creatorAccount ],
             signature: account.generateToken(tokenDataString, params.passphrase, forTestnet),
-            creatorAccount: creatorAccount
+            creatorAccount
         } 
 
         return signedData;

@@ -86,7 +86,7 @@ export default class AttestationHandler implements IAttestation {
             const propertyObject = response.properties[0];
             if(!propertyObject) return { code: ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND, description: "Attestation context not found. The specified attestation context could not be found at account '" + myAccount + "'." };
             
-            let error = dataFields.consumeDataFieldString(propertyObject.value);
+            const error = dataFields.consumeDataFieldString(propertyObject.value);
             if(error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
 
             if(dataFields.entityType === EntityType.LEAF) return Promise.reject({ code: ErrorCode.ATTESTATION_NOT_ALLOWED, description: "Attestation not allowed. A leaf entity is not allowed to attest." });
@@ -116,9 +116,9 @@ export default class AttestationHandler implements IAttestation {
     private createAttestationTransaction = async (url: string, passphrase: string, accountToAttest: string, dataFields: DataFields ): Promise<SetAccountPropertyResponse> => {
         const propertyRequestParams: SetAccountPropertyParams = {
             chain: ChainId.IGNIS,
-            secretPhrase: passphrase,
-            recipient: accountToAttest,
             property: dataFields.attestationContext,
+            recipient: accountToAttest,
+            secretPhrase: passphrase,
             value: dataFields.createDataFieldsString()
         }
         return this.request.setAccountProperty(url, propertyRequestParams);
@@ -152,7 +152,7 @@ export default class AttestationHandler implements IAttestation {
 
 
     public createAttestationUnchecked = async (url: string, params: CreateAttestationUncheckedParams): Promise<AttestationResponse> => {
-        let _params = { ...params } as objectAny;
+        const _params = { ...params } as objectAny;
         
         if(params.entityType === EntityType.INTERMEDIATE) _params.intermediateAccount = params.account;
         if(params.entityType === EntityType.LEAF) _params.leafAccount = params.account;
@@ -224,8 +224,8 @@ export default class AttestationHandler implements IAttestation {
             oldDataFields.redirectAccount = newAttestedAccount.substring(ACCOUNT_PREFIX.length);
             newDataFields.state = State.ACTIVE;
 
-            let error = await this.checkNewAttestedAccount(url, newAttestedAccount, oldDataFields.attestationContext, myAccount);
-            if(error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
+            const accountCheckError = await this.checkNewAttestedAccount(url, newAttestedAccount, oldDataFields.attestationContext, myAccount);
+            if(accountCheckError.code !== ErrorCode.NO_ERROR) return Promise.reject(accountCheckError);
 
             return Promise.all([
                 this.createAttestationTransaction(url, params.passphrase, newAttestedAccount, newDataFields),
@@ -259,7 +259,7 @@ export default class AttestationHandler implements IAttestation {
             const propertyObject = response.properties[0];
             if(!propertyObject) return { code: ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND, description: "Attestation context not found. The specified attestation context could not be found for account '" + attestedAccount + "'." };
             
-            let error = dataFields.consumeDataFieldString(propertyObject.value);
+            const error = dataFields.consumeDataFieldString(propertyObject.value);
             if(error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
 
             if(dataFields.state !== State.ACTIVE && !isStateUpdate) return Promise.reject({ code: ErrorCode.ENTITY_NOT_ACTIVE, description: "Entity is not active. Inactive entities cannot be updated." });
@@ -364,9 +364,9 @@ export default class AttestationHandler implements IAttestation {
     private createRevokeTransaction = (url: string, passphrase: string, attestedAccount: string, attestationContext: string): Promise<SetAccountPropertyResponse> => {
         const propertyRequestParams: DeleteAccountPropertyParams = {
             chain: ChainId.IGNIS,
-            secretPhrase: passphrase,
+            property: attestationContext,
             recipient: attestedAccount,
-            property: attestationContext
+            secretPhrase: passphrase
         };
         return this.request.deleteAccountProperty(url, propertyRequestParams);
     }
