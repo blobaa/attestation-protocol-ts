@@ -23,7 +23,7 @@ export type objectAny = {[name: string]: any};
 export type Error = {
     code: ErrorCode;
     description: string;
-}
+};
 
 export enum ErrorCode {
     NO_ERROR = -1,
@@ -31,7 +31,7 @@ export enum ErrorCode {
 
     CONNECTION_ERROR,
     NODE_ERROR,
-    
+
     ATTESTATION_CONTEXT_NOT_FOUND,
 
     WRONG_NUMBER_OF_DATA_FIELDS,
@@ -74,22 +74,22 @@ export enum ErrorCode {
 
     TOO_MANY_DEPRECATION_HOPS,
     ENTITY_MISMATCH,
-    
+
     TRUSTED_ROOT_NOT_FOUND
 }
 
 
 export enum EntityType {
-    ROOT = 'r',
-    INTERMEDIATE = 'i',
-    LEAF = 'l'
+    ROOT = "r",
+    INTERMEDIATE = "i",
+    LEAF = "l"
 }
 
 
 export enum State {
-    ACTIVE = 'a',
-    INACTIVE = 'i',
-    DEPRECATED = 'd'
+    ACTIVE = "a",
+    INACTIVE = "i",
+    DEPRECATED = "d"
 }
 
 
@@ -97,7 +97,7 @@ export type CreateRootAttestationParams = {
     passphrase: string;
     attestationContext: string;
     payload?: string;
-}
+};
 
 export type CreateIntermediateAttestationParams = {
     passphrase: string;
@@ -105,7 +105,7 @@ export type CreateIntermediateAttestationParams = {
     intermediateAccount: string;
     myAttestorAccount?: string;
     payload?: string;
-}
+};
 
 export type CreateLeafAttestationParams = {
     passphrase: string;
@@ -113,7 +113,7 @@ export type CreateLeafAttestationParams = {
     leafAccount: string;
     myAttestorAccount?: string;
     payload?: string;
-}
+};
 
 export type CreateAttestationUncheckedParams = {
     passphrase: string;
@@ -121,11 +121,11 @@ export type CreateAttestationUncheckedParams = {
     account: string;
     entityType: EntityType;
     payload?: string;
-}
+};
 
 export type AttestationResponse = {
     transactionId: string;
-}
+};
 
 
 export type UpdateRootAttestationParams = {
@@ -134,7 +134,7 @@ export type UpdateRootAttestationParams = {
     newPayload?: string;
     newState?: State.ACTIVE | State.INACTIVE;
     newRootAccount?: string;
-}
+};
 
 export type UpdateIntermediateAttestationParams = {
     passphrase: string;
@@ -142,9 +142,9 @@ export type UpdateIntermediateAttestationParams = {
     intermediateAccount: string;
     myAttestorAccount?: string;
     newPayload?: string;
-    newState?: State.ACTIVE | State.INACTIVE; 
+    newState?: State.ACTIVE | State.INACTIVE;
     newIntermediateAccount?: string;
-}
+};
 
 export type UpdateLeafAttestationParams = {
     passphrase: string;
@@ -154,31 +154,31 @@ export type UpdateLeafAttestationParams = {
     newPayload?: string;
     newState?: State.ACTIVE | State.INACTIVE;
     newLeafAccount?: string;
-}
+};
 
 
 export type RevokeRootAttestationParams = {
     passphrase: string;
     attestationContext: string;
-}
+};
 
 export type RevokeIntermediateAttestationParams = {
     passphrase: string;
     attestationContext: string;
     intermediateAccount?: string;
-}
+};
 
 export type RevokeLeafAttestationParams = {
     passphrase: string;
     attestationContext: string;
     leafAccount?: string;
-}
+};
 
 export type RevokeAttestationUncheckedParams = {
     passphrase: string;
     attestationContext: string;
     account: string;
-}
+};
 
 
 export interface IAttestation {
@@ -193,7 +193,7 @@ export interface IAttestation {
 
     revokeRootAttestation: (url: string, params: RevokeRootAttestationParams) => Promise<AttestationResponse>;
     revokeIntermediateAttestation: (url: string, params: RevokeIntermediateAttestationParams) => Promise<AttestationResponse>;
-    revokeLeafAttestation: (url: string, params: RevokeLeafAttestationParams) => Promise<AttestationResponse>
+    revokeLeafAttestation: (url: string, params: RevokeLeafAttestationParams) => Promise<AttestationResponse>;
     revokeAttestationUnchecked: (url: string, params: RevokeAttestationUncheckedParams) => Promise<AttestationResponse>;
 }
 
@@ -204,14 +204,14 @@ export type SignedData = {
     attestationContext: string;
     creatorAccount: string;
     signature: string;
-}
+};
 
 export type SignDataParams = {
     passphrase: string;
     attestationPath?: string[];
     attestationContext: string;
     payload: string;
-}
+};
 
 
 export type VerifySignedDataParams = {
@@ -219,12 +219,12 @@ export type VerifySignedDataParams = {
     trustedRootAccount: string;
     signedDataCheckCallback?: (signedDataCheck: SignedDataCheckParams) => boolean;
     entityCheckCallback?: (entity: EntityCheckParams) => boolean;
-}
+};
 
 export type VerifySignedDataResponse = {
     activeRootAccount: string;
     verifiedTrustChain: string[];
-}
+};
 
 export type EntityCheckParams = {
     account: string;
@@ -232,12 +232,12 @@ export type EntityCheckParams = {
     state: State;
     payload: string;
     protocolVersion: string;
-}
+};
 
 export type SignedDataCheckParams = {
     signedData: SignedData;
     signatureTime: number;
-}
+};
 
 
 export interface IData {
@@ -250,7 +250,7 @@ export type GetEntityParams = {
     account: string;
     attestor?: string;
     attestationContext: string;
-}
+};
 
 export type GetEntityResponse = {
     account: string;
@@ -260,7 +260,7 @@ export type GetEntityResponse = {
     payload: string;
     protocolVersion: string;
     redirectAccount: string;
-}
+};
 
 
 export interface IEntity {

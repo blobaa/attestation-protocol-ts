@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SIGNED_DATA_SEPARATOR, ATTESTATION_PATH_SEPARATOR } from "../../constants";
+import { ATTESTATION_PATH_SEPARATOR, SIGNED_DATA_SEPARATOR } from "../../constants";
 
 
 export default class TokenData {

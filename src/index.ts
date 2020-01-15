@@ -15,12 +15,12 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IAttestation, IData, IEntity } from './types'
-import AttestationHandler from './modules/AttestationHandler'
-import DataHandler from './modules/DataHandler'
-import EntityParser from './modules/EntityParser'
+import AttestationHandler from "./modules/AttestationHandler";
+import DataHandler from "./modules/DataHandler";
+import EntityParser from "./modules/EntityParser";
+import { IAttestation, IData, IEntity } from "./types";
 
-export * from './types'
+export * from "./types";
 
 
 export const attestation: IAttestation = new AttestationHandler();
@@ -28,7 +28,7 @@ export const data: IData = new DataHandler();
 export const entity: IEntity = new EntityParser();
 
 /* tslint:disable:max-classes-per-file */
-export class Attestation extends AttestationHandler {};
-export class Data extends DataHandler {};
-export class Entity extends EntityParser {};
+export class Attestation extends AttestationHandler {}
+export class Data extends DataHandler {}
+export class Entity extends EntityParser {}
 /* tslint:enable:max-classes-per-file */
