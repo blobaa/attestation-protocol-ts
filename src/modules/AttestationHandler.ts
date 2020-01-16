@@ -51,10 +51,10 @@ export default class AttestationHandler implements IAttestation {
             const attestorAccount = (params.myAttestorAccount && params.myAttestorAccount) || myAccount;
 
             if (this.isNotRootAttestation(params)) {
-                if (myAccount === this.getRecipient(params)) return Promise.reject({
-                        code: ErrorCode.SELF_ATTESTATION_NOT_ALLOWED,
-                        description: "Self attestation is not allowed. Only a root entity is permitted to self attest."
-                    });
+                if (myAccount === this.getRecipient(params)) {
+                    const _error = Helper.createError(ErrorCode.SELF_ATTESTATION_NOT_ALLOWED);
+                    return Promise.reject(_error);
+                }
 
                 const attestationContext = dataFields.setAttestationContext(params.attestationContext);
                 await this.checkOwnEntityAndState(url, myAccount, attestorAccount, attestationContext, new DataFields(), false, entityType);
@@ -69,7 +69,6 @@ export default class AttestationHandler implements IAttestation {
         dataFields.state = State.ACTIVE;
         dataFields.entityType = entityType;
         dataFields.payload = params.payload;
-
 
         return await this.createAttestationTransaction(url, params.passphrase, this.getRecipient(params), dataFields);
     }
@@ -89,29 +88,27 @@ export default class AttestationHandler implements IAttestation {
                     property: dataFields.attestationContext
                 });
             const propertyObject = response.properties[0];
-            if (!propertyObject) return Promise.reject({
-                    code: ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND,
-                    description: "Attestation context not found. The specified attestation context could not be found at account '" + myAccount + "'."
-                });
+
+            if (!propertyObject) {
+                const _error = Helper.createError(ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND, [ myAccount ]);
+                return Promise.reject(_error);
+            }
 
             const error = dataFields.consumeDataFieldString(propertyObject.value);
             if (error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
 
-            if (dataFields.entityType === EntityType.LEAF) return Promise.reject({
-                    code: ErrorCode.ATTESTATION_NOT_ALLOWED,
-                    description: "Attestation not allowed. A leaf entity is not allowed to attest."
-                });
-            if (dataFields.state !== State.ACTIVE && !isStateUpdate) return Promise.reject({
-                    code: ErrorCode.ENTITY_NOT_ACTIVE,
-                    description: "Entity is not active. An entity must be in state active to attest."
-                });
+            if (dataFields.entityType === EntityType.LEAF) {
+                const _error = Helper.createError(ErrorCode.ATTESTATION_NOT_ALLOWED);
+                return Promise.reject(_error);
+            }
+            if (dataFields.state !== State.ACTIVE && !isStateUpdate) {
+                const _error = Helper.createError(ErrorCode.ENTITY_NOT_ACTIVE);
+                return Promise.reject(_error);
+            }
             if (!this.isEntityPermitted(dataFields.entityType, entity)) {
                 const entityType = this.getEntityTypeName(dataFields.entityType);
                 const entityName = this.getEntityTypeName(entity);
-                return Promise.reject({
-                    code: ErrorCode.ATTESTATION_NOT_ALLOWED,
-                    description: "Attestation not allowed. A " + entityType + " entity is not allowed to attest a " + entityName + "."
-                });
+                return Promise.reject(Helper.createError(ErrorCode.ATTESTATION_NOT_ALLOWED, [ entityType, entityName ]));
             }
 
         } catch (error) {
@@ -123,11 +120,10 @@ export default class AttestationHandler implements IAttestation {
         try {
             const response = await this.request.getAccountProperties(url, { setter: attestorAccount, recipient: myAccount, property: attestationContext });
             const propertyObject = response.properties[0];
-            if (propertyObject) return Promise.reject({
-                    code: ErrorCode.ATTESTATION_CONTEXT_ALREADY_SET,
-                    description: "Attestation context already set. The new account already has a property with name '" + attestationContext + "' set by account '" + attestorAccount + "'."
-                });
-
+            if (propertyObject) {
+                const error = Helper.createError(ErrorCode.ATTESTATION_CONTEXT_ALREADY_SET, [myAccount, attestationContext, attestorAccount]);
+                return Promise.reject(error);
+            }
         } catch (error) {
             return Promise.reject(Helper.getError(error));
         }
@@ -214,24 +210,24 @@ export default class AttestationHandler implements IAttestation {
         const newDataFields = new DataFields(oldDataFields);
 
         if (params.newState) {
-            if (params.newState === oldDataFields.state) return Promise.reject({
-                    code: ErrorCode.STATE_ALREADY_SET,
-                    description: "State already set. Your requested state has the same value as the current state."
-                });
-            if (params.newState === State.DEPRECATED) return Promise.reject({
-                    code: ErrorCode.DEPRECATE_STATE_CANNOT_BE_SET,
-                    description: "Deprecate state cannot be set directly. Set redirect account instead."
-                });
+            if (params.newState === oldDataFields.state) {
+                const _error = Helper.createError(ErrorCode.STATE_ALREADY_SET);
+                return Promise.reject(_error);
+            }
+            if (params.newState === State.DEPRECATED) {
+                const _error = Helper.createError(ErrorCode.DEPRECATE_STATE_CANNOT_BE_SET);
+                return Promise.reject(_error);
+            }
             newDataFields.state = params.newState;
         }
 
         if (params.newPayload) {
             const error = oldDataFields.checkPayload(params.newPayload);
             if (error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
-            if (params.newPayload === oldDataFields.payload) return Promise.reject({
-                    code: ErrorCode.PAYLOAD_ALREADY_SET,
-                    description: "Payload already set. Your requested payload has the same value as the current payload."
-                });
+            if (params.newPayload === oldDataFields.payload) {
+                const _error = Helper.createError(ErrorCode.PAYLOAD_ALREADY_SET);
+                return Promise.reject(_error);
+            }
             newDataFields.payload = params.newPayload;
         }
 
@@ -289,22 +285,24 @@ export default class AttestationHandler implements IAttestation {
                     property: dataFields.attestationContext
                 });
             const propertyObject = response.properties[0];
-            if (!propertyObject) return Promise.reject({
-                    code: ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND,
-                    description: "Attestation context not found. The specified attestation context could not be found for account '" + attestedAccount + "'."
-                });
+
+            if (!propertyObject) {
+                const _error = Helper.createError(ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND, [ attestedAccount ]);
+                return Promise.reject(_error);
+            }
 
             const error = dataFields.consumeDataFieldString(propertyObject.value);
             if (error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
 
-            if (dataFields.state !== State.ACTIVE && !isStateUpdate) return Promise.reject({
-                    code: ErrorCode.ENTITY_NOT_ACTIVE,
-                    description: "Entity is not active. Inactive entities cannot be updated."
-                });
-            if (dataFields.entityType !== entity) return Promise.reject({
-                    code: ErrorCode.WRONG_ENTITY_TYPE,
-                    description: "Wrong entity type. Entity '" + this.getEntityTypeName(dataFields.entityType) + "' does not match with your request."
-                });
+            if (dataFields.state !== State.ACTIVE && !isStateUpdate) {
+                const _error = Helper.createError(ErrorCode.ENTITY_NOT_ACTIVE);
+                return Promise.reject(_error);
+            }
+            if (dataFields.entityType !== entity) {
+                const entityTypeName = this.getEntityTypeName(dataFields.entityType);
+                const _error = Helper.createError(ErrorCode.WRONG_ENTITY_TYPE, [ entityTypeName ]);
+                return Promise.reject(_error);
+            }
         } catch (error) {
             return Promise.reject(Helper.getError(error));
         }
@@ -324,10 +322,10 @@ export default class AttestationHandler implements IAttestation {
     private checkNewAttestedAccount = async (url: string, newAccount: string, attestationContext: string, myAccount: string): Promise<void> => {
         try {
             const response = await this.request.getAccountProperties(url, { recipient: newAccount, property: attestationContext, setter: myAccount });
-            if (response.properties.length !== 0) return Promise.reject({
-                    code: ErrorCode.ATTESTATION_CONTEXT_ALREADY_SET,
-                    description: "Attestation context already set. The new account '" + newAccount + "' already has a property with the name '" + myAccount + "' set by '" + attestationContext + "'."
-                });
+            if (response.properties.length !== 0) {
+                const error = Helper.createError(ErrorCode.ATTESTATION_CONTEXT_ALREADY_SET, [newAccount, attestationContext, myAccount]);
+                return Promise.reject(error);
+            }
         } catch (error) {
             return Promise.reject(Helper.getError(error));
         }
@@ -377,10 +375,11 @@ export default class AttestationHandler implements IAttestation {
                     property: attestationContext
                 });
             const propertyObject = response.properties[0];
-            if (!propertyObject) return Promise.reject({
-                    code: ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND,
-                    description: "Attestation context not found. The specified attestation context could not be found at account '" + attestedAccount + "'."
-                });
+
+            if (!propertyObject) {
+                const _error = Helper.createError(ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND, [ attestedAccount ]);
+                return Promise.reject(_error);
+            }
 
             const dataFields = new DataFields();
             const error = dataFields.consumeDataFieldString(propertyObject.value);
@@ -389,10 +388,8 @@ export default class AttestationHandler implements IAttestation {
             if (dataFields.entityType !== entityType) {
                 const settedTypeName = this.getEntityTypeName(entityType);
                 const foundTypeName = this.getEntityTypeName(dataFields.entityType);
-                return Promise.reject({
-                    code: ErrorCode.ENTITY_MISMATCH,
-                    description: "Entity mismatch. You're trying to revoke a '" + settedTypeName + "' attestation, but the found attestation is of type '" + foundTypeName + "'."
-                });
+                const _error = Helper.createError(ErrorCode.ENTITY_MISMATCH, [ settedTypeName, foundTypeName ]);
+                return Promise.reject(_error);
             }
 
         } catch (error) {

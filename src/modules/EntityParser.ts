@@ -45,10 +45,11 @@ export default class EntityParser implements IEntity {
                     property: dataFields.attestationContext
                 });
             const propertyObject = response.properties[0];
-            if (!propertyObject) return Promise.reject({
-                    code: ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND,
-                    description: "Attestation context not found. The specified attestation context could not be found at account '" + params.account + "'."
-                });
+
+            if (!propertyObject) {
+                const _error = Helper.createError(ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND, [ params.account ]);
+                return Promise.reject(_error);
+            }
 
             const error = dataFields.consumeDataFieldString(propertyObject.value);
             if (error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
@@ -63,7 +64,6 @@ export default class EntityParser implements IEntity {
                 redirectAccount: dataFields.redirectAccount,
                 state: dataFields.state
             };
-
             return Promise.resolve(entity);
         } catch (error) {
             return Promise.reject(Helper.getError(error));
