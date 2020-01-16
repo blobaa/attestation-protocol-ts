@@ -27,7 +27,7 @@ if (config.test.dataModule.runTests) {
         test('sign / verify signed data success', async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.erin.address, valid: true };
-            }
+            };
 
             const setAccountPropertyCallback = (): void => fail('should not reach here');
 
@@ -82,7 +82,7 @@ if (config.test.dataModule.runTests) {
 
                 fail('should not reach here');
                 return { context: 'none', dataFieldsString: 'none' };
-            }
+            };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
@@ -108,7 +108,7 @@ if (config.test.dataModule.runTests) {
                 expect(params.signatureTime - timeWindow).toBeLessThan(currentTime);
 
                 return true;
-            }
+            };
 
             let entCnt = 0;
             const entityCheckCb = (entity: EntityCheckParams): boolean => {
@@ -165,7 +165,7 @@ if (config.test.dataModule.runTests) {
 
                 fail('should not reach here');
                 return false;
-            }
+            };
 
 
             const verifyParams: VerifySignedDataParams = {
@@ -192,7 +192,7 @@ if (config.test.dataModule.runTests) {
         test('verifySignedData root attest leaf success', async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.bob.address, valid: true };
-            }
+            };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
 
@@ -220,7 +220,7 @@ if (config.test.dataModule.runTests) {
 
                 fail('should not reach here');
                 return { context: 'none', dataFieldsString: 'none' };
-            }
+            };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
@@ -244,7 +244,7 @@ if (config.test.dataModule.runTests) {
                 expect(params.signatureTime - timeWindow).toBeLessThan(currentTime);
 
                 return true;
-            }
+            };
 
             let entCnt = 0;
             const entityCheckCb = (entity: EntityCheckParams): boolean => {
@@ -270,7 +270,7 @@ if (config.test.dataModule.runTests) {
 
                 fail('should not reach here');
                 return false;
-            }
+            };
 
 
             const verifyParams: VerifySignedDataParams = {
@@ -289,7 +289,7 @@ if (config.test.dataModule.runTests) {
         test('verifySignedData intermediate signed data success', async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.bob.address, valid: true };
-            }
+            };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
 
@@ -317,7 +317,7 @@ if (config.test.dataModule.runTests) {
 
                 fail('should not reach here');
                 return { context: 'none', dataFieldsString: 'none' };
-            }
+            };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
@@ -341,7 +341,7 @@ if (config.test.dataModule.runTests) {
                 expect(params.signatureTime - timeWindow).toBeLessThan(currentTime);
 
                 return true;
-            }
+            };
 
             let entCnt = 0;
             const entityCheckCb = (entity: EntityCheckParams): boolean => {
@@ -367,7 +367,7 @@ if (config.test.dataModule.runTests) {
 
                 fail('should not reach here');
                 return false;
-            }
+            };
 
 
             const verifyParams: VerifySignedDataParams = {
@@ -386,7 +386,7 @@ if (config.test.dataModule.runTests) {
         test('verifySignedData root signed data success', async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.alice.address, valid: true };
-            }
+            };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
 
@@ -404,7 +404,7 @@ if (config.test.dataModule.runTests) {
 
                 fail('should not reach here');
                 return { context: 'none', dataFieldsString: 'none' };
-            }
+            };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
@@ -418,7 +418,7 @@ if (config.test.dataModule.runTests) {
                 expect(params.signatureTime - timeWindow).toBeLessThan(currentTime);
 
                 return true;
-            }
+            };
 
             let entCnt = 0;
             const entityCheckCb = (entity: EntityCheckParams): boolean => {
@@ -434,7 +434,7 @@ if (config.test.dataModule.runTests) {
 
                 fail('should not reach here');
                 return false;
-            }
+            };
 
 
             const signDataParams: SignDataParams = {
@@ -479,7 +479,7 @@ if (config.test.dataModule.runTests) {
         test('verifySignedData root in the middle of path error', async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.charlie.address, valid: true };
-            }
+            };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
 
@@ -507,7 +507,7 @@ if (config.test.dataModule.runTests) {
 
                 fail('should not reach here');
                 return { context: 'none', dataFieldsString: 'none' };
-            }
+            };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
@@ -536,7 +536,7 @@ if (config.test.dataModule.runTests) {
         test('verifySignedData leaf as attestor error', async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.charlie.address, valid: true };
-            }
+            };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
 
@@ -564,7 +564,7 @@ if (config.test.dataModule.runTests) {
 
                 fail('should not reach here');
                 return { context: 'none', dataFieldsString: 'none' };
-            }
+            };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
@@ -593,14 +593,14 @@ if (config.test.dataModule.runTests) {
         test('verifySignedData token invalid error', async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.charlie.address, valid: false };
-            }
+            };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
 
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 fail('should not reach here');
                 return { context: 'none', dataFieldsString: 'none' };
-            }
+            };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
@@ -629,14 +629,14 @@ if (config.test.dataModule.runTests) {
         test('verifySignedData wrong signed data creator error', async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.bob.address, valid: true };
-            }
+            };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
 
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 fail('should not reach here');
                 return { context: 'none', dataFieldsString: 'none' };
-            }
+            };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
@@ -665,14 +665,14 @@ if (config.test.dataModule.runTests) {
         test('verifySignedData signed data callback returned false error', async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.charlie.address, valid: true };
-            }
+            };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
 
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 fail('should not reach here');
                 return { context: 'none', dataFieldsString: 'none' };
-            }
+            };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
@@ -688,7 +688,7 @@ if (config.test.dataModule.runTests) {
 
             const signedDataCheckCb = (params: SignedDataCheckParams): boolean => {
                 return false;
-            }
+            };
 
 
             const verifyParams: VerifySignedDataParams = {
@@ -711,7 +711,7 @@ if (config.test.dataModule.runTests) {
         test('verifySignedData entity callback returned false error', async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.bob.address, valid: true };
-            }
+            };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
 
@@ -730,7 +730,7 @@ if (config.test.dataModule.runTests) {
 
                 fail('should not reach here');
                 return { context: 'none', dataFieldsString: 'none' };
-            }
+            };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
@@ -747,7 +747,7 @@ if (config.test.dataModule.runTests) {
 
             const entityCheckCb = (entity: EntityCheckParams): boolean => {
                 return false;
-            }
+            };
 
 
             const verifyParams: VerifySignedDataParams = {
@@ -770,7 +770,7 @@ if (config.test.dataModule.runTests) {
         test('verifySignedData deprecation success', async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.erin.address, valid: true };
-            }
+            };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
 
@@ -825,7 +825,7 @@ if (config.test.dataModule.runTests) {
 
                 fail('should not reach here');
                 return { context: 'none', dataFieldsString: 'none' };
-            }
+            };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
@@ -894,7 +894,7 @@ if (config.test.dataModule.runTests) {
 
                 fail('should not reach here');
                 return false;
-            }
+            };
 
 
             const verifyParams: VerifySignedDataParams = {
@@ -920,7 +920,7 @@ if (config.test.dataModule.runTests) {
         test('verifySignedData multiple deprecation hops success', async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.frank.address, valid: true };
-            }
+            };
 
             let propCnt = 0;
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
@@ -982,7 +982,7 @@ if (config.test.dataModule.runTests) {
 
                 fail('should not reach here');
                 return { context: 'none', dataFieldsString: 'none' };
-            }
+            };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
 
@@ -1061,7 +1061,7 @@ if (config.test.dataModule.runTests) {
 
                 fail('should not reach here');
                 return false;
-            }
+            };
 
 
             const verifyParams: VerifySignedDataParams = {
@@ -1088,7 +1088,7 @@ if (config.test.dataModule.runTests) {
         test('verifySignedData too many deprecation hops error', async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.charlie.address, valid: true };
-            }
+            };
 
             let propCnt = 0;
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
@@ -1111,7 +1111,7 @@ if (config.test.dataModule.runTests) {
 
                 fail('should not reach here');
                 return { context: 'none', dataFieldsString: 'none' };
-            }
+            };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
 
@@ -1139,7 +1139,7 @@ if (config.test.dataModule.runTests) {
         test('verifySignedData trusted root not found error', async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.bob.address, valid: true };
-            }
+            };
 
             let propCnt = 0;
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
@@ -1165,7 +1165,7 @@ if (config.test.dataModule.runTests) {
 
                 fail('should not reach here');
                 return { context: 'none', dataFieldsString: 'none' };
-            }
+            };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
 
@@ -1194,7 +1194,7 @@ if (config.test.dataModule.runTests) {
         test('verifySignedData trusted root is deprecated success', async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.charlie.address, valid: true };
-            }
+            };
 
             let propCnt = 0;
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
@@ -1229,7 +1229,7 @@ if (config.test.dataModule.runTests) {
 
                 fail('should not reach here');
                 return { context: 'none', dataFieldsString: 'none' };
-            }
+            };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
 
@@ -1256,7 +1256,7 @@ if (config.test.dataModule.runTests) {
         test('verifySignedData signed data creator is deprecated error', async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.bob.address, valid: true };
-            }
+            };
 
             let propCnt = 0;
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
@@ -1272,7 +1272,7 @@ if (config.test.dataModule.runTests) {
 
                 fail('should not reach here');
                 return { context: 'none', dataFieldsString: 'none' };
-            }
+            };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
 

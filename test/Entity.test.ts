@@ -16,7 +16,7 @@
  */
 
 import { GetAccountPropertiesParams } from '@somedotone/ardor-ts';
-import { Entity, EntityType, GetEntityParams, State, Error, ErrorCode } from '../src/index'
+import { Entity, EntityType, GetEntityParams, State, Error, ErrorCode } from '../src/index';
 import config from './config';
 import RequestMock from "./mocks/RequestMock";
 
@@ -31,7 +31,7 @@ if (config.test.entityModule.runTests) {
                 expect(params.property).toBe('ap://test-context');
 
                 return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
-            }
+            };
 
             const testEntity = new Entity(new RequestMock(getAccountPropertyCallback));
 
@@ -39,7 +39,7 @@ if (config.test.entityModule.runTests) {
             const getEntityParams: GetEntityParams = {
                 account: config.account.alice.address,
                 attestationContext: 'ap://test-context'
-            }
+            };
 
             const response = await testEntity.getEntity(config.node.url.testnet, getEntityParams);
             expect(response.account).toBe(config.account.alice.address);
@@ -59,7 +59,7 @@ if (config.test.entityModule.runTests) {
                 expect(params.property).toBe('ap://test-context');
 
                 return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
-            }
+            };
 
             const testEntity = new Entity(new RequestMock(getAccountPropertyCallback));
 
@@ -68,7 +68,7 @@ if (config.test.entityModule.runTests) {
                 account: config.account.bob.address,
                 attestationContext: 'ap://test-context',
                 attestor: config.account.alice.address
-            }
+            };
 
             const response = await testEntity.getEntity(config.node.url.testnet, getEntityParams);
             expect(response.account).toBe(config.account.bob.address);
@@ -88,7 +88,7 @@ if (config.test.entityModule.runTests) {
                 expect(params.property).toBe('ap://test-context');
 
                 return { context: 'none', dataFieldsString: 'none' };
-            }
+            };
 
             const testEntity = new Entity(new RequestMock(getAccountPropertyCallback));
 
@@ -97,7 +97,7 @@ if (config.test.entityModule.runTests) {
                 account: config.account.bob.address,
                 attestationContext: 'ap://test-context',
                 attestor: config.account.alice.address
-            }
+            };
 
             try {
                 await testEntity.getEntity(config.node.url.testnet, getEntityParams);
@@ -115,7 +115,7 @@ if (config.test.entityModule.runTests) {
                 expect(params.property).toBe('ap://test-context');
 
                 return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
-            }
+            };
 
             const testEntity = new Entity(new RequestMock(getAccountPropertyCallback));
 
@@ -123,7 +123,7 @@ if (config.test.entityModule.runTests) {
             const getEntityParams: GetEntityParams = {
                 account: config.account.alice.address,
                 attestationContext: 'test-context'
-            }
+            };
 
             const response = await testEntity.getEntity(config.node.url.testnet, getEntityParams);
             expect(response.attestationContext).toBe('ap://test-context');

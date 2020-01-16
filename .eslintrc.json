@@ -33,7 +33,7 @@
         "no-multiple-empty-lines": [ "error", { "max": 3 } ],
         "no-shadow": [ "error", { "hoist": "all" } ],
         "object-shorthand": "error",
-        "prefer-arrow/prefer-arrow-functions": [ "error", { "classPropertiesAllowed": true } ]
-        
+        "prefer-arrow/prefer-arrow-functions": [ "error", { "classPropertiesAllowed": true } ],
+        "semi": ["error", "always", { "omitLastInOneLineBlock": true } ]
     }
 }
