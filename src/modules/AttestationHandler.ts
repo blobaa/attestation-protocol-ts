@@ -42,7 +42,7 @@ export default class AttestationHandler implements IAttestation {
         }
     }
 
-    private createAttestation = async (url: string, params: objectAny, entityType: EntityType, skipChecks= false): Promise<SetAccountPropertyResponse> => {
+    private createAttestation = async (url: string, params: objectAny, entityType: EntityType, runChecks = true): Promise<SetAccountPropertyResponse> => {
         const dataFields = new DataFields();
 
         params.payload = params.payload || "";
@@ -50,7 +50,7 @@ export default class AttestationHandler implements IAttestation {
         if (error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
 
 
-        if (!skipChecks) {
+        if (runChecks) {
             const myAccount = account.convertPassphraseToAccountRs(params.passphrase);
             const attestorAccount = (params.myAttestorAccount && params.myAttestorAccount) || myAccount;
 
@@ -192,7 +192,7 @@ export default class AttestationHandler implements IAttestation {
 
 
         try {
-            const response = await this.createAttestation(url, _params, params.entityType, true);
+            const response = await this.createAttestation(url, _params, params.entityType, false);
             return Promise.resolve({ transactionId: response.fullHash });
         } catch (error) {
             return Promise.reject(Helper.getError(error));
@@ -380,13 +380,13 @@ export default class AttestationHandler implements IAttestation {
         }
     }
 
-    private revokeAttestation = async (url: string, params: objectAny, entityType: EntityType, skipChecks= false): Promise<DeleteAccountPropertyResponse> => {
+    private revokeAttestation = async (url: string, params: objectAny, entityType: EntityType, runChecks = true): Promise<DeleteAccountPropertyResponse> => {
         const dataFields = new DataFields();
         dataFields.attestationContext = params.attestationContext;
         let recipient = (params.account && params.account) || "";
 
 
-        if (!skipChecks) {
+        if (runChecks) {
             const myAccount = account.convertPassphraseToAccountRs(params.passphrase);
             recipient = this.getRecipient(params);
 
@@ -468,7 +468,7 @@ export default class AttestationHandler implements IAttestation {
 
     public revokeAttestationUnchecked = async (url: string, params: RevokeAttestationUncheckedParams): Promise<AttestationResponse> => {
         try {
-            const response = await this.revokeAttestation(url, params, EntityType.LEAF, true);
+            const response = await this.revokeAttestation(url, params, EntityType.LEAF, false);
             return Promise.resolve({ transactionId: response.fullHash });
         } catch (error) {
             return Promise.reject(Helper.getError(error));
