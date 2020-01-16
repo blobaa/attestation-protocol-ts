@@ -63,7 +63,7 @@ export default class DataHandler implements IData {
         await this.checkSignedDataObject(url, params.signedData, signedDataCheckCallback, forTestnet);
         const trustChainResponse = await this.parseTrustChain(url, params.signedData, params.trustedRootAccount, entityCheckCallback);
 
-        return Promise.resolve({ activeRootAccount: trustChainResponse.activeRoot, verifiedTrustChain: trustChainResponse.parsedChain });
+        return { activeRootAccount: trustChainResponse.activeRoot, verifiedTrustChain: trustChainResponse.parsedChain };
     }
 
     private defaultSignedDataCb = (): boolean => true;
@@ -163,7 +163,7 @@ export default class DataHandler implements IData {
                 code: ErrorCode.TRUSTED_ROOT_NOT_FOUND,
                 description: "Trusted root not found. Your specified trusted root account '" + trustedRoot + "' could not be found."
             });
-        return Promise.resolve({ activeRoot: verificationPath[verificationPath.length - 1], parsedChain: verificationPath });
+        return { activeRoot: verificationPath[verificationPath.length - 1], parsedChain: verificationPath };
     }
 
     private setTrustPath = (signedData: SignedData): string[] => {
