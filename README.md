@@ -72,9 +72,20 @@ npm run fix-lint
 
 For **unit testing** run the following associated commands
 
-- browser: `npm run test-browser`
-- node: `npm run test-node`
-- both: `npm test`
+browser:
+```
+npm run test-browser
+```
+
+node: 
+```
+npm run test-node
+```
+
+both: 
+```
+npm test
+```
 
 
 ## General
