@@ -60,7 +60,7 @@ const config = {
             secret: 'somehow haunt memory forever pull mouth stage sink depress couch desperate waste'
         }
     }
-}
+};
 
 
 export default config;
