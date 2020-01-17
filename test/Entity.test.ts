@@ -30,7 +30,7 @@ if (config.test.entityModule.runTests) {
                 expect(params.setter).toBe(config.account.alice.address);
                 expect(params.property).toBe('ap://test-context');
 
-                return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
             };
 
             const testEntity = new Entity(new RequestMock(getAccountPropertyCallback));
@@ -46,7 +46,7 @@ if (config.test.entityModule.runTests) {
             expect(response.attestationContext).toBe('ap://test-context');
             expect(response.entityType).toBe(EntityType.ROOT);
             expect(response.payload).toBe('test-root-payload');
-            expect(response.protocolVersion).toBe('001');
+            expect(response.protocolVersion).toBe('200');
             expect(response.redirectAccount).toBe('0000-0000-0000-00000');
             expect(response.state).toBe(State.ACTIVE);
         });
@@ -58,7 +58,7 @@ if (config.test.entityModule.runTests) {
                 expect(params.setter).toBe(config.account.alice.address);
                 expect(params.property).toBe('ap://test-context');
 
-                return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
             };
 
             const testEntity = new Entity(new RequestMock(getAccountPropertyCallback));
@@ -75,7 +75,7 @@ if (config.test.entityModule.runTests) {
             expect(response.attestationContext).toBe('ap://test-context');
             expect(response.entityType).toBe(EntityType.ROOT);
             expect(response.payload).toBe('test-root-payload');
-            expect(response.protocolVersion).toBe('001');
+            expect(response.protocolVersion).toBe('200');
             expect(response.redirectAccount).toBe('0000-0000-0000-00000');
             expect(response.state).toBe(State.ACTIVE);
         });
@@ -114,7 +114,7 @@ if (config.test.entityModule.runTests) {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.property).toBe('ap://test-context');
 
-                return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
             };
 
             const testEntity = new Entity(new RequestMock(getAccountPropertyCallback));

@@ -17,7 +17,9 @@
 
 import { Error, ErrorCode } from "../src/types";
 
-export const PROTOCOL_VERSION = "001";
+export const PROTOCOL_VERSION_LENGTH = 3;
+export const PROTOCOL_VERSION = "200";
+export const PROTOCOL_VERSION_MIN = "200";
 
 export const DATA_FIELD_SEPARATOR = "|";
 export const PROTOCOL_IDENTIFIER = "ap://";

@@ -40,7 +40,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-leaf-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|l|a|0000-0000-0000-00000|test-leaf-payload' };
                 }
 
                 if (propCnt === 1) {
@@ -49,7 +49,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|a|0000-0000-0000-00000|test-intermediate-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|i|a|0000-0000-0000-00000|test-intermediate-payload' };
                 }
 
                 if (propCnt === 2) {
@@ -58,7 +58,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|a|0000-0000-0000-00000|test-intermediate-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|i|a|0000-0000-0000-00000|test-intermediate-payload' };
                 }
 
                 if (propCnt === 3) {
@@ -67,7 +67,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|a|0000-0000-0000-00000|test-intermediate-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|i|a|0000-0000-0000-00000|test-intermediate-payload' };
                 }
 
                 if (propCnt === 4) {
@@ -76,7 +76,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
                 }
 
 
@@ -117,7 +117,7 @@ if (config.test.dataModule.runTests) {
                     expect(entity.entityType).toBe(EntityType.LEAF);
                     expect(entity.state).toBe(State.ACTIVE);
                     expect(entity.payload).toBe("test-leaf-payload");
-                    expect(entity.protocolVersion).toBe("001");
+                    expect(entity.protocolVersion).toBe("200");
 
                     entCnt++;
                     return true;
@@ -205,7 +205,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-leaf-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|l|a|0000-0000-0000-00000|test-leaf-payload' };
                 }
 
                 if (propCnt === 1) {
@@ -214,7 +214,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
                 }
 
 
@@ -302,7 +302,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|a|0000-0000-0000-00000|test-intermediate-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|i|a|0000-0000-0000-00000|test-intermediate-payload' };
                 }
 
                 if (propCnt === 1) {
@@ -311,7 +311,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
                 }
 
 
@@ -399,7 +399,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
                 }
 
                 fail('should not reach here');
@@ -492,7 +492,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-leaf-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|l|a|0000-0000-0000-00000|test-leaf-payload' };
                 }
 
                 if (propCnt === 1) {
@@ -501,7 +501,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
                 }
 
 
@@ -549,7 +549,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-leaf-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|l|a|0000-0000-0000-00000|test-leaf-payload' };
                 }
 
                 if (propCnt === 1) {
@@ -558,7 +558,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|l|a|0000-0000-0000-00000|test-root-payload' };
                 }
 
 
@@ -724,7 +724,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-intermediate-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|l|a|0000-0000-0000-00000|test-intermediate-payload' };
                 }
 
 
@@ -783,7 +783,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-leaf-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|l|a|0000-0000-0000-00000|test-leaf-payload' };
                 }
 
                 if (propCnt === 1) {
@@ -792,7 +792,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|d|' + config.account.charlie.address.substring("ARDOR-".length) + '|test-intermediate-deprecated-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|i|d|' + config.account.charlie.address.substring("ARDOR-".length) + '|test-intermediate-deprecated-payload' };
                 }
 
                 if (propCnt === 2) {
@@ -801,7 +801,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|a|0000-0000-0000-00000|test-intermediate-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|i|a|0000-0000-0000-00000|test-intermediate-payload' };
                 }
 
                 if (propCnt === 3) {
@@ -810,7 +810,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|d|' + config.account.alice.address.substring("ARDOR-".length) + '|test-root-deprecated-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|r|d|' + config.account.alice.address.substring("ARDOR-".length) + '|test-root-deprecated-payload' };
                 }
 
                 if (propCnt === 4) {
@@ -819,7 +819,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
                 }
 
 
@@ -931,7 +931,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-leaf-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|l|a|0000-0000-0000-00000|test-leaf-payload' };
                 }
 
                 if (propCnt === 1) {
@@ -940,7 +940,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|d|' + config.account.david.address.substring("ARDOR-".length) + '|test-intermediate-deprecated-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|i|d|' + config.account.david.address.substring("ARDOR-".length) + '|test-intermediate-deprecated-payload' };
                 }
 
                 if (propCnt === 2) {
@@ -949,7 +949,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|d|' + config.account.charlie.address.substring("ARDOR-".length) + '|test-intermediate-deprecated-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|i|d|' + config.account.charlie.address.substring("ARDOR-".length) + '|test-intermediate-deprecated-payload' };
                 }
 
                 if (propCnt === 3) {
@@ -958,7 +958,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|d|' + config.account.bob.address.substring("ARDOR-".length) + '|test-intermediate-deprecated-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|i|d|' + config.account.bob.address.substring("ARDOR-".length) + '|test-intermediate-deprecated-payload' };
                 }
 
                 if (propCnt === 4) {
@@ -967,7 +967,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|a|0000-0000-0000-00000|test-intermediate-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|i|a|0000-0000-0000-00000|test-intermediate-payload' };
                 }
 
                 if (propCnt === 5) {
@@ -976,7 +976,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
                 }
 
 
@@ -1095,16 +1095,16 @@ if (config.test.dataModule.runTests) {
 
                 if (propCnt === 0) {
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-leaf-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|l|a|0000-0000-0000-00000|test-leaf-payload' };
                 } else {
                     if (propCnt % 2 === 1) {
                         propCnt++;
-                        return { context: 'ap://test-context', dataFieldsString: '001|r|d|' + config.account.alice.address.substring("ARDOR-".length) + '|test-root-bob-payload' };
+                        return { context: 'ap://test-context', dataFieldsString: '200|r|d|' + config.account.alice.address.substring("ARDOR-".length) + '|test-root-bob-payload' };
                     }
 
                     if (propCnt %2 === 0) {
                         propCnt++;
-                        return { context: 'ap://test-context', dataFieldsString: '001|r|d|' + config.account.bob.address.substring("ARDOR-".length) + '|test-leaf-alice-payload' };
+                        return { context: 'ap://test-context', dataFieldsString: '200|r|d|' + config.account.bob.address.substring("ARDOR-".length) + '|test-leaf-alice-payload' };
                     }
                 }
 
@@ -1150,7 +1150,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-leaf-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|l|a|0000-0000-0000-00000|test-leaf-payload' };
                 }
 
                 if (propCnt === 1) {
@@ -1159,7 +1159,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
                 }
 
 
@@ -1205,7 +1205,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-leaf-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|l|a|0000-0000-0000-00000|test-leaf-payload' };
                 }
 
                 if (propCnt === 1) {
@@ -1214,7 +1214,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|d|' + config.account.alice.address.substring("ARDOR-".length) + '|test-root-deprecated-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|r|d|' + config.account.alice.address.substring("ARDOR-".length) + '|test-root-deprecated-payload' };
                 }
 
                 if (propCnt === 2) {
@@ -1223,7 +1223,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
                 }
 
 
@@ -1267,7 +1267,7 @@ if (config.test.dataModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|d|' + config.account.alice.address.substring("ARDOR-".length) + '|test-leaf-deprecated-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: '200|l|d|' + config.account.alice.address.substring("ARDOR-".length) + '|test-leaf-deprecated-payload' };
                 }
 
                 fail('should not reach here');
