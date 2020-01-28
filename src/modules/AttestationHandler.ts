@@ -48,7 +48,7 @@ export default class AttestationHandler implements IAttestation {
 
         if (runChecks) {
             const myAccount = account.convertPassphraseToAccountRs(params.passphrase);
-            const attestorAccount = (params.myAttestorAccount && params.myAttestorAccount) || myAccount;
+            const attestorAccount = params.myAttestorAccount || myAccount;
 
             if (this.isNotRootAttestation(params)) {
                 if (myAccount === this.getRecipient(params)) {
@@ -191,7 +191,7 @@ export default class AttestationHandler implements IAttestation {
         if (params.newState) isStateUpdate = true;
 
         const myAccount = account.convertPassphraseToAccountRs(params.passphrase);
-        const attestorAccount = (params.myAttestorAccount && params.myAttestorAccount) || myAccount;
+        const attestorAccount = params.myAttestorAccount || myAccount;
         const attestationContext = ownDataFields.setAttestationContext(params.attestationContext);
 
         await this.checkOwnEntityAndState(url, myAccount, attestorAccount, attestationContext, ownDataFields, isStateUpdate, entity);
@@ -352,7 +352,7 @@ export default class AttestationHandler implements IAttestation {
     private revokeAttestation = async (url: string, params: objectAny, entityType: EntityType, runChecks = true): Promise<DeleteAccountPropertyResponse> => {
         const dataFields = new DataFields();
         dataFields.attestationContext = params.attestationContext;
-        let recipient = (params.account && params.account) || "";
+        let recipient = params.account || "";
 
 
         if (runChecks) {

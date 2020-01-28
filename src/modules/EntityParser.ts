@@ -38,7 +38,7 @@ export default class EntityParser implements IEntity {
             const dataFields = new DataFields();
             dataFields.attestationContext = params.attestationContext;
 
-            const attestor = (params.attestor && params.attestor) || params.account;
+            const attestor = params.attestor || params.account;
             const response = await this.request.getAccountProperties(url, {
                     setter: attestor,
                     recipient: params.account,

@@ -58,8 +58,8 @@ export default class DataHandler implements IData {
 
 
     public verifySignedData = async (url: string, params: VerifySignedDataParams, forTestnet = false): Promise<VerifySignedDataResponse> => {
-        const signedDataCheckCallback = (params.signedDataCheckCallback && params.signedDataCheckCallback) || this.defaultSignedDataCb;
-        const entityCheckCallback = (params.entityCheckCallback && params.entityCheckCallback) || this.defaultEntityCb;
+        const signedDataCheckCallback = params.signedDataCheckCallback || this.defaultSignedDataCb;
+        const entityCheckCallback = params.entityCheckCallback || this.defaultEntityCb;
 
         await this.checkSignedDataObject(url, params.signedData, signedDataCheckCallback, forTestnet);
         const trustChainResponse = await this.parseTrustChain(url, params.signedData, params.trustedRootAccount, entityCheckCallback);
