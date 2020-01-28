@@ -59,7 +59,8 @@ const config = {
             address: 'ARDOR-568B-CVYX-LQUN-GT6KG',
             secret: 'somehow haunt memory forever pull mouth stage sink depress couch desperate waste'
         }
-    }
+    },
+    protocolVersion: '200'
 };
 
 

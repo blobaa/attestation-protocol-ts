@@ -76,7 +76,7 @@ if (config.test.attestationModule.runTests) {
                 expect(params.secretPhrase).toBe(config.account.alice.secret);
                 expect(params.recipient).toBe(config.account.alice.address);
                 expect(params.property).toBe('ap://test-context');
-                expect(params.value).toBe('200|r|a|0000-0000-0000-00000|test-root-payload');
+                expect(params.value).toBe(config.protocolVersion + '|r|a|0000-0000-0000-00000|test-root-payload');
             };
 
             const testAttestation = new Attestation(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback));
@@ -104,7 +104,7 @@ if (config.test.attestationModule.runTests) {
                 expect(params.secretPhrase).toBe(config.account.alice.secret);
                 expect(params.recipient).toBe(config.account.alice.address);
                 expect(params.property).toBe('ap://test-context');
-                expect(params.value).toBe('200|r|a|0000-0000-0000-00000|test-root-payload');
+                expect(params.value).toBe(config.protocolVersion + '|r|a|0000-0000-0000-00000|test-root-payload');
             };
 
             const testAttestation = new Attestation(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback));
@@ -186,7 +186,7 @@ if (config.test.attestationModule.runTests) {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.recipient).toBe(config.account.alice.address);
                 expect(params.setter).toBe(config.account.alice.address);
-                return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
+                return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|r|a|0000-0000-0000-00000|test-root-payload' };
             };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
@@ -194,7 +194,7 @@ if (config.test.attestationModule.runTests) {
                 expect(params.secretPhrase).toBe(config.account.alice.secret);
                 expect(params.recipient).toBe(config.account.bob.address);
                 expect(params.property).toBe('ap://test-context');
-                expect(params.value).toBe('200|i|a|0000-0000-0000-00000|test-intermediate-payload');
+                expect(params.value).toBe(config.protocolVersion + '|i|a|0000-0000-0000-00000|test-intermediate-payload');
             };
 
             const testAttestation = new Attestation(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback));
@@ -216,13 +216,13 @@ if (config.test.attestationModule.runTests) {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.recipient).toBe(config.account.alice.address);
                 expect(params.setter).toBe(config.account.alice.address);
-                return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test|root|payload' };
+                return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|r|a|0000-0000-0000-00000|test|root|payload' };
             };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
                 expect(params.recipient).toBe(config.account.bob.address);
                 expect(params.property).toBe('ap://test-context');
-                expect(params.value).toBe('200|i|a|0000-0000-0000-00000|test|intermediate|payload');
+                expect(params.value).toBe(config.protocolVersion + '|i|a|0000-0000-0000-00000|test|intermediate|payload');
             };
 
             const testAttestation = new Attestation(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback));
@@ -244,13 +244,13 @@ if (config.test.attestationModule.runTests) {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.recipient).toBe(config.account.bob.address);
                 expect(params.setter).toBe(config.account.alice.address);
-                return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
+                return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|r|a|0000-0000-0000-00000|test-root-payload' };
             };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
                 expect(params.recipient).toBe(config.account.charlie.address);
                 expect(params.property).toBe('ap://test-context');
-                expect(params.value).toBe('200|i|a|0000-0000-0000-00000|test-intermediate-payload');
+                expect(params.value).toBe(config.protocolVersion + '|i|a|0000-0000-0000-00000|test-intermediate-payload');
             };
 
             const testAttestation = new Attestation(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback));
@@ -280,7 +280,7 @@ if (config.test.attestationModule.runTests) {
                 expect(params.secretPhrase).toBe(config.account.bob.secret);
                 expect(params.recipient).toBe(config.account.charlie.address);
                 expect(params.property).toBe('ap://test-context');
-                expect(params.value).toBe('200|i|a|0000-0000-0000-00000|test-intermediate-payload');
+                expect(params.value).toBe(config.protocolVersion + '|i|a|0000-0000-0000-00000|test-intermediate-payload');
             };
 
             const testAttestation = new Attestation(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback));
@@ -333,7 +333,7 @@ if (config.test.attestationModule.runTests) {
         test('createIntermediateAttestation wrong number of data fields error', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.recipient).toBe(config.account.alice.address);
-                return { context: 'ap://test-context', dataFieldsString: '200|i|0000-0000-0000-00000|test-intermediate-payload' };
+                return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|i|0000-0000-0000-00000|test-intermediate-payload' };
             };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
@@ -392,7 +392,7 @@ if (config.test.attestationModule.runTests) {
         });
 
 
-        test('createIntermediateAttestation wrong major version error', async () => {
+        test('createIntermediateAttestation wrong version error', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.recipient).toBe(config.account.alice.address);
                 return { context: 'ap://test-context', dataFieldsString: '300|i|a|0000-0000-0000-00000|test-intermediate-payload' };
@@ -423,72 +423,11 @@ if (config.test.attestationModule.runTests) {
         });
 
 
-        test('createIntermediateAttestation wrong minor version', async () => {
-            const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
-                expect(params.recipient).toBe(config.account.alice.address);
-                return { context: 'ap://test-context', dataFieldsString: '2Z0|i|a|0000-0000-0000-00000|test-intermediate-payload' };
-            };
-
-            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
-                fail('should not reach here');
-            };
-
-            const testAttestation = new Attestation(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback));
-
-
-            const attestationParams: CreateIntermediateAttestationParams = {
-                passphrase: config.account.alice.secret,
-                payload: "test-intermediate-payload",
-                attestationContext: "test-context",
-                intermediateAccount: config.account.bob.address
-            };
-
-            try {
-                await testAttestation.createIntermediateAttestation(config.node.url.testnet, attestationParams);
-                fail('should not reach here');
-            } catch (e) {
-                const error = e as Error;
-                expect(error.code).toBe(ErrorCode.WRONG_VERSION);
-                expect(error.description).toBeDefined();
-            }
-        });
-
-
-        test('createIntermediateAttestation wrong patch version', async () => {
-            const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
-                expect(params.recipient).toBe(config.account.alice.address);
-                return { context: 'ap://test-context', dataFieldsString: '20Z|i|a|0000-0000-0000-00000|test-intermediate-payload' };
-            };
-
-            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
-                fail('should not reach here');
-            };
-
-            const testAttestation = new Attestation(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback));
-
-
-            const attestationParams: CreateIntermediateAttestationParams = {
-                passphrase: config.account.alice.secret,
-                payload: "test-intermediate-payload",
-                attestationContext: "test-context",
-                intermediateAccount: config.account.bob.address
-            };
-
-            try {
-                await testAttestation.createIntermediateAttestation(config.node.url.testnet, attestationParams);
-                fail('should not reach here');
-            } catch (e) {
-                const error = e as Error;
-                expect(error.code).toBe(ErrorCode.WRONG_VERSION);
-                expect(error.description).toBeDefined();
-            }
-        });
-
 
         test('createIntermediateAttestation wrong entity type length error', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.recipient).toBe(config.account.alice.address);
-                return { context: 'ap://test-context', dataFieldsString: '200|ie|a|0000-0000-0000-00000|test-intermediate-payload' };
+                return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|ie|a|0000-0000-0000-00000|test-intermediate-payload' };
             };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
@@ -519,7 +458,7 @@ if (config.test.attestationModule.runTests) {
         test('createIntermediateAttestation unknown entity type error', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.recipient).toBe(config.account.alice.address);
-                return { context: 'ap://test-context', dataFieldsString: '200|b|a|0000-0000-0000-00000|test-intermediate-payload' };
+                return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|b|a|0000-0000-0000-00000|test-intermediate-payload' };
             };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
@@ -550,7 +489,7 @@ if (config.test.attestationModule.runTests) {
         test('createIntermediateAttestation wrong state type length error', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.recipient).toBe(config.account.alice.address);
-                return { context: 'ap://test-context', dataFieldsString: '200|i|ai|0000-0000-0000-00000|test-intermediate-payload' };
+                return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|i|ai|0000-0000-0000-00000|test-intermediate-payload' };
             };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
@@ -581,7 +520,7 @@ if (config.test.attestationModule.runTests) {
         test('createIntermediateAttestation unknown state type error', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.recipient).toBe(config.account.alice.address);
-                return { context: 'ap://test-context', dataFieldsString: '200|i|z|0000-0000-0000-00000|test-intermediate-payload' };
+                return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|i|z|0000-0000-0000-00000|test-intermediate-payload' };
             };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
@@ -612,7 +551,7 @@ if (config.test.attestationModule.runTests) {
         test('createIntermediateAttestation wrong redirect account length error', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.recipient).toBe(config.account.alice.address);
-                return { context: 'ap://test-context', dataFieldsString: '200|i|a|0000-0000-0000-000000|test-intermediate-payload' };
+                return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|i|a|0000-0000-0000-000000|test-intermediate-payload' };
             };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
@@ -643,7 +582,7 @@ if (config.test.attestationModule.runTests) {
         test('createIntermediateAttestation invalid redirect account error', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.recipient).toBe(config.account.alice.address);
-                return { context: 'ap://test-context', dataFieldsString: '200|i|a|000O-0000-0000-00000|test-intermediate-payload' };
+                return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|i|a|000O-0000-0000-00000|test-intermediate-payload' };
             };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
@@ -674,7 +613,7 @@ if (config.test.attestationModule.runTests) {
         test('createIntermediateAttestation attestation not allowed error', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.recipient).toBe(config.account.alice.address);
-                return { context: 'ap://test-context', dataFieldsString: '200|l|a|0000-0000-0000-00000|test-intermediate-payload' };
+                return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|l|a|0000-0000-0000-00000|test-intermediate-payload' };
             };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
@@ -705,7 +644,7 @@ if (config.test.attestationModule.runTests) {
         test('createIntermediateAttestation entity not active error', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.recipient).toBe(config.account.alice.address);
-                return { context: 'ap://test-context', dataFieldsString: '200|i|i|0000-0000-0000-00000|test-intermediate-payload' };
+                return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|i|i|0000-0000-0000-00000|test-intermediate-payload' };
             };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
@@ -767,7 +706,7 @@ if (config.test.attestationModule.runTests) {
         test('createLeafAttestation success', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.recipient).toBe(config.account.bob.address);
-                return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
+                return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|r|a|0000-0000-0000-00000|test-root-payload' };
             };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
@@ -775,7 +714,7 @@ if (config.test.attestationModule.runTests) {
                 expect(params.secretPhrase).toBe(config.account.bob.secret);
                 expect(params.recipient).toBe(config.account.charlie.address);
                 expect(params.property).toBe('ap://test-context');
-                expect(params.value).toBe('200|l|a|0000-0000-0000-00000|test-leaf-payload');
+                expect(params.value).toBe(config.protocolVersion + '|l|a|0000-0000-0000-00000|test-leaf-payload');
             };
 
             const testAttestation = new Attestation(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback));
@@ -796,7 +735,7 @@ if (config.test.attestationModule.runTests) {
         test('updateRootAttestation new state and payload success', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.recipient).toBe(config.account.alice.address);
-                return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
+                return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|r|a|0000-0000-0000-00000|test-root-payload' };
             };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
@@ -804,7 +743,7 @@ if (config.test.attestationModule.runTests) {
                 expect(params.secretPhrase).toBe(config.account.alice.secret);
                 expect(params.recipient).toBe(config.account.alice.address);
                 expect(params.property).toBe('ap://test-context');
-                expect(params.value).toBe('200|r|i|0000-0000-0000-00000|test-new-payload');
+                expect(params.value).toBe(config.protocolVersion + '|r|i|0000-0000-0000-00000|test-new-payload');
             };
 
             const testAttestation = new Attestation(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback));
@@ -825,7 +764,7 @@ if (config.test.attestationModule.runTests) {
         test('updateRootAttestation inactive to active success', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.recipient).toBe(config.account.alice.address);
-                return { context: 'ap://test-context', dataFieldsString: '200|r|i|0000-0000-0000-00000|test-root-payload' };
+                return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|r|i|0000-0000-0000-00000|test-root-payload' };
             };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
@@ -833,7 +772,7 @@ if (config.test.attestationModule.runTests) {
                 expect(params.secretPhrase).toBe(config.account.alice.secret);
                 expect(params.recipient).toBe(config.account.alice.address);
                 expect(params.property).toBe('ap://test-context');
-                expect(params.value).toBe('200|r|a|0000-0000-0000-00000|test-root-payload');
+                expect(params.value).toBe(config.protocolVersion + '|r|a|0000-0000-0000-00000|test-root-payload');
             };
 
             const testAttestation = new Attestation(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback));
@@ -853,7 +792,7 @@ if (config.test.attestationModule.runTests) {
         test('updateRootAttestation same state error', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.recipient).toBe(config.account.alice.address);
-                return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
+                return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|r|a|0000-0000-0000-00000|test-root-payload' };
             };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
@@ -883,7 +822,7 @@ if (config.test.attestationModule.runTests) {
         test('updateRootAttestation same payload error', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.recipient).toBe(config.account.alice.address);
-                return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
+                return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|r|a|0000-0000-0000-00000|test-root-payload' };
             };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
@@ -913,7 +852,7 @@ if (config.test.attestationModule.runTests) {
         test('updateRootAttestation attestation not allowed error', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 expect(params.recipient).toBe(config.account.alice.address);
-                return { context: 'ap://test-context', dataFieldsString: '200|i|a|0000-0000-0000-00000|test-root-payload' };
+                return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|i|a|0000-0000-0000-00000|test-root-payload' };
             };
 
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
@@ -944,7 +883,7 @@ if (config.test.attestationModule.runTests) {
         test('updateRootAttestation deprecation success', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 if (params.recipient === config.account.alice.address) {
-                    return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|r|a|0000-0000-0000-00000|test-root-payload' };
                 }
 
                 if (params.recipient === config.account.bob.address) {
@@ -960,13 +899,13 @@ if (config.test.attestationModule.runTests) {
                     expect(params.chain).toBe(ChainId.IGNIS);
                     expect(params.secretPhrase).toBe(config.account.alice.secret);
                     expect(params.property).toBe('ap://test-context');
-                    expect(params.value).toBe('200|r|d|' + config.account.bob.address.substring("ARDOR-".length) + '|test-root-payload');
+                    expect(params.value).toBe(config.protocolVersion + '|r|d|' + config.account.bob.address.substring("ARDOR-".length) + '|test-root-payload');
                     return;
                 }
 
                 if (params.recipient === config.account.bob.address) {
                     expect(params.property).toBe('ap://test-context');
-                    expect(params.value).toBe('200|r|a|0000-0000-0000-00000|test-new-payload');
+                    expect(params.value).toBe(config.protocolVersion + '|r|a|0000-0000-0000-00000|test-new-payload');
                     return;
                 }
 
@@ -991,11 +930,11 @@ if (config.test.attestationModule.runTests) {
         test('updateRootAttestation deprecation context already set error', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 if (params.recipient === config.account.alice.address) {
-                    return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|r|a|0000-0000-0000-00000|test-root-payload' };
                 }
 
                 if (params.recipient === config.account.bob.address) {
-                    return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|r|a|0000-0000-0000-00000|test-root-payload' };
                 }
 
                 fail('should not reach here');
@@ -1031,11 +970,11 @@ if (config.test.attestationModule.runTests) {
                 expect(params.property).toBe('ap://test-context');
 
                 if (params.recipient === config.account.alice.address) {
-                    return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|r|a|0000-0000-0000-00000|test-root-payload' };
                 }
 
                 if (params.recipient === config.account.bob.address) {
-                    return { context: 'ap://test-context', dataFieldsString: '200|i|a|0000-0000-0000-00000|test-intermediate-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|i|a|0000-0000-0000-00000|test-intermediate-payload' };
                 }
 
                 if (params.recipient === config.account.charlie.address) {
@@ -1049,13 +988,13 @@ if (config.test.attestationModule.runTests) {
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
                 if (params.recipient === config.account.bob.address) {
                     expect(params.property).toBe('ap://test-context');
-                    expect(params.value).toBe('200|i|d|' + config.account.charlie.address.substring("ARDOR-".length) + '|test-intermediate-payload');
+                    expect(params.value).toBe(config.protocolVersion + '|i|d|' + config.account.charlie.address.substring("ARDOR-".length) + '|test-intermediate-payload');
                     return;
                 }
 
                 if (params.recipient === config.account.charlie.address) {
                     expect(params.property).toBe('ap://test-context');
-                    expect(params.value).toBe('200|i|a|0000-0000-0000-00000|test-new-payload');
+                    expect(params.value).toBe(config.protocolVersion + '|i|a|0000-0000-0000-00000|test-new-payload');
                     return;
                 }
 
@@ -1081,11 +1020,11 @@ if (config.test.attestationModule.runTests) {
         test('updateLeafAttestation deprecation success', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 if (params.recipient === config.account.alice.address) {
-                    return { context: 'ap://test-context', dataFieldsString: '200|i|a|0000-0000-0000-00000|test-intermediate-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|i|a|0000-0000-0000-00000|test-intermediate-payload' };
                 }
 
                 if (params.recipient === config.account.bob.address) {
-                    return { context: 'ap://test-context', dataFieldsString: '200|l|a|0000-0000-0000-00000|test-leaf-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|l|a|0000-0000-0000-00000|test-leaf-payload' };
                 }
 
                 if (params.recipient === config.account.charlie.address) {
@@ -1099,13 +1038,13 @@ if (config.test.attestationModule.runTests) {
             const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
                 if (params.recipient === config.account.bob.address) {
                     expect(params.property).toBe('ap://test-context');
-                    expect(params.value).toBe('200|l|d|' + config.account.charlie.address.substring("ARDOR-".length) + '|test-leaf-payload');
+                    expect(params.value).toBe(config.protocolVersion + '|l|d|' + config.account.charlie.address.substring("ARDOR-".length) + '|test-leaf-payload');
                     return;
                 }
 
                 if (params.recipient === config.account.charlie.address) {
                     expect(params.property).toBe('ap://test-context');
-                    expect(params.value).toBe('200|l|a|0000-0000-0000-00000|test-new-payload');
+                    expect(params.value).toBe(config.protocolVersion + '|l|a|0000-0000-0000-00000|test-new-payload');
                     return;
                 }
 
@@ -1134,7 +1073,7 @@ if (config.test.attestationModule.runTests) {
                     expect(params.property).toBe('ap://test-context');
                     expect(params.setter).toBe(config.account.alice.address);
 
-                    return { context: 'ap://test-context', dataFieldsString: '200|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|r|a|0000-0000-0000-00000|test-root-payload' };
                 }
 
                 fail('should not reach here');
@@ -1168,7 +1107,7 @@ if (config.test.attestationModule.runTests) {
         test('revokeRootAttestation entity type mismatch error', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 if (params.recipient === config.account.alice.address) {
-                    return { context: 'ap://test-context', dataFieldsString: '200|i|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|i|a|0000-0000-0000-00000|test-root-payload' };
                 }
 
                 fail('should not reach here');
@@ -1211,7 +1150,7 @@ if (config.test.attestationModule.runTests) {
                     expect(params.setter).toBe(config.account.alice.address);
                     expect(params.property).toBe('ap://test-context');
 
-                    return { context: 'ap://test-context', dataFieldsString: '200|i|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|i|a|0000-0000-0000-00000|test-root-payload' };
                 }
 
                 fail('should not reach here');
@@ -1246,7 +1185,7 @@ if (config.test.attestationModule.runTests) {
         test('revokeIntermediateAttestation self success', async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 if (params.recipient === config.account.alice.address) {
-                    return { context: 'ap://test-context', dataFieldsString: '200|i|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|i|a|0000-0000-0000-00000|test-root-payload' };
                 }
 
                 fail('should not reach here');
@@ -1283,7 +1222,7 @@ if (config.test.attestationModule.runTests) {
                     expect(params.setter).toBe(config.account.alice.address);
                     expect(params.property).toBe('ap://test-context');
 
-                    return { context: 'ap://test-context', dataFieldsString: '200|l|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: 'ap://test-context', dataFieldsString: config.protocolVersion + '|l|a|0000-0000-0000-00000|test-root-payload' };
                 }
 
                 fail('should not reach here');

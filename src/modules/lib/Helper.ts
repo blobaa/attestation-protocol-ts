@@ -128,6 +128,10 @@ export default class Helper {
                 error.description = "Too many deprecation hops. Processed too many deprecation hops for account '" + _params[0] + "'.";
                 return error;
             }
+            case ErrorCode.TRUST_CHAIN_VERSION_MISMATCH: {
+                error.description = "Trust chain version mismatch. The trust chain's version is not consistent. Should be version: '" + _params[0] + "'.";
+                return error;
+            }
             case ErrorCode.TRUSTED_ROOT_NOT_FOUND: {
                 error.description = "Trusted root not found. Your specified trusted root account '" + _params[0] + "' could not be found.";
                 return error;

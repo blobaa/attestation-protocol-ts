@@ -74,7 +74,9 @@ export enum ErrorCode {
     TOO_MANY_DEPRECATION_HOPS,          // 531
     ENTITY_MISMATCH,                    // 532
 
-    TRUSTED_ROOT_NOT_FOUND              // 533
+    TRUSTED_ROOT_NOT_FOUND,             // 533
+
+    TRUST_CHAIN_VERSION_MISMATCH        // 534
 }
 
 
@@ -203,6 +205,7 @@ export type SignedData = {
     attestationContext: string;
     creatorAccount: string;
     signature: string;
+    version: string;
 };
 
 export type SignDataParams = {

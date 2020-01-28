@@ -15,11 +15,10 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Error, ErrorCode } from "../src/types";
+import { Error, ErrorCode } from "./types";
 
 export const PROTOCOL_VERSION_LENGTH = 3;
 export const PROTOCOL_VERSION = "200";
-export const PROTOCOL_VERSION_MIN = "200";
 
 export const DATA_FIELD_SEPARATOR = "|";
 export const PROTOCOL_IDENTIFIER = "ap://";

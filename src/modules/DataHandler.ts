@@ -16,7 +16,7 @@
  */
 
 import { account, DecodeTokenParams, IRequest, Request, time } from "@somedotone/ardor-ts";
-import { ACCOUNT_PREFIX, MAX_DEPRECATION_HOPS } from "../constants";
+import { ACCOUNT_PREFIX, MAX_DEPRECATION_HOPS, PROTOCOL_VERSION } from "../constants";
 import { EntityCheckParams, EntityType, ErrorCode, IData, SignDataParams, SignedData, SignedDataCheckParams, State, VerifySignedDataParams, VerifySignedDataResponse } from "../types";
 import DataFields from "./lib/DataFields";
 import Helper from "./lib/Helper";
@@ -49,7 +49,8 @@ export default class DataHandler implements IData {
             attestationPath: (params.attestationPath && params.attestationPath) || [ creatorAccount ],
             creatorAccount,
             payload: params.payload,
-            signature: account.generateToken(tokenDataString, params.passphrase, forTestnet)
+            signature: account.generateToken(tokenDataString, params.passphrase, forTestnet),
+            version: PROTOCOL_VERSION
         };
 
         return signedData;
@@ -76,8 +77,8 @@ export default class DataHandler implements IData {
                 data: TokenData.createTokenDataString(signedData.attestationPath, signedData.attestationContext, signedData.payload),
                 token: signedData.signature
             };
-
             const tokenResponse = await this.request.decodeToken(url, params);
+
             if (!tokenResponse.valid) {
                 const _error = Helper.createError(ErrorCode.INVALID_SIGNATURE);
                 return Promise.reject(_error);
@@ -120,6 +121,7 @@ export default class DataHandler implements IData {
                 verificationPath.push(attestedAccount);
                 dataFields = await this.getAndCheckDataFields(url, attestedAccount, attestor, signedData.attestationContext, verificationParams.state);
 
+
                 if (dataFields.state === State.DEPRECATED && deprecatedEntityType === undefined) deprecatedEntityType = dataFields.entityType;
                 if (deprecatedEntityType !== undefined && deprecatedEntityType !== dataFields.entityType) {
                     const _error = Helper.createError(ErrorCode.ENTITY_MISMATCH, [ attestedAccount ]);
@@ -149,7 +151,9 @@ export default class DataHandler implements IData {
 
 
                 attestedAccount = ACCOUNT_PREFIX + dataFields.redirectAccount;
-                if (verificationParams.state === TrustPathState.END) attestor = attestedAccount;
+                if (verificationParams.state === TrustPathState.END) {
+                    attestor = attestedAccount;
+                }
 
                 deprecationHops++;
             } while (dataFields.state === State.DEPRECATED);
