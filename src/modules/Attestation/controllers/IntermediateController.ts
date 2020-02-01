@@ -1,6 +1,6 @@
 import { IRequest } from "@somedotone/ardor-ts";
-import { AttestationResponse, CreateIntermediateAttestationParams, EntityType } from "../../types";
-import CreationService from "./CreationService";
+import { AttestationResponse, CreateIntermediateAttestationParams, EntityType } from "../../../types";
+import CreationService from "../services/CreationService";
 
 
 export default class IntermediateController {
@@ -11,10 +11,9 @@ export default class IntermediateController {
         this.request = request;
     }
 
-    public async create (url: string, params: CreateIntermediateAttestationParams): Promise<AttestationResponse> {
+    public async create(url: string, params: CreateIntermediateAttestationParams): Promise<AttestationResponse> {
         const creationService = new CreationService(this.request);
-        const response = await creationService.create(url, params, EntityType.INTERMEDIATE);
-        return { transactionId: response.fullHash };
+        return await creationService.create(url, params, EntityType.INTERMEDIATE);
     }
 
     // public async update (url: string, params: UpdateIntermediateAttestationParams): Promise<AttestationResponse> {

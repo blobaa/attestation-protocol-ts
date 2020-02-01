@@ -17,12 +17,13 @@
 
 import { account, ChainId, DeleteAccountPropertyParams, DeleteAccountPropertyResponse, IRequest, Request, SetAccountPropertyParams, SetAccountPropertyResponse } from "@somedotone/ardor-ts";
 import { ACCOUNT_PREFIX } from "../../constants";
-import { AttestationResponse, CreateAttestationUncheckedParams, CreateIntermediateAttestationParams, CreateLeafAttestationParams, CreateRootAttestationParams, EntityType, ErrorCode, IAttestation, objectAny, RevokeAttestationUncheckedParams, RevokeIntermediateAttestationParams, RevokeLeafAttestationParams, RevokeRootAttestationParams, State, UpdateIntermediateAttestationParams, UpdateLeafAttestationParams, UpdateRootAttestationParams } from "../../types";
-import DataFields from "./../lib/DataFields";
-import Helper from "./../lib/Helper";
-import RootController from "./RootController";
-import IntermediateController from "./IntermediateController";
-import LeafController from "./LeafController";
+import { AttestationResponse, CreateIntermediateAttestationParams, CreateLeafAttestationParams, CreateRootAttestationParams, EntityType, ErrorCode, IAttestation, objectAny, RevokeAttestationUncheckedParams, RevokeIntermediateAttestationParams, RevokeLeafAttestationParams, RevokeRootAttestationParams, State, UpdateIntermediateAttestationParams, UpdateLeafAttestationParams, UpdateRootAttestationParams, CreateAttestationUncheckedParams } from "../../types";
+import DataFields from "../lib/DataFields";
+import Helper from "../lib/Helper";
+import IntermediateController from "./controllers/IntermediateController";
+import RootController from "./controllers/RootController";
+import LeafController from "./controllers/LeafController";
+import UncheckedController from "./controllers/UncheckedController";
 
 
 export default class AttestationHandler implements IAttestation {
@@ -35,53 +36,29 @@ export default class AttestationHandler implements IAttestation {
     }
 
 
-    public createRootAttestation = async (url: string, params: CreateRootAttestationParams): Promise<AttestationResponse> => {
+    public async createRootAttestation(url: string, params: CreateRootAttestationParams): Promise<AttestationResponse> {
         const rootController = new RootController(this.request);
         return await rootController.create(url, params);
     }
-    // public createRootAttestation = async (url: string, params: CreateRootAttestationParams): Promise<AttestationResponse> => {
-    //     const response = await this.createAttestation(url, params, EntityType.ROOT);
-    //     return { transactionId: response.fullHash };
-    // }
-
-    private createAttestation = async (url: string, params: objectAny, entityType: EntityType, runChecks = true): Promise<SetAccountPropertyResponse> => {
-        const dataFields = new DataFields();
-
-        params.payload = params.payload || "";
-        const error = dataFields.checkPayload(params.payload);
-        if (error.code !== ErrorCode.NO_ERROR) {return Promise.reject(error)}
 
 
-        if (runChecks) {
-            const myAccount = account.convertPassphraseToAccountRs(params.passphrase);
-            const attestorAccount = (params.myAttestorAccount && params.myAttestorAccount) || myAccount;
-
-            if (this.isNotRootAttestation(params)) {
-                if (myAccount === this.getRecipient(params)) {
-                    const _error = Helper.createError(ErrorCode.SELF_ATTESTATION_NOT_ALLOWED);
-                    return Promise.reject(_error);
-                }
-
-                const attestationContext = dataFields.setAttestationContext(params.attestationContext);
-                await this.checkOwnEntityAndState(url, myAccount, attestorAccount, attestationContext, new DataFields(), false, entityType);
-
-            } else {
-                 await this.checkRootAttestation(url, myAccount, attestorAccount, dataFields.setAttestationContext(params.attestationContext));
-            }
-        }
-
-
-        dataFields.attestationContext = params.attestationContext;
-        dataFields.state = State.ACTIVE;
-        dataFields.entityType = entityType;
-        dataFields.payload = params.payload;
-
-        return await this.createAttestationTransaction(url, params.passphrase, this.getRecipient(params), dataFields);
+    public async createIntermediateAttestation(url: string, params: CreateIntermediateAttestationParams): Promise<AttestationResponse> {
+        const intermediateController = new IntermediateController(this.request);
+        return await intermediateController.create(url, params);
     }
 
-    private isNotRootAttestation = (params: objectAny): boolean => {
-        return (params.intermediateAccount || params.leafAccount);
+
+    public async createLeafAttestation(url: string, params: CreateLeafAttestationParams): Promise<AttestationResponse> {
+        const leafController = new LeafController(this.request);
+        return await leafController.create(url, params);
     }
+
+
+    public async createAttestationUnchecked(url: string, params: CreateAttestationUncheckedParams): Promise<AttestationResponse> {
+        const uncheckedController = new UncheckedController(this.request);
+        return await uncheckedController.create(url, params);
+    }
+
 
     private checkOwnEntityAndState = async (url: string, myAccount: string, attestorAccount: string, attestationContext: string,
                                             dataFields: DataFields, isStateUpdate: boolean, entity: EntityType): Promise<void> => {
@@ -122,19 +99,6 @@ export default class AttestationHandler implements IAttestation {
         }
     }
 
-    private checkRootAttestation = async (url: string, myAccount: string, attestorAccount: string, attestationContext: string): Promise<void> => {
-        try {
-            const response = await this.request.getAccountProperties(url, { setter: attestorAccount, recipient: myAccount, property: attestationContext });
-            const propertyObject = response.properties[0];
-            if (propertyObject) {
-                const error = Helper.createError(ErrorCode.ATTESTATION_CONTEXT_ALREADY_SET, [myAccount, attestationContext, attestorAccount]);
-                return Promise.reject(error);
-            }
-        } catch (error) {
-            return Promise.reject(Helper.getError(error));
-        }
-    }
-
     private createAttestationTransaction = async (url: string, passphrase: string,
                                                   accountToAttest: string, dataFields: DataFields ): Promise<SetAccountPropertyResponse> => {
         const propertyRequestParams: SetAccountPropertyParams = {
@@ -156,40 +120,6 @@ export default class AttestationHandler implements IAttestation {
         if (params.intermediateAccount) {return params.intermediateAccount}
         if (params.leafAccount) {return params.leafAccount}
         return account.convertPassphraseToAccountRs(params.passphrase);
-    }
-
-
-    public createIntermediateAttestation = async (url: string, params: CreateIntermediateAttestationParams): Promise<AttestationResponse> => {
-        const intermediateController = new IntermediateController(this.request);
-        return await intermediateController.create(url, params);
-    }
-    // public createIntermediateAttestation = async (url: string, params: CreateIntermediateAttestationParams): Promise<AttestationResponse> => {
-    //     const response = await this.createAttestation(url, params, EntityType.INTERMEDIATE);
-    //     return { transactionId: response.fullHash };
-    // }
-
-    public createLeafAttestation = async (url: string, params: CreateLeafAttestationParams): Promise<AttestationResponse> => {
-        const leafController = new LeafController(this.request);
-        return await leafController.create(url, params);
-    }
-    // public createLeafAttestation = async (url: string, params: CreateLeafAttestationParams): Promise<AttestationResponse> => {
-    //     const response = await this.createAttestation(url, params, EntityType.LEAF);
-    //     return { transactionId: response.fullHash };
-    // }
-
-
-    public createAttestationUnchecked = async (url: string, params: CreateAttestationUncheckedParams): Promise<AttestationResponse> => {
-        const _params = { ...params } as objectAny;
-
-        if (params.entityType === EntityType.INTERMEDIATE) {_params.intermediateAccount = params.account}
-        if (params.entityType === EntityType.LEAF) {_params.leafAccount = params.account}
-
-        delete _params.account;
-        delete _params.entityType;
-
-
-        const response = await this.createAttestation(url, _params, params.entityType, false);
-        return { transactionId: response.fullHash };
     }
 
 

@@ -1,6 +1,6 @@
 import { IRequest } from "@somedotone/ardor-ts";
-import { AttestationResponse, CreateRootAttestationParams, EntityType } from "../../types";
-import CreationService from "./CreationService";
+import { AttestationResponse, CreateRootAttestationParams, EntityType } from "../../../types";
+import CreationService from "../services/CreationService";
 
 
 export default class RootController {
@@ -11,10 +11,9 @@ export default class RootController {
         this.request = request;
     }
 
-    public async create (url: string, params: CreateRootAttestationParams): Promise<AttestationResponse> {
+    public async create(url: string, params: CreateRootAttestationParams): Promise<AttestationResponse> {
         const creationService = new CreationService(this.request);
-        const response = await creationService.create(url, params, EntityType.ROOT);
-        return { transactionId: response.fullHash };
+        return await creationService.create(url, params, EntityType.ROOT);
     }
 
     // public async update (url: string, params: UpdateRootAttestationParams): Promise<AttestationResponse> {

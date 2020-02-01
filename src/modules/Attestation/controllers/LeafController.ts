@@ -1,6 +1,6 @@
 import { IRequest } from "@somedotone/ardor-ts";
-import { AttestationResponse, CreateLeafAttestationParams, EntityType } from "../../types";
-import CreationService from "./CreationService";
+import { AttestationResponse, CreateLeafAttestationParams, EntityType } from "../../../types";
+import CreationService from "../services/CreationService";
 
 
 export default class LeafController {
@@ -11,10 +11,9 @@ export default class LeafController {
         this.request = request;
     }
 
-    public async create (url: string, params: CreateLeafAttestationParams): Promise<AttestationResponse> {
+    public async create(url: string, params: CreateLeafAttestationParams): Promise<AttestationResponse> {
         const creationService = new CreationService(this.request);
-        const response = await creationService.create(url, params, EntityType.LEAF);
-        return { transactionId: response.fullHash };
+        return await creationService.create(url, params, EntityType.LEAF);
     }
 
     // public async update (url: string, params: UpdateLeafAttestationParams): Promise<AttestationResponse> {

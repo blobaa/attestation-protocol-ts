@@ -1,11 +1,10 @@
 import { account, ChainId, IRequest, SetAccountPropertyParams, SetAccountPropertyResponse } from "@somedotone/ardor-ts";
-import { AttestationResponse, CreateAttestationUncheckedParams, EntityType, ErrorCode, objectAny, State } from "../../types";
-import DataFields from "../lib/DataFields";
-import Helper from "../lib/Helper";
+import { AttestationResponse, CreateAttestationUncheckedParams, EntityType, ErrorCode, objectAny, State } from "../../../types";
+import DataFields from "../../lib/DataFields";
+import Helper from "../../lib/Helper";
 
 
 export default class CreationService {
-
     private readonly request: IRequest;
 
 
@@ -14,7 +13,7 @@ export default class CreationService {
     }
 
 
-    public async create (url: string, params: objectAny, entityType: EntityType, runChecks = true): Promise<SetAccountPropertyResponse> {
+    public async create(url: string, params: objectAny, entityType: EntityType, runChecks = true): Promise<AttestationResponse> {
         const dataFields = new DataFields();
         params.payload = params.payload || "";
 
@@ -48,14 +47,15 @@ export default class CreationService {
         dataFields.entityType = entityType;
         dataFields.payload = params.payload;
 
-        return await this.createAttestationTransaction(url, params.passphrase, this.getRecipient(params), dataFields);
+        const response = await this.createAttestationTransaction(url, params.passphrase, this.getRecipient(params), dataFields);
+        return { transactionId: response.fullHash };
     }
 
-    private isNotRootAttestation = (params: objectAny): boolean => {
+    private isNotRootAttestation(params: objectAny): boolean {
         return (params.intermediateAccount || params.leafAccount);
     }
 
-    private getRecipient = (params: objectAny): string => {
+    private getRecipient(params: objectAny): string {
         if (params.intermediateAccount) {
             return params.intermediateAccount;
         }
@@ -65,8 +65,8 @@ export default class CreationService {
         return account.convertPassphraseToAccountRs(params.passphrase);
     }
 
-    private checkOwnEntityAndState = async (url: string, myAccount: string, attestorAccount: string, attestationContext: string,
-                                            dataFields: DataFields, isStateUpdate: boolean, entity: EntityType): Promise<void> => {
+    private async checkOwnEntityAndState(url: string, myAccount: string, attestorAccount: string, attestationContext: string,
+                                            dataFields: DataFields, isStateUpdate: boolean, entity: EntityType): Promise<void> {
         try {
             dataFields.attestationContext = attestationContext;
 
@@ -106,7 +106,7 @@ export default class CreationService {
         }
     }
 
-    private isEntityPermitted = (attestorEntity: EntityType, myEntity: EntityType): boolean => {
+    private isEntityPermitted(attestorEntity: EntityType, myEntity: EntityType): boolean {
         if (myEntity === EntityType.ROOT) {
             return attestorEntity === EntityType.ROOT;
         }
@@ -119,7 +119,7 @@ export default class CreationService {
         return false;
     }
 
-    private getEntityTypeName = (entityType: EntityType): string => {
+    private getEntityTypeName(entityType: EntityType): string {
         if (entityType === EntityType.ROOT) {
             return "root";
         }
@@ -132,7 +132,7 @@ export default class CreationService {
         return "";
     }
 
-    private checkRootAttestation = async (url: string, myAccount: string, attestorAccount: string, attestationContext: string): Promise<void> => {
+    private async checkRootAttestation(url: string, myAccount: string, attestorAccount: string, attestationContext: string): Promise<void> {
         try {
             const response = await this.request.getAccountProperties(url, {
                     setter: attestorAccount,
@@ -151,8 +151,8 @@ export default class CreationService {
         }
     }
 
-    private createAttestationTransaction = async (url: string, passphrase: string,
-                                                  accountToAttest: string, dataFields: DataFields ): Promise<SetAccountPropertyResponse> => {
+    private async createAttestationTransaction(url: string, passphrase: string,
+                                                  accountToAttest: string, dataFields: DataFields ): Promise<SetAccountPropertyResponse> {
         const propertyRequestParams: SetAccountPropertyParams = {
             chain: ChainId.IGNIS,
             property: dataFields.attestationContext,
@@ -169,7 +169,7 @@ export default class CreationService {
     }
 
 
-    public createUnchecked = async (url: string, params: CreateAttestationUncheckedParams): Promise<AttestationResponse> => {
+    public async createUnchecked(url: string, params: CreateAttestationUncheckedParams): Promise<AttestationResponse> {
         const _params = { ...params } as objectAny;
 
         if (params.entityType === EntityType.INTERMEDIATE) {
@@ -182,8 +182,6 @@ export default class CreationService {
         delete _params.account;
         delete _params.entityType;
 
-
-        const response = await this.create(url, _params, params.entityType, false);
-        return { transactionId: response.fullHash };
+        return await this.create(url, _params, params.entityType, false);
     }
 }
