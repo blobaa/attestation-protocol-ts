@@ -27,77 +27,101 @@ import UncheckedController from "./controllers/UncheckedController";
 
 
 export default class AttestationHandler implements IAttestation {
-
     private request: IRequest;
+
+    private rootController: RootController;
+    private intermediateController: IntermediateController;
+    private leafController: LeafController;
+    private uncheckedController: UncheckedController;
 
 
     constructor(request = new Request()) {
         this.request = request;
+        this.rootController = new RootController(request);
+        this.intermediateController = new IntermediateController(request);
+        this.leafController = new LeafController(request);
+        this.uncheckedController = new UncheckedController(request);
     }
 
 
     public async createRootAttestation(url: string, params: CreateRootAttestationParams): Promise<AttestationResponse> {
-        const rootController = new RootController(this.request);
-        return await rootController.create(url, params);
+        return await this.rootController.create(url, params);
     }
 
 
     public async createIntermediateAttestation(url: string, params: CreateIntermediateAttestationParams): Promise<AttestationResponse> {
-        const intermediateController = new IntermediateController(this.request);
-        return await intermediateController.create(url, params);
+        return await this.intermediateController.create(url, params);
     }
 
 
     public async createLeafAttestation(url: string, params: CreateLeafAttestationParams): Promise<AttestationResponse> {
-        const leafController = new LeafController(this.request);
-        return await leafController.create(url, params);
+        return await this.leafController.create(url, params);
     }
 
 
     public async createAttestationUnchecked(url: string, params: CreateAttestationUncheckedParams): Promise<AttestationResponse> {
-        const uncheckedController = new UncheckedController(this.request);
-        return await uncheckedController.create(url, params);
+        return await this.uncheckedController.create(url, params);
     }
 
 
-    private checkOwnEntityAndState = async (url: string, myAccount: string, attestorAccount: string, attestationContext: string,
-                                            dataFields: DataFields, isStateUpdate: boolean, entity: EntityType): Promise<void> => {
-        try {
-            dataFields.attestationContext = attestationContext;
-
-            const response = await this.request.getAccountProperties(url, {
-                    setter: attestorAccount,
-                    recipient: myAccount,
-                    property: dataFields.attestationContext
-                });
-            const propertyObject = response.properties[0];
-
-            if (!propertyObject) {
-                const _error = Helper.createError(ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND, [ myAccount ]);
-                return Promise.reject(_error);
-            }
-
-            const error = dataFields.consumeDataFieldString(propertyObject.value);
-            if (error.code !== ErrorCode.NO_ERROR) {return Promise.reject(error)}
-
-            if (dataFields.entityType === EntityType.LEAF) {
-                const _error = Helper.createError(ErrorCode.ATTESTATION_NOT_ALLOWED);
-                return Promise.reject(_error);
-            }
-            if (dataFields.state !== State.ACTIVE && !isStateUpdate) {
-                const _error = Helper.createError(ErrorCode.ENTITY_NOT_ACTIVE);
-                return Promise.reject(_error);
-            }
-            if (!this.isEntityPermitted(dataFields.entityType, entity)) {
-                const entityType = this.getEntityTypeName(dataFields.entityType);
-                const entityName = this.getEntityTypeName(entity);
-                return Promise.reject(Helper.createError(ErrorCode.ATTESTATION_NOT_ALLOWED, [ entityType, entityName ]));
-            }
-
-        } catch (error) {
-            return Promise.reject(Helper.getError(error));
-        }
+    public async updateRootAttestation(url: string, params: UpdateRootAttestationParams): Promise<AttestationResponse> {
+        return await this.rootController.update(url, params);
     }
+
+
+    public async updateIntermediateAttestation(url: string, params: UpdateIntermediateAttestationParams): Promise<AttestationResponse> {
+        return await this.intermediateController.update(url, params);
+    }
+
+
+    public async updateLeafAttestation(url: string, params: UpdateLeafAttestationParams): Promise<AttestationResponse> {
+        return await this.leafController.update(url, params);
+    }
+
+
+    // public async revokeRootAttestation(url: string, params: RevokeRootAttestationParams): Promise<AttestationResponse> {
+    //    return await this.rootController.revoke(url, params);
+    // }
+
+
+    // public async revokeIntermediateAttestation(url: string, params: RevokeIntermediateAttestationParams): Promise<AttestationResponse> {
+    //     return await this.intermediateController.revoke(url, params);
+    // }
+
+
+    // public async revokeLeafAttestation(url: string, params: RevokeLeafAttestationParams): Promise<AttestationResponse> {
+    //     return await this.leafController.revoke(url, params);
+    // }
+
+
+    // public async revokeAttestationUnchecked(url: string, params: RevokeAttestationUncheckedParams): Promise<AttestationResponse> {
+    //     return await this.uncheckedController.revoke(url, params);
+    // }
+
+
+    public revokeRootAttestation = async (url: string, params: RevokeRootAttestationParams): Promise<AttestationResponse> => {
+        const response = await this.revokeAttestation(url, params, EntityType.ROOT);
+        return { transactionId: response.fullHash };
+    }
+
+
+     public revokeIntermediateAttestation = async (url: string, params: RevokeIntermediateAttestationParams): Promise<AttestationResponse> => {
+        const response = await this.revokeAttestation(url, params, EntityType.INTERMEDIATE);
+        return { transactionId: response.fullHash };
+    }
+
+
+    public revokeLeafAttestation = async (url: string, params: RevokeLeafAttestationParams): Promise<AttestationResponse> => {
+        const response = await this.revokeAttestation(url, params, EntityType.LEAF);
+        return { transactionId: response.fullHash };
+    }
+
+
+    public revokeAttestationUnchecked = async (url: string, params: RevokeAttestationUncheckedParams): Promise<AttestationResponse> => {
+        const response = await this.revokeAttestation(url, params, EntityType.LEAF, false);
+        return { transactionId: response.fullHash };
+    }
+
 
     private createAttestationTransaction = async (url: string, passphrase: string,
                                                   accountToAttest: string, dataFields: DataFields ): Promise<SetAccountPropertyResponse> => {
@@ -122,11 +146,6 @@ export default class AttestationHandler implements IAttestation {
         return account.convertPassphraseToAccountRs(params.passphrase);
     }
 
-
-    public updateRootAttestation = async (url: string, params: UpdateRootAttestationParams): Promise<AttestationResponse> => {
-        const response = await this.updateAttestation(url, params, EntityType.ROOT);
-        return { transactionId: response.fullHash };
-    }
 
     private updateAttestation = async (url: string, params: objectAny, entity: EntityType): Promise<SetAccountPropertyResponse> => {
         const ownDataFields = new DataFields();
@@ -203,6 +222,48 @@ export default class AttestationHandler implements IAttestation {
         }
     }
 
+
+    public async checkOwnEntityAndState(url: string, myAccount: string, attestorAccount: string, attestationContext: string,
+                                            dataFields: DataFields, isStateUpdate: boolean, entity: EntityType): Promise<void> {
+        try {
+            dataFields.attestationContext = attestationContext;
+
+            const response = await this.request.getAccountProperties(url, {
+                    setter: attestorAccount,
+                    recipient: myAccount,
+                    property: dataFields.attestationContext
+                });
+            const propertyObject = response.properties[0];
+
+            if (!propertyObject) {
+                const _error = Helper.createError(ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND, [ myAccount ]);
+                return Promise.reject(_error);
+            }
+
+            const error = dataFields.consumeDataFieldString(propertyObject.value);
+            if (error.code !== ErrorCode.NO_ERROR) {
+                return Promise.reject(error);
+            }
+
+            if (dataFields.entityType === EntityType.LEAF) {
+                const _error = Helper.createError(ErrorCode.ATTESTATION_NOT_ALLOWED);
+                return Promise.reject(_error);
+            }
+            if (dataFields.state !== State.ACTIVE && !isStateUpdate) {
+                const _error = Helper.createError(ErrorCode.ENTITY_NOT_ACTIVE);
+                return Promise.reject(_error);
+            }
+            if (!this.isEntityPermitted(dataFields.entityType, entity)) {
+                const entityType = this.getEntityTypeName(dataFields.entityType);
+                const entityName = this.getEntityTypeName(entity);
+                return Promise.reject(Helper.createError(ErrorCode.ATTESTATION_NOT_ALLOWED, [ entityType, entityName ]));
+            }
+
+        } catch (error) {
+            return Promise.reject(Helper.getError(error));
+        }
+    }
+
     private isEntityPermitted = (attestorEntity: EntityType, myEntity: EntityType): boolean => {
         if (myEntity === EntityType.ROOT) {return attestorEntity === EntityType.ROOT}
         if (myEntity === EntityType.INTERMEDIATE) {return (attestorEntity === EntityType.INTERMEDIATE || attestorEntity === EntityType.ROOT)}
@@ -275,23 +336,6 @@ export default class AttestationHandler implements IAttestation {
     }
 
 
-    public updateIntermediateAttestation = async (url: string, params: UpdateIntermediateAttestationParams): Promise<AttestationResponse> => {
-        const response = await this.updateAttestation(url, params, EntityType.INTERMEDIATE);
-        return { transactionId: response.fullHash };
-    }
-
-
-    public updateLeafAttestation = async (url: string, params: UpdateLeafAttestationParams): Promise<AttestationResponse> => {
-        const response = await this.updateAttestation(url, params, EntityType.LEAF);
-        return { transactionId: response.fullHash };
-    }
-
-
-    public revokeRootAttestation = async (url: string, params: RevokeRootAttestationParams): Promise<AttestationResponse> => {
-        const response = await this.revokeAttestation(url, params, EntityType.ROOT);
-        return { transactionId: response.fullHash };
-    }
-
     private revokeAttestation = async (url: string, params: objectAny, entityType: EntityType, runChecks = true): Promise<DeleteAccountPropertyResponse> => {
         const dataFields = new DataFields();
         dataFields.attestationContext = params.attestationContext;
@@ -356,20 +400,4 @@ export default class AttestationHandler implements IAttestation {
     }
 
 
-    public revokeIntermediateAttestation = async (url: string, params: RevokeIntermediateAttestationParams): Promise<AttestationResponse> => {
-        const response = await this.revokeAttestation(url, params, EntityType.INTERMEDIATE);
-        return { transactionId: response.fullHash };
-    }
-
-
-    public revokeLeafAttestation = async (url: string, params: RevokeLeafAttestationParams): Promise<AttestationResponse> => {
-        const response = await this.revokeAttestation(url, params, EntityType.LEAF);
-        return { transactionId: response.fullHash };
-    }
-
-
-    public revokeAttestationUnchecked = async (url: string, params: RevokeAttestationUncheckedParams): Promise<AttestationResponse> => {
-        const response = await this.revokeAttestation(url, params, EntityType.LEAF, false);
-        return { transactionId: response.fullHash };
-    }
 }

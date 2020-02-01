@@ -1,15 +1,18 @@
-import { account, ChainId, IRequest, SetAccountPropertyParams, SetAccountPropertyResponse } from "@somedotone/ardor-ts";
+import { account, IRequest } from "@somedotone/ardor-ts";
 import { AttestationResponse, CreateAttestationUncheckedParams, EntityType, ErrorCode, objectAny, State } from "../../../types";
 import DataFields from "../../lib/DataFields";
 import Helper from "../../lib/Helper";
+import ServiceHelper from "./utils/ServiceHelper";
 
 
 export default class CreationService {
     private readonly request: IRequest;
+    private readonly helper: ServiceHelper;
 
 
     constructor(request: IRequest) {
         this.request = request;
+        this.helper = new ServiceHelper(request);
     }
 
 
@@ -28,13 +31,13 @@ export default class CreationService {
             const attestorAccount = params.myAttestorAccount || myAccount;
 
             if (this.isNotRootAttestation(params)) {
-                if (myAccount === this.getRecipient(params)) {
+                if (myAccount === this.helper.getRecipient(params)) {
                     const _error = Helper.createError(ErrorCode.SELF_ATTESTATION_NOT_ALLOWED);
                     return Promise.reject(_error);
                 }
 
                 const attestationContext = dataFields.setAttestationContext(params.attestationContext);
-                await this.checkOwnEntityAndState(url, myAccount, attestorAccount, attestationContext, new DataFields(), false, entityType);
+                await this.helper.checkOwnEntityAndState(url, myAccount, attestorAccount, attestationContext, new DataFields(), false, entityType);
 
             } else {
                  await this.checkRootAttestation(url, myAccount, attestorAccount, dataFields.setAttestationContext(params.attestationContext));
@@ -47,7 +50,7 @@ export default class CreationService {
         dataFields.entityType = entityType;
         dataFields.payload = params.payload;
 
-        const response = await this.createAttestationTransaction(url, params.passphrase, this.getRecipient(params), dataFields);
+        const response = await this.helper.createAttestationTransaction(url, params.passphrase, this.getRecipient(params), dataFields);
         return { transactionId: response.fullHash };
     }
 
@@ -65,72 +68,6 @@ export default class CreationService {
         return account.convertPassphraseToAccountRs(params.passphrase);
     }
 
-    private async checkOwnEntityAndState(url: string, myAccount: string, attestorAccount: string, attestationContext: string,
-                                            dataFields: DataFields, isStateUpdate: boolean, entity: EntityType): Promise<void> {
-        try {
-            dataFields.attestationContext = attestationContext;
-
-            const response = await this.request.getAccountProperties(url, {
-                    setter: attestorAccount,
-                    recipient: myAccount,
-                    property: dataFields.attestationContext
-                });
-            const propertyObject = response.properties[0];
-
-            if (!propertyObject) {
-                const _error = Helper.createError(ErrorCode.ATTESTATION_CONTEXT_NOT_FOUND, [ myAccount ]);
-                return Promise.reject(_error);
-            }
-
-            const error = dataFields.consumeDataFieldString(propertyObject.value);
-            if (error.code !== ErrorCode.NO_ERROR) {
-                return Promise.reject(error);
-            }
-
-            if (dataFields.entityType === EntityType.LEAF) {
-                const _error = Helper.createError(ErrorCode.ATTESTATION_NOT_ALLOWED);
-                return Promise.reject(_error);
-            }
-            if (dataFields.state !== State.ACTIVE && !isStateUpdate) {
-                const _error = Helper.createError(ErrorCode.ENTITY_NOT_ACTIVE);
-                return Promise.reject(_error);
-            }
-            if (!this.isEntityPermitted(dataFields.entityType, entity)) {
-                const entityType = this.getEntityTypeName(dataFields.entityType);
-                const entityName = this.getEntityTypeName(entity);
-                return Promise.reject(Helper.createError(ErrorCode.ATTESTATION_NOT_ALLOWED, [ entityType, entityName ]));
-            }
-
-        } catch (error) {
-            return Promise.reject(Helper.getError(error));
-        }
-    }
-
-    private isEntityPermitted(attestorEntity: EntityType, myEntity: EntityType): boolean {
-        if (myEntity === EntityType.ROOT) {
-            return attestorEntity === EntityType.ROOT;
-        }
-        if (myEntity === EntityType.INTERMEDIATE) {
-            return (attestorEntity === EntityType.INTERMEDIATE || attestorEntity === EntityType.ROOT);
-        }
-        if (myEntity === EntityType.LEAF) {
-            return (attestorEntity === EntityType.INTERMEDIATE || attestorEntity === EntityType.ROOT);
-        }
-        return false;
-    }
-
-    private getEntityTypeName(entityType: EntityType): string {
-        if (entityType === EntityType.ROOT) {
-            return "root";
-        }
-        if (entityType === EntityType.INTERMEDIATE) {
-            return "intermediate";
-        }
-        if (entityType === EntityType.LEAF) {
-            return "leaf";
-        }
-        return "";
-    }
 
     private async checkRootAttestation(url: string, myAccount: string, attestorAccount: string, attestationContext: string): Promise<void> {
         try {
@@ -146,23 +83,6 @@ export default class CreationService {
                 return Promise.reject(error);
             }
 
-        } catch (error) {
-            return Promise.reject(Helper.getError(error));
-        }
-    }
-
-    private async createAttestationTransaction(url: string, passphrase: string,
-                                                  accountToAttest: string, dataFields: DataFields ): Promise<SetAccountPropertyResponse> {
-        const propertyRequestParams: SetAccountPropertyParams = {
-            chain: ChainId.IGNIS,
-            property: dataFields.attestationContext,
-            recipient: accountToAttest,
-            secretPhrase: passphrase,
-            value: dataFields.createDataFieldsString()
-        };
-
-        try {
-            return await this.request.setAccountProperty(url, propertyRequestParams);
         } catch (error) {
             return Promise.reject(Helper.getError(error));
         }
