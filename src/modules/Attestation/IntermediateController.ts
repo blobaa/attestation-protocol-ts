@@ -1,9 +1,9 @@
 import { IRequest } from "@somedotone/ardor-ts";
-import { AttestationResponse, CreateRootAttestationParams, EntityType } from "../../types";
+import { AttestationResponse, CreateIntermediateAttestationParams, EntityType } from "../../types";
 import CreationService from "./CreationService";
 
 
-export default class RootController {
+export default class IntermediateController {
     private readonly request: IRequest;
 
 
@@ -11,18 +11,18 @@ export default class RootController {
         this.request = request;
     }
 
-    public async create (url: string, params: CreateRootAttestationParams): Promise<AttestationResponse> {
+    public async create (url: string, params: CreateIntermediateAttestationParams): Promise<AttestationResponse> {
         const creationService = new CreationService(this.request);
-        const response = await creationService.create(url, params, EntityType.ROOT);
+        const response = await creationService.create(url, params, EntityType.INTERMEDIATE);
         return { transactionId: response.fullHash };
     }
 
-    // public async update (url: string, params: UpdateRootAttestationParams): Promise<AttestationResponse> {
+    // public async update (url: string, params: UpdateIntermediateAttestationParams): Promise<AttestationResponse> {
     //     // const response = await this.updateAttestation(url, params, EntityType.ROOT);
     //     // return { transactionId: response.fullHash };
     // }
 
-    // public async revoke (url: string, params: UpdateRootAttestationParams): Promise<AttestationResponse> {
+    // public async revoke (url: string, params: UpdateIntermediateAttestationParams): Promise<AttestationResponse> {
     //     // const response = await this.updateAttestation(url, params, EntityType.ROOT);
     //     // return { transactionId: response.fullHash };
     // }

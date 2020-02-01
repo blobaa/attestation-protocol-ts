@@ -21,6 +21,8 @@ import { AttestationResponse, CreateAttestationUncheckedParams, CreateIntermedia
 import DataFields from "./../lib/DataFields";
 import Helper from "./../lib/Helper";
 import RootController from "./RootController";
+import IntermediateController from "./IntermediateController";
+import LeafController from "./LeafController";
 
 
 export default class AttestationHandler implements IAttestation {
@@ -158,15 +160,22 @@ export default class AttestationHandler implements IAttestation {
 
 
     public createIntermediateAttestation = async (url: string, params: CreateIntermediateAttestationParams): Promise<AttestationResponse> => {
-        const response = await this.createAttestation(url, params, EntityType.INTERMEDIATE);
-        return { transactionId: response.fullHash };
+        const intermediateController = new IntermediateController(this.request);
+        return await intermediateController.create(url, params);
     }
-
+    // public createIntermediateAttestation = async (url: string, params: CreateIntermediateAttestationParams): Promise<AttestationResponse> => {
+    //     const response = await this.createAttestation(url, params, EntityType.INTERMEDIATE);
+    //     return { transactionId: response.fullHash };
+    // }
 
     public createLeafAttestation = async (url: string, params: CreateLeafAttestationParams): Promise<AttestationResponse> => {
-        const response = await this.createAttestation(url, params, EntityType.LEAF);
-        return { transactionId: response.fullHash };
+        const leafController = new LeafController(this.request);
+        return await leafController.create(url, params);
     }
+    // public createLeafAttestation = async (url: string, params: CreateLeafAttestationParams): Promise<AttestationResponse> => {
+    //     const response = await this.createAttestation(url, params, EntityType.LEAF);
+    //     return { transactionId: response.fullHash };
+    // }
 
 
     public createAttestationUnchecked = async (url: string, params: CreateAttestationUncheckedParams): Promise<AttestationResponse> => {

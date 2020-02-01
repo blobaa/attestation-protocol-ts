@@ -26,7 +26,7 @@ export default class CreationService {
 
         if (runChecks) {
             const myAccount = account.convertPassphraseToAccountRs(params.passphrase);
-            const attestorAccount = myAccount;
+            const attestorAccount = params.myAttestorAccount || myAccount;
 
             if (this.isNotRootAttestation(params)) {
                 if (myAccount === this.getRecipient(params)) {
