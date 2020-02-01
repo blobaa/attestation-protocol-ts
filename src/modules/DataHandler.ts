@@ -34,7 +34,6 @@ export default class DataHandler implements IData {
     private request: IRequest;
 
 
-
     constructor(request = new Request()) {
         this.request = request;
     }
@@ -57,8 +56,8 @@ export default class DataHandler implements IData {
 
 
     public verifySignedData = async (url: string, params: VerifySignedDataParams, forTestnet = false): Promise<VerifySignedDataResponse> => {
-        const signedDataCheckCallback = (params.signedDataCheckCallback && params.signedDataCheckCallback) || this.defaultSignedDataCb;
-        const entityCheckCallback = (params.entityCheckCallback && params.entityCheckCallback) || this.defaultEntityCb;
+        const signedDataCheckCallback = params.signedDataCheckCallback || this.defaultSignedDataCb;
+        const entityCheckCallback = params.entityCheckCallback || this.defaultEntityCb;
 
         await this.checkSignedDataObject(url, params.signedData, signedDataCheckCallback, forTestnet);
         const trustChainResponse = await this.parseTrustChain(url, params.signedData, params.trustedRootAccount, entityCheckCallback);
@@ -120,13 +119,13 @@ export default class DataHandler implements IData {
                 verificationPath.push(attestedAccount);
                 dataFields = await this.getAndCheckDataFields(url, attestedAccount, attestor, signedData.attestationContext, verificationParams.state);
 
-                if (dataFields.state === State.DEPRECATED && deprecatedEntityType === undefined) deprecatedEntityType = dataFields.entityType;
+                if (dataFields.state === State.DEPRECATED && deprecatedEntityType === undefined) {deprecatedEntityType = dataFields.entityType}
                 if (deprecatedEntityType !== undefined && deprecatedEntityType !== dataFields.entityType) {
                     const _error = Helper.createError(ErrorCode.ENTITY_MISMATCH, [ attestedAccount ]);
                     return Promise.reject(_error);
                 }
 
-                if (verificationParams.state === TrustPathState.END && attestedAccount === trustedRoot) trustedRootFound = true;
+                if (verificationParams.state === TrustPathState.END && attestedAccount === trustedRoot) {trustedRootFound = true}
 
 
                 const entity: EntityCheckParams = {
@@ -149,7 +148,7 @@ export default class DataHandler implements IData {
 
 
                 attestedAccount = ACCOUNT_PREFIX + dataFields.redirectAccount;
-                if (verificationParams.state === TrustPathState.END) attestor = attestedAccount;
+                if (verificationParams.state === TrustPathState.END) {attestor = attestedAccount}
 
                 deprecationHops++;
             } while (dataFields.state === State.DEPRECATED);
@@ -172,21 +171,21 @@ export default class DataHandler implements IData {
     }
 
     private setVerificationParameter = (trustPath: string[], counter: number): {attestor: string; attestedAccount: string; state: TrustPathState} => {
-        if (counter === trustPath.length - 1) return {
+        if (counter === trustPath.length - 1) {return {
                 attestedAccount: trustPath[counter],
                 attestor: trustPath[counter],
                 state: TrustPathState.END
-            };
-        else if (counter === 0) return {
+            };}
+        else if (counter === 0) {return {
                 attestedAccount: trustPath[counter],
                 attestor: trustPath[counter + 1],
                 state: TrustPathState.BEGIN
-            };
-        else return {
+            };}
+        else {return {
                 attestedAccount: trustPath[counter],
                 attestor: trustPath[counter + 1],
                 state: TrustPathState.ONGOING
-            };
+            };}
     }
 
     private getAndCheckDataFields = async (url: string, attestedAccount: string, attestorAccount: string,
@@ -208,7 +207,7 @@ export default class DataHandler implements IData {
             }
 
             const error = dataFields.consumeDataFieldString(propertyObject.value);
-            if (error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
+            if (error.code !== ErrorCode.NO_ERROR) {return Promise.reject(error)}
 
             if (dataFields.entityType === EntityType.LEAF && state !== TrustPathState.BEGIN) {
                 const _error = Helper.createError(ErrorCode.LEAF_ATTESTOR_NOT_ALLOWED, [ attestedAccount ]);

@@ -27,7 +27,6 @@ export default class EntityParser implements IEntity {
     private request: IRequest;
 
 
-
     constructor(request = new Request()) {
         this.request = request;
     }
@@ -38,7 +37,7 @@ export default class EntityParser implements IEntity {
             const dataFields = new DataFields();
             dataFields.attestationContext = params.attestationContext;
 
-            const attestor = (params.attestor && params.attestor) || params.account;
+            const attestor = params.attestor || params.account;
             const response = await this.request.getAccountProperties(url, {
                     setter: attestor,
                     recipient: params.account,
@@ -52,7 +51,7 @@ export default class EntityParser implements IEntity {
             }
 
             const error = dataFields.consumeDataFieldString(propertyObject.value);
-            if (error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
+            if (error.code !== ErrorCode.NO_ERROR) {return Promise.reject(error)}
 
 
             const entity: GetEntityResponse = {

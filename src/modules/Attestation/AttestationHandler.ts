@@ -16,16 +16,16 @@
  */
 
 import { account, ChainId, DeleteAccountPropertyParams, DeleteAccountPropertyResponse, IRequest, Request, SetAccountPropertyParams, SetAccountPropertyResponse } from "@somedotone/ardor-ts";
-import { ACCOUNT_PREFIX } from "../constants";
-import { AttestationResponse, CreateAttestationUncheckedParams, CreateIntermediateAttestationParams, CreateLeafAttestationParams, CreateRootAttestationParams, EntityType, ErrorCode, IAttestation, objectAny, RevokeAttestationUncheckedParams, RevokeIntermediateAttestationParams, RevokeLeafAttestationParams, RevokeRootAttestationParams, State, UpdateIntermediateAttestationParams, UpdateLeafAttestationParams, UpdateRootAttestationParams } from "../types";
-import DataFields from "./lib/DataFields";
-import Helper from "./lib/Helper";
+import { ACCOUNT_PREFIX } from "../../constants";
+import { AttestationResponse, CreateAttestationUncheckedParams, CreateIntermediateAttestationParams, CreateLeafAttestationParams, CreateRootAttestationParams, EntityType, ErrorCode, IAttestation, objectAny, RevokeAttestationUncheckedParams, RevokeIntermediateAttestationParams, RevokeLeafAttestationParams, RevokeRootAttestationParams, State, UpdateIntermediateAttestationParams, UpdateLeafAttestationParams, UpdateRootAttestationParams } from "../../types";
+import DataFields from "./../lib/DataFields";
+import Helper from "./../lib/Helper";
+import RootController from "./RootController";
 
 
 export default class AttestationHandler implements IAttestation {
 
     private request: IRequest;
-
 
 
     constructor(request = new Request()) {
@@ -34,16 +34,20 @@ export default class AttestationHandler implements IAttestation {
 
 
     public createRootAttestation = async (url: string, params: CreateRootAttestationParams): Promise<AttestationResponse> => {
-        const response = await this.createAttestation(url, params, EntityType.ROOT);
-        return { transactionId: response.fullHash };
+        const rootController = new RootController(this.request);
+        return await rootController.create(url, params);
     }
+    // public createRootAttestation = async (url: string, params: CreateRootAttestationParams): Promise<AttestationResponse> => {
+    //     const response = await this.createAttestation(url, params, EntityType.ROOT);
+    //     return { transactionId: response.fullHash };
+    // }
 
     private createAttestation = async (url: string, params: objectAny, entityType: EntityType, runChecks = true): Promise<SetAccountPropertyResponse> => {
         const dataFields = new DataFields();
 
         params.payload = params.payload || "";
         const error = dataFields.checkPayload(params.payload);
-        if (error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
+        if (error.code !== ErrorCode.NO_ERROR) {return Promise.reject(error)}
 
 
         if (runChecks) {
@@ -95,7 +99,7 @@ export default class AttestationHandler implements IAttestation {
             }
 
             const error = dataFields.consumeDataFieldString(propertyObject.value);
-            if (error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
+            if (error.code !== ErrorCode.NO_ERROR) {return Promise.reject(error)}
 
             if (dataFields.entityType === EntityType.LEAF) {
                 const _error = Helper.createError(ErrorCode.ATTESTATION_NOT_ALLOWED);
@@ -147,8 +151,8 @@ export default class AttestationHandler implements IAttestation {
     }
 
     private getRecipient = (params: objectAny): string => {
-        if (params.intermediateAccount) return params.intermediateAccount;
-        if (params.leafAccount) return params.leafAccount;
+        if (params.intermediateAccount) {return params.intermediateAccount}
+        if (params.leafAccount) {return params.leafAccount}
         return account.convertPassphraseToAccountRs(params.passphrase);
     }
 
@@ -168,8 +172,8 @@ export default class AttestationHandler implements IAttestation {
     public createAttestationUnchecked = async (url: string, params: CreateAttestationUncheckedParams): Promise<AttestationResponse> => {
         const _params = { ...params } as objectAny;
 
-        if (params.entityType === EntityType.INTERMEDIATE) _params.intermediateAccount = params.account;
-        if (params.entityType === EntityType.LEAF) _params.leafAccount = params.account;
+        if (params.entityType === EntityType.INTERMEDIATE) {_params.intermediateAccount = params.account}
+        if (params.entityType === EntityType.LEAF) {_params.leafAccount = params.account}
 
         delete _params.account;
         delete _params.entityType;
@@ -188,7 +192,7 @@ export default class AttestationHandler implements IAttestation {
     private updateAttestation = async (url: string, params: objectAny, entity: EntityType): Promise<SetAccountPropertyResponse> => {
         const ownDataFields = new DataFields();
         let isStateUpdate = false;
-        if (params.newState) isStateUpdate = true;
+        if (params.newState) {isStateUpdate = true}
 
         const myAccount = account.convertPassphraseToAccountRs(params.passphrase);
         const attestorAccount = (params.myAttestorAccount && params.myAttestorAccount) || myAccount;
@@ -223,7 +227,7 @@ export default class AttestationHandler implements IAttestation {
 
         if (params.newPayload) {
             const error = oldDataFields.checkPayload(params.newPayload);
-            if (error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
+            if (error.code !== ErrorCode.NO_ERROR) {return Promise.reject(error)}
             if (params.newPayload === oldDataFields.payload) {
                 const _error = Helper.createError(ErrorCode.PAYLOAD_ALREADY_SET);
                 return Promise.reject(_error);
@@ -261,16 +265,16 @@ export default class AttestationHandler implements IAttestation {
     }
 
     private isEntityPermitted = (attestorEntity: EntityType, myEntity: EntityType): boolean => {
-        if (myEntity === EntityType.ROOT) return attestorEntity === EntityType.ROOT;
-        if (myEntity === EntityType.INTERMEDIATE) return (attestorEntity === EntityType.INTERMEDIATE || attestorEntity === EntityType.ROOT);
-        if (myEntity === EntityType.LEAF) return (attestorEntity === EntityType.INTERMEDIATE || attestorEntity === EntityType.ROOT);
+        if (myEntity === EntityType.ROOT) {return attestorEntity === EntityType.ROOT}
+        if (myEntity === EntityType.INTERMEDIATE) {return (attestorEntity === EntityType.INTERMEDIATE || attestorEntity === EntityType.ROOT)}
+        if (myEntity === EntityType.LEAF) {return (attestorEntity === EntityType.INTERMEDIATE || attestorEntity === EntityType.ROOT)}
         return false;
     }
 
     private getEntityTypeName = (entityType: EntityType): string => {
-        if (entityType === EntityType.ROOT) return "root";
-        if (entityType === EntityType.INTERMEDIATE) return "intermediate";
-        if (entityType === EntityType.LEAF) return "leaf";
+        if (entityType === EntityType.ROOT) {return "root"}
+        if (entityType === EntityType.INTERMEDIATE) {return "intermediate"}
+        if (entityType === EntityType.LEAF) {return "leaf"}
         return "";
     }
 
@@ -292,7 +296,7 @@ export default class AttestationHandler implements IAttestation {
             }
 
             const error = dataFields.consumeDataFieldString(propertyObject.value);
-            if (error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
+            if (error.code !== ErrorCode.NO_ERROR) {return Promise.reject(error)}
 
             if (dataFields.state !== State.ACTIVE && !isStateUpdate) {
                 const _error = Helper.createError(ErrorCode.ENTITY_NOT_ACTIVE);
@@ -313,9 +317,9 @@ export default class AttestationHandler implements IAttestation {
     }
 
     private getNewRecipient = (params: objectAny): string => {
-        if (params.newIntermediateAccount) return params.newIntermediateAccount;
-        if (params.newLeafAccount) return params.newLeafAccount;
-        if (params.newRootAccount) return params.newRootAccount;
+        if (params.newIntermediateAccount) {return params.newIntermediateAccount}
+        if (params.newLeafAccount) {return params.newLeafAccount}
+        if (params.newRootAccount) {return params.newRootAccount}
         return "";
     }
 
@@ -383,7 +387,7 @@ export default class AttestationHandler implements IAttestation {
 
             const dataFields = new DataFields();
             const error = dataFields.consumeDataFieldString(propertyObject.value);
-            if (error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
+            if (error.code !== ErrorCode.NO_ERROR) {return Promise.reject(error)}
 
             if (dataFields.entityType !== entityType) {
                 const settedTypeName = this.getEntityTypeName(entityType);
