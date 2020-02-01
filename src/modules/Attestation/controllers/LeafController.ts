@@ -1,6 +1,24 @@
+/*
+ *  Copyright (C) 2019  Attila Aldemir <a_aldemir@hotmail.de>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Affero General Public License as published
+ *  by the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Affero General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Affero General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { IRequest } from "@somedotone/ardor-ts";
-import { AttestationResponse, CreateLeafAttestationParams, EntityType, UpdateLeafAttestationParams } from "../../../types";
+import { AttestationResponse, CreateLeafAttestationParams, EntityType, RevokeLeafAttestationParams, UpdateLeafAttestationParams } from "../../../types";
 import CreationService from "../services/CreationService";
+import RevocationService from "../services/RevocationService";
 import UpdateService from "../services/UpdateService";
 
 
@@ -25,8 +43,8 @@ export default class LeafController {
     }
 
 
-    // public async revoke (url: string, params: UpdateLeafAttestationParams): Promise<AttestationResponse> {
-    //     // const response = await this.updateAttestation(url, params, EntityType.ROOT);
-    //     // return { transactionId: response.fullHash };
-    // }
+    public async revoke(url: string, params: RevokeLeafAttestationParams): Promise<AttestationResponse> {
+        const revocationService = new RevocationService(this.request);
+        return await revocationService.revoke(url, params, EntityType.LEAF);
+    }
 }
