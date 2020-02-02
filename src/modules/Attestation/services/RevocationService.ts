@@ -37,23 +37,27 @@ export default class RevocationService {
     public async revoke(url: string, params: objectAny, entityType: EntityType, runChecks = true): Promise<AttestationResponse> {
         const dataFields = new DataFields();
         dataFields.attestationContext = params.attestationContext;
-        let recipient = (params.account && params.account) || "";
+        let recipient = "";
 
 
         if (runChecks) {
-            const myAccount = account.convertPassphraseToAccountRs(params.passphrase);
+            await this.checkRevokeAttestation(url, params, entityType);
             recipient = this.helper.getRecipient(params);
-            await this.checkRevokeAttestation(url, recipient, myAccount, dataFields.attestationContext, entityType);
         } else {
             recipient = params.account;
         }
 
-        const response = await this.createRevokeTransaction(url, params.passphrase, recipient, dataFields.attestationContext);
+
+        const response = await this.createRevokeTransaction(url, params, recipient);
         return { transactionId: response.fullHash };
     }
 
-    private async checkRevokeAttestation(url: string, attestedAccount: string, attestorAccount: string,
-                                            attestationContext: string, entityType: EntityType): Promise<void> {
+    private async checkRevokeAttestation(url: string, params: objectAny, entityType: EntityType): Promise<void> {
+        const attestedAccount = this.helper.getRecipient(params);
+        const attestorAccount = account.convertPassphraseToAccountRs(params.passphrase);
+        const dataFields = new DataFields();
+        const attestationContext = dataFields.setAttestationContext(params.attestationContext);
+
         try {
             const response = await this.request.getAccountProperties(url, {
                     setter: attestorAccount,
@@ -67,14 +71,15 @@ export default class RevocationService {
                 return Promise.reject(_error);
             }
 
-            const dataFields = new DataFields();
             const error = dataFields.consumeDataFieldString(propertyObject.value);
-            if (error.code !== ErrorCode.NO_ERROR) {return Promise.reject(error)}
+            if (error.code !== ErrorCode.NO_ERROR) {
+                return Promise.reject(error);
+            }
 
             if (dataFields.entityType !== entityType) {
-                const settedTypeName = this.helper.getEntityTypeName(entityType);
+                const setTypeName = this.helper.getEntityTypeName(entityType);
                 const foundTypeName = this.helper.getEntityTypeName(dataFields.entityType);
-                const _error = Helper.createError(ErrorCode.ENTITY_MISMATCH, [ settedTypeName, foundTypeName ]);
+                const _error = Helper.createError(ErrorCode.ENTITY_MISMATCH, [ setTypeName, foundTypeName ]);
                 return Promise.reject(_error);
             }
 
@@ -83,14 +88,18 @@ export default class RevocationService {
         }
     }
 
-    private async createRevokeTransaction(url: string, passphrase: string,
-                                       attestedAccount: string, attestationContext: string): Promise<DeleteAccountPropertyResponse> {
+    private async createRevokeTransaction(url: string, params: objectAny, attestedAccount: string): Promise<DeleteAccountPropertyResponse> {
+        const passphrase = params.passphrase;
+        const dataFields = new DataFields();
+        const attestationContext = dataFields.setAttestationContext(params.attestationContext);
+
         const propertyRequestParams: DeleteAccountPropertyParams = {
             chain: ChainId.IGNIS,
             property: attestationContext,
             recipient: attestedAccount,
             secretPhrase: passphrase
         };
+
         try {
             return await this.request.deleteAccountProperty(url, propertyRequestParams);
         } catch (error) {
