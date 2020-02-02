@@ -36,80 +36,48 @@ export default class UpdateService {
 
 
     public async update(url: string, params: objectAny, entity: EntityType): Promise<AttestationResponse> {
-        const ownDataFields = new DataFields();
-        let isStateUpdate = false;
-        if (params.newState) {isStateUpdate = true}
-
-        const myAccount = account.convertPassphraseToAccountRs(params.passphrase);
-        const attestorAccount = (params.myAttestorAccount && params.myAttestorAccount) || myAccount;
-        const attestationContext = ownDataFields.setAttestationContext(params.attestationContext);
-
-
-        await this.helper.checkOwnEntityAndState(url, myAccount, attestorAccount, attestationContext, ownDataFields, isStateUpdate, entity);
-
-
-        let oldDataFields = new DataFields();
-
-        if (entity !== EntityType.ROOT) {
-            const recipient = this.helper.getRecipient(params);
-            await this.checkAttestedEntityAndState(url, recipient, myAccount, ownDataFields.attestationContext, oldDataFields, isStateUpdate, entity);
-        } else {
-            oldDataFields = ownDataFields;
-        }
-
-
-        const newDataFields = new DataFields(oldDataFields);
+        const currentDataFields = await this.checkEntitiesAndGetCurrentDataFields(url, params, entity);
+        const newDataFields = new DataFields(currentDataFields);
 
         if (params.newState) {
-            if (params.newState === oldDataFields.state) {
-                const _error = Helper.createError(ErrorCode.STATE_ALREADY_SET);
-                return Promise.reject(_error);
-            }
-            if (params.newState === State.DEPRECATED) {
-                const _error = Helper.createError(ErrorCode.DEPRECATE_STATE_CANNOT_BE_SET);
-                return Promise.reject(_error);
-            }
+            await this.checkNewState(params.newState, currentDataFields.state);
             newDataFields.state = params.newState;
         }
 
         if (params.newPayload) {
-            const error = oldDataFields.checkPayload(params.newPayload);
-            if (error.code !== ErrorCode.NO_ERROR) {return Promise.reject(error)}
-            if (params.newPayload === oldDataFields.payload) {
-                const _error = Helper.createError(ErrorCode.PAYLOAD_ALREADY_SET);
-                return Promise.reject(_error);
-            }
+            await this.checkNewPayload(params.newPayload, currentDataFields.payload);
             newDataFields.payload = params.newPayload;
         }
 
 
         if (this.isDeprecationRequest(params)) {
-            const newAttestedAccount = this.getNewRecipient(params);
-
-            oldDataFields.state = State.DEPRECATED;
-            oldDataFields.redirectAccount = newAttestedAccount.substring(ACCOUNT_PREFIX.length);
-            newDataFields.state = State.ACTIVE;
-
-            await this.checkNewAttestedAccount(url, newAttestedAccount, oldDataFields.attestationContext, myAccount);
-
-
-            try {
-                const responses = await Promise.all([
-                    this.helper.createAttestationTransaction(url, params.passphrase, newAttestedAccount, newDataFields),
-                    this.helper.createAttestationTransaction(url, params.passphrase, this.helper.getRecipient(params), oldDataFields)
-                ]);
-                return { transactionId: responses[0].fullHash };
-            } catch (e) {
-                return Promise.reject(Helper.getError(e));
-            }
+            return await this.deprecateAccount(url, params, currentDataFields, newDataFields);
         } else {
-            try {
-                const response = await this.helper.createAttestationTransaction(url, params.passphrase, this.helper.getRecipient(params), newDataFields);
-                return { transactionId: response.fullHash };
-            } catch (e) {
-                return Promise.reject(Helper.getError(e));
-            }
+            return await this.updateDataFields(url, params, newDataFields);
         }
+    }
+
+    private async checkEntitiesAndGetCurrentDataFields(url: string, params: objectAny, entity: EntityType): Promise<DataFields> {
+        const ownDataFields = new DataFields();
+        const isStateUpdate = params.newState || false;
+
+        const myAccount = account.convertPassphraseToAccountRs(params.passphrase);
+        const attestorAccount = params.myAttestorAccount || myAccount;
+        const attestationContext = ownDataFields.setAttestationContext(params.attestationContext);
+
+        await this.helper.checkOwnEntityAndState(url, myAccount, attestorAccount, attestationContext, ownDataFields, isStateUpdate, entity);
+
+
+        let currentDataFields = new DataFields();
+
+        if (entity !== EntityType.ROOT) {
+            const recipient = this.helper.getRecipient(params);
+            await this.checkAttestedEntityAndState(url, recipient, myAccount, attestationContext, currentDataFields, isStateUpdate, entity);
+        } else {
+            currentDataFields = ownDataFields;
+        }
+
+        return currentDataFields;
     }
 
     private async checkAttestedEntityAndState(url: string, attestedAccount: string, attestor: string, attestationContext: string,
@@ -130,7 +98,9 @@ export default class UpdateService {
             }
 
             const error = dataFields.consumeDataFieldString(propertyObject.value);
-            if (error.code !== ErrorCode.NO_ERROR) {return Promise.reject(error)}
+            if (error.code !== ErrorCode.NO_ERROR) {
+                return Promise.reject(error);
+            }
 
             if (dataFields.state !== State.ACTIVE && !isStateUpdate) {
                 const _error = Helper.createError(ErrorCode.ENTITY_NOT_ACTIVE);
@@ -146,14 +116,65 @@ export default class UpdateService {
         }
     }
 
+    private async checkNewState(newState: State, currentState: State): Promise<void> {
+        if (newState === currentState) {
+            const _error = Helper.createError(ErrorCode.STATE_ALREADY_SET);
+            return Promise.reject(_error);
+        }
+        if (newState === State.DEPRECATED) {
+            const _error = Helper.createError(ErrorCode.DEPRECATE_STATE_CANNOT_BE_SET);
+            return Promise.reject(_error);
+        }
+    }
+
+    private async checkNewPayload(newPayload: string, currentPayload: string): Promise<void> {
+        const dataFields = new DataFields();
+        const error = dataFields.checkPayload(newPayload);
+
+        if (error.code !== ErrorCode.NO_ERROR) {
+            return Promise.reject(error);
+        }
+        if (newPayload === currentPayload) {
+            const _error = Helper.createError(ErrorCode.PAYLOAD_ALREADY_SET);
+            return Promise.reject(_error);
+        }
+    }
+
     private isDeprecationRequest(params: objectAny): boolean {
         return (params.newRootAccount || params.newIntermediateAccount || params.newLeafAccount);
     }
 
+    private async deprecateAccount(url: string, params: objectAny, currentDataFields: DataFields, newDataFields: DataFields): Promise<AttestationResponse> {
+        const newAttestedAccount = this.getNewRecipient(params);
+
+        currentDataFields.state = State.DEPRECATED;
+        currentDataFields.redirectAccount = newAttestedAccount.substring(ACCOUNT_PREFIX.length);
+        newDataFields.state = State.ACTIVE;
+        const myAccount = account.convertPassphraseToAccountRs(params.passphrase);
+        await this.checkNewAttestedAccount(url, newAttestedAccount, currentDataFields.attestationContext, myAccount);
+
+
+        try {
+            const responses = await Promise.all([
+                this.helper.createAttestationTransaction(url, params.passphrase, newAttestedAccount, newDataFields),
+                this.helper.createAttestationTransaction(url, params.passphrase, this.helper.getRecipient(params), currentDataFields)
+            ]);
+            return { transactionId: responses[0].fullHash };
+        } catch (e) {
+            return Promise.reject(Helper.getError(e));
+        }
+    }
+
     private getNewRecipient(params: objectAny): string {
-        if (params.newIntermediateAccount) {return params.newIntermediateAccount}
-        if (params.newLeafAccount) {return params.newLeafAccount}
-        if (params.newRootAccount) {return params.newRootAccount}
+        if (params.newIntermediateAccount) {
+            return params.newIntermediateAccount;
+        }
+        if (params.newLeafAccount) {
+            return params.newLeafAccount;
+        }
+        if (params.newRootAccount) {
+            return params.newRootAccount;
+        }
         return "";
     }
 
@@ -169,4 +190,12 @@ export default class UpdateService {
         }
     }
 
+    private async updateDataFields(url: string, params: objectAny, newDataFields: DataFields): Promise<AttestationResponse> {
+        try {
+            const response = await this.helper.createAttestationTransaction(url, params.passphrase, this.helper.getRecipient(params), newDataFields);
+            return { transactionId: response.fullHash };
+        } catch (e) {
+            return Promise.reject(Helper.getError(e));
+        }
+    }
 }
