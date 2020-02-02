@@ -1,4 +1,3 @@
-import { account, IRequest } from "@somedotone/ardor-ts";
 /*
  *  Copyright (C) 2019  Attila Aldemir <a_aldemir@hotmail.de>
  *
@@ -16,6 +15,7 @@ import { account, IRequest } from "@somedotone/ardor-ts";
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { account, IRequest } from "@somedotone/ardor-ts";
 import { AttestationResponse, CreateAttestationUncheckedParams, EntityType, ErrorCode, objectAny, State } from "../../../types";
 import DataFields from "../../lib/DataFields";
 import Helper from "../../lib/Helper";

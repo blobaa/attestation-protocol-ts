@@ -16,11 +16,12 @@
  */
 
 import { account, DecodeTokenParams, IRequest, Request, time } from "@somedotone/ardor-ts";
-import { ACCOUNT_PREFIX, MAX_DEPRECATION_HOPS } from "../constants";
-import { EntityCheckParams, EntityType, ErrorCode, IData, SignDataParams, SignedData, SignedDataCheckParams, State, VerifySignedDataParams, VerifySignedDataResponse } from "../types";
-import DataFields from "./lib/DataFields";
-import Helper from "./lib/Helper";
-import TokenData from "./lib/TokenData";
+import { ACCOUNT_PREFIX, MAX_DEPRECATION_HOPS } from "../../constants";
+import { EntityCheckParams, EntityType, ErrorCode, IData, SignDataParams, SignedData, SignedDataCheckParams, State, VerifySignedDataParams, VerifySignedDataResponse } from "../../types";
+import DataFields from "../lib/DataFields";
+import Helper from "../lib/Helper";
+import TokenData from "../lib/TokenData";
+import SigningController from "./controllers/SigningController";
 
 
 enum TrustPathState {
@@ -40,18 +41,8 @@ export default class DataHandler implements IData {
 
 
     public signData = (params: SignDataParams, forTestnet = false): SignedData => {
-        const tokenDataString = TokenData.createTokenDataString(params.attestationPath, params.attestationContext, params.payload);
-        const creatorAccount = account.convertPassphraseToAccountRs(params.passphrase);
-
-        const signedData: SignedData = {
-            attestationContext: params.attestationContext,
-            attestationPath: (params.attestationPath && params.attestationPath) || [ creatorAccount ],
-            creatorAccount,
-            payload: params.payload,
-            signature: account.generateToken(tokenDataString, params.passphrase, forTestnet)
-        };
-
-        return signedData;
+        const signingController = new SigningController();
+        return signingController.sign(params, forTestnet);
     }
 
 
