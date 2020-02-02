@@ -16,13 +16,13 @@
  */
 
 import { account, IRequest } from "@somedotone/ardor-ts";
-import { AttestationResponse, CreateAttestationUncheckedParams, EntityType, ErrorCode, objectAny, State } from "../../../types";
+import { AttestationResponse, EntityType, ErrorCode, IAttestationService, objectAny, State } from "../../../types";
 import DataFields from "../../lib/DataFields";
 import Helper from "../../lib/Helper";
 import ServiceHelper from "./utils/ServiceHelper";
 
 
-export default class CreationService {
+export default class CreationService implements IAttestationService {
     private readonly request: IRequest;
     private readonly helper: ServiceHelper;
 
@@ -33,7 +33,27 @@ export default class CreationService {
     }
 
 
-    public async create(url: string, params: objectAny, entityType: EntityType, runChecks = true): Promise<AttestationResponse> {
+    public async run(url: string, params: objectAny, entityType: EntityType, runChecks: boolean): Promise<AttestationResponse> {
+        if (runChecks) {
+            return await this.create(url, params, entityType, true);
+        } else {
+            const _params = { ...params };
+
+            if (params.entityType === EntityType.INTERMEDIATE) {
+                _params.intermediateAccount = params.account;
+            }
+            if (params.entityType === EntityType.LEAF) {
+                _params.leafAccount = params.account;
+            }
+
+            delete _params.account;
+            delete _params.entityType;
+
+            return await this.create(url, _params, params.entityType, false);
+        }
+    }
+
+    private async create(url: string, params: objectAny, entityType: EntityType, runChecks: boolean): Promise<AttestationResponse> {
         const dataFields = new DataFields();
         params.payload = params.payload || "";
 
@@ -104,22 +124,5 @@ export default class CreationService {
 
         const response = await this.helper.createAttestationTransaction(url, params.passphrase, this.helper.getRecipient(params), dataFields);
         return { transactionId: response.fullHash };
-    }
-
-
-    public async createUnchecked(url: string, params: CreateAttestationUncheckedParams): Promise<AttestationResponse> {
-        const _params = { ...params } as objectAny;
-
-        if (params.entityType === EntityType.INTERMEDIATE) {
-            _params.intermediateAccount = params.account;
-        }
-        if (params.entityType === EntityType.LEAF) {
-            _params.leafAccount = params.account;
-        }
-
-        delete _params.account;
-        delete _params.entityType;
-
-        return await this.create(url, _params, params.entityType, false);
     }
 }

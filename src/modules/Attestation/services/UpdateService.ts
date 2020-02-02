@@ -18,13 +18,13 @@
 import { account, IRequest } from "@somedotone/ardor-ts";
 import { EntityType, ErrorCode, objectAny, State } from "../../..";
 import { ACCOUNT_PREFIX } from "../../../constants";
-import { AttestationResponse } from "../../../types";
+import { AttestationResponse, IAttestationService } from "../../../types";
 import DataFields from "../../lib/DataFields";
 import Helper from "../../lib/Helper";
 import ServiceHelper from "./utils/ServiceHelper";
 
 
-export default class UpdateService {
+export default class UpdateService implements IAttestationService {
     private readonly request: IRequest;
     private readonly helper: ServiceHelper;
 
@@ -35,7 +35,7 @@ export default class UpdateService {
     }
 
 
-    public async update(url: string, params: objectAny, entity: EntityType): Promise<AttestationResponse> {
+    public async run(url: string, params: objectAny, entity: EntityType): Promise<AttestationResponse> {
         const currentDataFields = await this.checkEntitiesAndGetCurrentDataFields(url, params, entity);
         const newDataFields = new DataFields(currentDataFields);
 

@@ -15,36 +15,19 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IRequest } from "@somedotone/ardor-ts";
-import { AttestationResponse, CreateRootAttestationParams, EntityType, RevokeRootAttestationParams, UpdateRootAttestationParams } from "../../../types";
-import CreationService from "../services/CreationService";
-import RevocationService from "../services/RevocationService";
-import UpdateService from "../services/UpdateService";
+import { AttestationResponse, EntityType, IAttestationService, IController, objectAny } from "../../../types";
 
 
-export default class RootController {
-    private readonly request: IRequest;
+export default class RootController implements IController {
+    private readonly service: IAttestationService;
 
 
-    constructor(request: IRequest) {
-        this.request = request;
+    constructor(service: IAttestationService) {
+        this.service = service;
     }
 
 
-    public async create(url: string, params: CreateRootAttestationParams): Promise<AttestationResponse> {
-        const creationService = new CreationService(this.request);
-        return await creationService.create(url, params, EntityType.ROOT);
-    }
-
-
-    public async update(url: string, params: UpdateRootAttestationParams): Promise<AttestationResponse> {
-        const updateService = new UpdateService(this.request);
-        return await updateService.update(url, params, EntityType.ROOT);
-    }
-
-
-    public async revoke(url: string, params: RevokeRootAttestationParams): Promise<AttestationResponse> {
-        const revocationService = new RevocationService(this.request);
-        return await revocationService.revoke(url, params, EntityType.ROOT);
+    public async run(url: string, params: objectAny): Promise<AttestationResponse> {
+        return await this.service.run(url, params, EntityType.ROOT, true);
     }
 }

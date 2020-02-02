@@ -17,13 +17,13 @@
 
 import { account, ChainId, DeleteAccountPropertyParams, DeleteAccountPropertyResponse, IRequest } from "@somedotone/ardor-ts";
 import { EntityType, ErrorCode, objectAny } from "../../..";
-import { AttestationResponse, RevokeAttestationUncheckedParams } from "../../../types";
+import { AttestationResponse, IAttestationService } from "../../../types";
 import DataFields from "../../lib/DataFields";
 import Helper from "../../lib/Helper";
 import ServiceHelper from "./utils/ServiceHelper";
 
 
-export default class RevocationService {
+export default class RevocationService implements IAttestationService {
     private readonly request: IRequest;
     private readonly helper: ServiceHelper;
 
@@ -34,7 +34,15 @@ export default class RevocationService {
     }
 
 
-    public async revoke(url: string, params: objectAny, entityType: EntityType, runChecks = true): Promise<AttestationResponse> {
+    public async run(url: string, params: objectAny, entityType: EntityType, runChecks: boolean): Promise<AttestationResponse> {
+        if (runChecks) {
+            return this.revoke(url, params, entityType, true);
+        } else {
+            return await this.revoke(url, params, EntityType.LEAF, false);
+        }
+    }
+
+    public async revoke(url: string, params: objectAny, entityType: EntityType, runChecks: boolean): Promise<AttestationResponse> {
         const dataFields = new DataFields();
         dataFields.attestationContext = params.attestationContext;
         let recipient = "";
@@ -109,10 +117,5 @@ export default class RevocationService {
     private async revokeAttestation(url: string, params: objectAny, recipient: string): Promise<AttestationResponse> {
         const response = await this.createRevokeTransaction(url, params, recipient);
         return { transactionId: response.fullHash };
-    }
-
-
-    public async revokeUnchecked(url: string, params: RevokeAttestationUncheckedParams): Promise<AttestationResponse> {
-        return await this.revoke(url, params, EntityType.LEAF, false);
     }
 }

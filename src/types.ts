@@ -181,19 +181,19 @@ export type RevokeAttestationUncheckedParams = {
 
 
 export interface IAttestation {
-    createRootAttestation: (url: string, params: CreateRootAttestationParams) => Promise<AttestationResponse>;
-    createIntermediateAttestation: (url: string, params: CreateIntermediateAttestationParams) => Promise<AttestationResponse>;
-    createLeafAttestation: (url: string, params: CreateLeafAttestationParams) => Promise<AttestationResponse>;
-    createAttestationUnchecked: (url: string, params: CreateAttestationUncheckedParams) => Promise<AttestationResponse>;
+    createRootAttestation(url: string, params: CreateRootAttestationParams): Promise<AttestationResponse>;
+    createIntermediateAttestation(url: string, params: CreateIntermediateAttestationParams): Promise<AttestationResponse>;
+    createLeafAttestation(url: string, params: CreateLeafAttestationParams): Promise<AttestationResponse>;
+    createAttestationUnchecked(url: string, params: CreateAttestationUncheckedParams): Promise<AttestationResponse>;
 
-    updateRootAttestation: (url: string, params: UpdateRootAttestationParams) => Promise<AttestationResponse>;
-    updateIntermediateAttestation: (url: string, params: UpdateIntermediateAttestationParams) => Promise<AttestationResponse>;
-    updateLeafAttestation: (url: string, params: UpdateLeafAttestationParams) => Promise<AttestationResponse>;
+    updateRootAttestation(url: string, params: UpdateRootAttestationParams): Promise<AttestationResponse>;
+    updateIntermediateAttestation(url: string, params: UpdateIntermediateAttestationParams): Promise<AttestationResponse>;
+    updateLeafAttestation(url: string, params: UpdateLeafAttestationParams): Promise<AttestationResponse>;
 
-    revokeRootAttestation: (url: string, params: RevokeRootAttestationParams) => Promise<AttestationResponse>;
-    revokeIntermediateAttestation: (url: string, params: RevokeIntermediateAttestationParams) => Promise<AttestationResponse>;
-    revokeLeafAttestation: (url: string, params: RevokeLeafAttestationParams) => Promise<AttestationResponse>;
-    revokeAttestationUnchecked: (url: string, params: RevokeAttestationUncheckedParams) => Promise<AttestationResponse>;
+    revokeRootAttestation(url: string, params: RevokeRootAttestationParams): Promise<AttestationResponse>;
+    revokeIntermediateAttestation(url: string, params: RevokeIntermediateAttestationParams): Promise<AttestationResponse>;
+    revokeLeafAttestation(url: string, params: RevokeLeafAttestationParams): Promise<AttestationResponse>;
+    revokeAttestationUnchecked(url: string, params: RevokeAttestationUncheckedParams): Promise<AttestationResponse>;
 }
 
 
@@ -216,8 +216,8 @@ export type SignDataParams = {
 export type VerifySignedDataParams = {
     signedData: SignedData;
     trustedRootAccount: string;
-    signedDataCheckCallback?: (signedDataCheck: SignedDataCheckParams) => boolean;
-    entityCheckCallback?: (entity: EntityCheckParams) => boolean;
+    signedDataCheckCallback?(signedDataCheck: SignedDataCheckParams): boolean;
+    entityCheckCallback?(entity: EntityCheckParams): boolean;
 };
 
 export type VerifySignedDataResponse = {
@@ -240,8 +240,8 @@ export type SignedDataCheckParams = {
 
 
 export interface IData {
-    signData: (params: SignDataParams, forTestnet?: boolean) => SignedData;
-    verifySignedData: (url: string, params: VerifySignedDataParams, forTestnet?: boolean) => Promise<VerifySignedDataResponse>;
+    signData(params: SignDataParams, forTestnet?: boolean): SignedData;
+    verifySignedData(url: string, params: VerifySignedDataParams, forTestnet?: boolean): Promise<VerifySignedDataResponse>;
 }
 
 
@@ -263,5 +263,15 @@ export type GetEntityResponse = {
 
 
 export interface IEntity {
-    getEntity: (url: string, params: GetEntityParams) => Promise<GetEntityResponse>;
+    getEntity(url: string, params: GetEntityParams): Promise<GetEntityResponse>;
+}
+
+
+export interface IAttestationService {
+    run(url: string, params: objectAny, entityType: EntityType, runChecks: boolean): Promise<AttestationResponse>;
+}
+
+
+export interface IController {
+    run(url: string, params: objectAny): Promise<AttestationResponse>;
 }

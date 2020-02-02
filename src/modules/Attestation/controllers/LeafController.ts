@@ -15,36 +15,19 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IRequest } from "@somedotone/ardor-ts";
-import { AttestationResponse, CreateLeafAttestationParams, EntityType, RevokeLeafAttestationParams, UpdateLeafAttestationParams } from "../../../types";
-import CreationService from "../services/CreationService";
-import RevocationService from "../services/RevocationService";
-import UpdateService from "../services/UpdateService";
+import { AttestationResponse, EntityType, IAttestationService, IController, objectAny } from "../../../types";
 
 
-export default class LeafController {
-    private readonly request: IRequest;
+export default class LeafController implements IController {
+    private readonly service: IAttestationService;
 
 
-    constructor(request: IRequest) {
-        this.request = request;
+    constructor(service: IAttestationService) {
+        this.service = service;
     }
 
 
-    public async create(url: string, params: CreateLeafAttestationParams): Promise<AttestationResponse> {
-        const creationService = new CreationService(this.request);
-        return await creationService.create(url, params, EntityType.LEAF);
-    }
-
-
-    public async update(url: string, params: UpdateLeafAttestationParams): Promise<AttestationResponse> {
-        const updateService = new UpdateService(this.request);
-        return await updateService.update(url, params, EntityType.LEAF);
-    }
-
-
-    public async revoke(url: string, params: RevokeLeafAttestationParams): Promise<AttestationResponse> {
-        const revocationService = new RevocationService(this.request);
-        return await revocationService.revoke(url, params, EntityType.LEAF);
+    public async run(url: string, params: objectAny): Promise<AttestationResponse> {
+        return await this.service.run(url, params, EntityType.LEAF, true);
     }
 }

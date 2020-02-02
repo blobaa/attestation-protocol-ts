@@ -15,28 +15,19 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IRequest } from "@somedotone/ardor-ts";
-import { AttestationResponse, CreateAttestationUncheckedParams, RevokeAttestationUncheckedParams } from "../../../types";
-import CreationService from "../services/CreationService";
-import RevocationService from "../services/RevocationService";
+import { AttestationResponse, EntityType, IAttestationService, IController, objectAny } from "../../../types";
 
 
-export default class RootController {
-    private readonly request: IRequest;
+export default class UncheckedController implements IController {
+    private readonly service: IAttestationService;
 
 
-    constructor(request: IRequest) {
-        this.request = request;
-    }
-
-    public async create (url: string, params: CreateAttestationUncheckedParams): Promise<AttestationResponse> {
-        const creationService = new CreationService(this.request);
-        return await creationService.createUnchecked(url, params);
+    constructor(service: IAttestationService) {
+        this.service = service;
     }
 
 
-    public async revoke (url: string, params: RevokeAttestationUncheckedParams): Promise<AttestationResponse> {
-        const revocationService = new RevocationService(this.request);
-        return await revocationService.revokeUnchecked(url, params);
+    public async run (url: string, params: objectAny): Promise<AttestationResponse> {
+        return await this.service.run(url, params, EntityType.ROOT, false);
     }
 }

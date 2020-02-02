@@ -15,36 +15,19 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IRequest } from "@somedotone/ardor-ts";
-import { AttestationResponse, CreateIntermediateAttestationParams, EntityType, RevokeIntermediateAttestationParams, UpdateIntermediateAttestationParams } from "../../../types";
-import CreationService from "../services/CreationService";
-import RevocationService from "../services/RevocationService";
-import UpdateService from "../services/UpdateService";
+import { AttestationResponse, EntityType, IAttestationService, IController, objectAny } from "../../../types";
 
 
-export default class IntermediateController {
-    private readonly request: IRequest;
+export default class IntermediateController implements IController {
+    private readonly service: IAttestationService;
 
 
-    constructor(request: IRequest) {
-        this.request = request;
+    constructor(service: IAttestationService) {
+        this.service = service;
     }
 
 
-    public async create(url: string, params: CreateIntermediateAttestationParams): Promise<AttestationResponse> {
-        const creationService = new CreationService(this.request);
-        return await creationService.create(url, params, EntityType.INTERMEDIATE);
-    }
-
-
-    public async update(url: string, params: UpdateIntermediateAttestationParams): Promise<AttestationResponse> {
-        const updateService = new UpdateService(this.request);
-        return await updateService.update(url, params, EntityType.INTERMEDIATE);
-    }
-
-
-    public async revoke(url: string, params: RevokeIntermediateAttestationParams): Promise<AttestationResponse> {
-        const revocationService = new RevocationService(this.request);
-        return await revocationService.revoke(url, params, EntityType.INTERMEDIATE);
+    public async run(url: string, params: objectAny): Promise<AttestationResponse> {
+        return await this.service.run(url, params, EntityType.INTERMEDIATE, true);
     }
 }

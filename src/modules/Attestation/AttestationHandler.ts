@@ -15,73 +15,81 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Request } from "@somedotone/ardor-ts";
+import { IRequest, Request } from "@somedotone/ardor-ts";
 import { AttestationResponse, CreateAttestationUncheckedParams, CreateIntermediateAttestationParams, CreateLeafAttestationParams, CreateRootAttestationParams, IAttestation, RevokeAttestationUncheckedParams, RevokeIntermediateAttestationParams, RevokeLeafAttestationParams, RevokeRootAttestationParams, UpdateIntermediateAttestationParams, UpdateLeafAttestationParams, UpdateRootAttestationParams } from "../../types";
 import IntermediateController from "./controllers/IntermediateController";
 import LeafController from "./controllers/LeafController";
 import RootController from "./controllers/RootController";
 import UncheckedController from "./controllers/UncheckedController";
+import CreationService from "./services/CreationService";
+import RevocationService from "./services/RevocationService";
+import UpdateService from "./services/UpdateService";
 
 
 export default class AttestationHandler implements IAttestation {
-    private rootController: RootController;
-    private intermediateController: IntermediateController;
-    private leafController: LeafController;
-    private uncheckedController: UncheckedController;
+    private readonly request: IRequest;
 
 
     constructor(request = new Request()) {
-        this.rootController = new RootController(request);
-        this.intermediateController = new IntermediateController(request);
-        this.leafController = new LeafController(request);
-        this.uncheckedController = new UncheckedController(request);
+        this.request = request;
     }
 
 
     public async createRootAttestation(url: string, params: CreateRootAttestationParams): Promise<AttestationResponse> {
-        return await this.rootController.create(url, params);
+        const controller = new RootController(new CreationService(this.request));
+        return await controller.run(url, params);
     }
 
     public async updateRootAttestation(url: string, params: UpdateRootAttestationParams): Promise<AttestationResponse> {
-        return await this.rootController.update(url, params);
+        const controller = new RootController(new UpdateService(this.request));
+        return await controller.run(url, params);
     }
 
     public async revokeRootAttestation(url: string, params: RevokeRootAttestationParams): Promise<AttestationResponse> {
-       return await this.rootController.revoke(url, params);
+        const controller = new RootController(new RevocationService(this.request));
+        return await controller.run(url, params);
     }
 
 
     public async createIntermediateAttestation(url: string, params: CreateIntermediateAttestationParams): Promise<AttestationResponse> {
-        return await this.intermediateController.create(url, params);
+        const controller = new IntermediateController(new CreationService(this.request));
+        return await controller.run(url, params);
     }
 
     public async updateIntermediateAttestation(url: string, params: UpdateIntermediateAttestationParams): Promise<AttestationResponse> {
-        return await this.intermediateController.update(url, params);
+        const controller = new IntermediateController(new UpdateService(this.request));
+        return await controller.run(url, params);
     }
 
     public async revokeIntermediateAttestation(url: string, params: RevokeIntermediateAttestationParams): Promise<AttestationResponse> {
-        return await this.intermediateController.revoke(url, params);
+        const controller = new IntermediateController(new RevocationService(this.request));
+        return await controller.run(url, params);
     }
 
 
     public async createLeafAttestation(url: string, params: CreateLeafAttestationParams): Promise<AttestationResponse> {
-        return await this.leafController.create(url, params);
+        const controller = new LeafController(new CreationService(this.request));
+        return await controller.run(url, params);
     }
 
     public async updateLeafAttestation(url: string, params: UpdateLeafAttestationParams): Promise<AttestationResponse> {
-        return await this.leafController.update(url, params);
+        const controller = new LeafController(new UpdateService(this.request));
+        return await controller.run(url, params);
     }
 
     public async revokeLeafAttestation(url: string, params: RevokeLeafAttestationParams): Promise<AttestationResponse> {
-        return await this.leafController.revoke(url, params);
+        const controller = new LeafController(new RevocationService(this.request));
+        return await controller.run(url, params);
     }
 
 
     public async createAttestationUnchecked(url: string, params: CreateAttestationUncheckedParams): Promise<AttestationResponse> {
-        return await this.uncheckedController.create(url, params);
+        const controller = new UncheckedController(new CreationService(this.request));
+        return await controller.run(url, params);
     }
 
     public async revokeAttestationUnchecked(url: string, params: RevokeAttestationUncheckedParams): Promise<AttestationResponse> {
-        return await this.uncheckedController.revoke(url, params);
+        const controller = new UncheckedController(new RevocationService(this.request));
+        return await controller.run(url, params);
     }
 }
