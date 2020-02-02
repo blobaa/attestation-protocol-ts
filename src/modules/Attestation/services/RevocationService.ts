@@ -48,8 +48,7 @@ export default class RevocationService {
         }
 
 
-        const response = await this.createRevokeTransaction(url, params, recipient);
-        return { transactionId: response.fullHash };
+        return await this.revokeAttestation(url, params, recipient);
     }
 
     private async checkRevokeAttestation(url: string, params: objectAny, entityType: EntityType): Promise<void> {
@@ -105,6 +104,11 @@ export default class RevocationService {
         } catch (error) {
             return Promise.reject(Helper.getError(error));
         }
+    }
+
+    private async revokeAttestation(url: string, params: objectAny, recipient: string): Promise<AttestationResponse> {
+        const response = await this.createRevokeTransaction(url, params, recipient);
+        return { transactionId: response.fullHash };
     }
 
 

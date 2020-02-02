@@ -50,13 +50,7 @@ export default class CreationService {
         }
 
 
-        dataFields.attestationContext = params.attestationContext;
-        dataFields.state = State.ACTIVE;
-        dataFields.entityType = entityType;
-        dataFields.payload = params.payload;
-
-        const response = await this.helper.createAttestationTransaction(url, params.passphrase, this.helper.getRecipient(params), dataFields);
-        return { transactionId: response.fullHash };
+        return await this.createAttestation(url, params, entityType);
     }
 
     private isNotRootAttestation(params: objectAny): boolean {
@@ -99,6 +93,17 @@ export default class CreationService {
         } catch (error) {
             return Promise.reject(Helper.getError(error));
         }
+    }
+
+    private async createAttestation(url: string, params: objectAny, entityType: EntityType): Promise<AttestationResponse> {
+        const dataFields = new DataFields();
+        dataFields.attestationContext = params.attestationContext;
+        dataFields.state = State.ACTIVE;
+        dataFields.entityType = entityType;
+        dataFields.payload = params.payload;
+
+        const response = await this.helper.createAttestationTransaction(url, params.passphrase, this.helper.getRecipient(params), dataFields);
+        return { transactionId: response.fullHash };
     }
 
 
