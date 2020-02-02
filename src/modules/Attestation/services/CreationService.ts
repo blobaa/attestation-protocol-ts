@@ -43,22 +43,10 @@ export default class CreationService {
         }
 
 
-        if (runChecks) {
-            const myAccount = account.convertPassphraseToAccountRs(params.passphrase);
-            const attestorAccount = params.myAttestorAccount || myAccount;
-
-            if (this.isNotRootAttestation(params)) {
-                if (myAccount === this.helper.getRecipient(params)) {
-                    const _error = Helper.createError(ErrorCode.SELF_ATTESTATION_NOT_ALLOWED);
-                    return Promise.reject(_error);
-                }
-
-                const attestationContext = dataFields.setAttestationContext(params.attestationContext);
-                await this.helper.checkOwnEntityAndState(url, myAccount, attestorAccount, attestationContext, new DataFields(), false, entityType);
-
-            } else {
-                 await this.checkRootAttestation(url, myAccount, attestorAccount, dataFields.setAttestationContext(params.attestationContext));
-            }
+        if (runChecks && this.isNotRootAttestation(params)) {
+            await this.checkNonRootAttestation(url, params, entityType);
+        } else if (runChecks) {
+            await this.checkRootAttestation(url, params);
         }
 
 
@@ -67,7 +55,7 @@ export default class CreationService {
         dataFields.entityType = entityType;
         dataFields.payload = params.payload;
 
-        const response = await this.helper.createAttestationTransaction(url, params.passphrase, this.getRecipient(params), dataFields);
+        const response = await this.helper.createAttestationTransaction(url, params.passphrase, this.helper.getRecipient(params), dataFields);
         return { transactionId: response.fullHash };
     }
 
@@ -75,18 +63,26 @@ export default class CreationService {
         return (params.intermediateAccount || params.leafAccount);
     }
 
-    private getRecipient(params: objectAny): string {
-        if (params.intermediateAccount) {
-            return params.intermediateAccount;
+    private async checkNonRootAttestation(url: string, params: objectAny, entityType: EntityType): Promise<void> {
+        const myAccount = account.convertPassphraseToAccountRs(params.passphrase);
+        const attestorAccount = params.myAttestorAccount || myAccount;
+
+        if (myAccount === this.helper.getRecipient(params)) {
+            const _error = Helper.createError(ErrorCode.SELF_ATTESTATION_NOT_ALLOWED);
+            return Promise.reject(_error);
         }
-        if (params.leafAccount) {
-            return params.leafAccount;
-        }
-        return account.convertPassphraseToAccountRs(params.passphrase);
+
+        const dataFields = new DataFields();
+        const attestationContext = dataFields.setAttestationContext(params.attestationContext);
+        await this.helper.checkOwnEntityAndState(url, myAccount, attestorAccount, attestationContext, new DataFields(), false, entityType);
     }
 
+    private async checkRootAttestation(url: string, params: objectAny): Promise<void> {
+        const myAccount = account.convertPassphraseToAccountRs(params.passphrase);
+        const attestorAccount = params.myAttestorAccount || myAccount;
+        const dataFields = new DataFields();
+        const attestationContext = dataFields.setAttestationContext(params.attestationContext);
 
-    private async checkRootAttestation(url: string, myAccount: string, attestorAccount: string, attestationContext: string): Promise<void> {
         try {
             const response = await this.request.getAccountProperties(url, {
                     setter: attestorAccount,
@@ -96,7 +92,7 @@ export default class CreationService {
             const propertyObject = response.properties[0];
 
             if (propertyObject) {
-                const error = Helper.createError(ErrorCode.ATTESTATION_CONTEXT_ALREADY_SET, [myAccount, attestationContext, attestorAccount]);
+                const error = Helper.createError(ErrorCode.ATTESTATION_CONTEXT_ALREADY_SET, [ myAccount, attestationContext, attestorAccount ]);
                 return Promise.reject(error);
             }
 
