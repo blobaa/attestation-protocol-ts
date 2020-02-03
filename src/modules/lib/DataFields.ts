@@ -40,7 +40,6 @@ export default class DataFields {
     public payload = "";
 
 
-
     constructor(dataFields?: DataFields) {
         this.attestationContext = (dataFields && dataFields.attestationContext) || "";
         this.version = (dataFields && dataFields.version) || PROTOCOL_VERSION;
@@ -71,7 +70,9 @@ export default class DataFields {
         const dataFields = dataFieldString.split(DATA_FIELD_SEPARATOR);
 
         const error = this.checkDataFields(dataFields);
-        if (error.code !== ErrorCode.NO_ERROR) return error;
+        if (error.code !== ErrorCode.NO_ERROR) {
+            return error;
+        }
 
 
         this.version = dataFields[DataField.VERSION];
@@ -94,19 +95,29 @@ export default class DataFields {
         }
 
         let error = this.checkVersion(_dataFields[DataField.VERSION]);
-        if (error.code !== ErrorCode.NO_ERROR) return error;
+        if (error.code !== ErrorCode.NO_ERROR) {
+            return error;
+        }
 
         error = this.checkEntityType(_dataFields[DataField.ENTITY]);
-        if (error.code !== ErrorCode.NO_ERROR) return error;
+        if (error.code !== ErrorCode.NO_ERROR) {
+            return error;
+        }
 
         error = this.checkState(_dataFields[DataField.STATE]);
-        if (error.code !== ErrorCode.NO_ERROR) return error;
+        if (error.code !== ErrorCode.NO_ERROR) {
+            return error;
+        }
 
         error = this.checkRedirectAccount(_dataFields[DataField.REDIRECT_ACCOUNT]);
-        if (error.code !== ErrorCode.NO_ERROR) return error;
+        if (error.code !== ErrorCode.NO_ERROR) {
+            return error;
+        }
 
         error = this.checkPayload(payload);
-        if (error.code !== ErrorCode.NO_ERROR) return error;
+        if (error.code !== ErrorCode.NO_ERROR) {
+            return error;
+        }
 
         return noError;
     }

@@ -19,7 +19,7 @@
 /* eslint-disable max-classes-per-file */
 import AttestationHandler from "./modules/attestation/AttestationHandler";
 import DataHandler from "./modules/data/DataHandler";
-import EntityParser from "./modules/EntityParser";
+import EntityParser from "./modules/entity/EntityParser";
 import { IAttestation, IData, IEntity } from "./types";
 
 export * from "./types";

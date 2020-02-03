@@ -27,7 +27,6 @@ export default class RequestMock extends Request {
     private decodeTokenCallback: (params: DecodeTokenParams) => { account: string; valid: boolean };
 
 
-
     constructor(getAccPropCallback?: (params: GetAccountPropertiesParams) => { context: string; dataFieldsString: string },
                 setAccPropCallback?: (params: SetAccountPropertyParams) => void,
                 decodeTokenCallback?: (params: DecodeTokenParams) => { account: string; valid: boolean },
