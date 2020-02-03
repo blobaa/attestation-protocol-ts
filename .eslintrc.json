@@ -2,8 +2,7 @@
     "root": true,
     "parser": "@typescript-eslint/parser",
     "plugins": [ 
-        "@typescript-eslint",
-        "prefer-arrow" 
+        "@typescript-eslint"
     ],
     "extends": [ 
         "eslint:recommended",
@@ -30,10 +29,11 @@
         "@typescript-eslint/no-empty-function": "off",
         "@typescript-eslint/no-unused-vars": [ "error", { "args": "none" } ],
         "@typescript-eslint/interface-name-prefix": [ "error", { "prefixWithI": "always" } ],
-        "no-multiple-empty-lines": [ "error", { "max": 3 } ],
+        "no-multiple-empty-lines": [ "error", { "max": 2 } ],
         "no-shadow": [ "error", { "hoist": "all" } ],
         "object-shorthand": "error",
-        "prefer-arrow/prefer-arrow-functions": [ "error", { "classPropertiesAllowed": true } ],
-        "semi": ["error", "always", { "omitLastInOneLineBlock": true } ]
+        "semi": ["error", "always", { "omitLastInOneLineBlock": true } ],
+        "no-lonely-if": "error",
+        "curly": "error"
     }
 }

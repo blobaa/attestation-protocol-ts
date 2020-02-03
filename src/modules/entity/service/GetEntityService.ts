@@ -15,30 +15,27 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IRequest, Request } from "@somedotone/ardor-ts";
-import { GetEntityParams, GetEntityResponse, IEntity } from "../types";
-import DataFields from "./lib/DataFields";
-import Helper from "./lib/Helper";
-import { ErrorCode } from "..";
+import { IRequest } from "@somedotone/ardor-ts";
+import { ErrorCode, GetEntityParams, GetEntityResponse, IGetEntityService } from "../../../types";
+import DataFields from "../../lib/DataFields";
+import Helper from "../../lib/Helper";
 
 
-export default class EntityParser implements IEntity {
-
-    private request: IRequest;
-
+export default class GetEntityService implements IGetEntityService {
+    private readonly request: IRequest;
 
 
-    constructor(request = new Request()) {
+    constructor(request: IRequest) {
         this.request = request;
     }
 
 
-    public getEntity = async (url: string, params: GetEntityParams): Promise<GetEntityResponse> => {
+    public async run(url: string, params: GetEntityParams): Promise<GetEntityResponse> {
         try {
             const dataFields = new DataFields();
             dataFields.attestationContext = params.attestationContext;
 
-            const attestor = (params.attestor && params.attestor) || params.account;
+            const attestor = params.attestor || params.account;
             const response = await this.request.getAccountProperties(url, {
                     setter: attestor,
                     recipient: params.account,
@@ -52,7 +49,9 @@ export default class EntityParser implements IEntity {
             }
 
             const error = dataFields.consumeDataFieldString(propertyObject.value);
-            if (error.code !== ErrorCode.NO_ERROR) return Promise.reject(error);
+            if (error.code !== ErrorCode.NO_ERROR) {
+                return Promise.reject(error);
+            }
 
 
             const entity: GetEntityResponse = {

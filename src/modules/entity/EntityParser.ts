@@ -15,19 +15,24 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { IRequest, Request } from "@somedotone/ardor-ts";
+import { GetEntityParams, GetEntityResponse, IEntity } from "../../types";
+import ParsingController from "./controller/ParsingController";
+import GetEntityService from "./service/GetEntityService";
 
-/* eslint-disable max-classes-per-file */
-import AttestationHandler from "./modules/attestation/AttestationHandler";
-import DataHandler from "./modules/data/DataHandler";
-import EntityParser from "./modules/entity/EntityParser";
-import { IAttestation, IData, IEntity } from "./types";
 
-export * from "./types";
+export default class EntityParser implements IEntity {
 
-export const attestation: IAttestation = new AttestationHandler();
-export const data: IData = new DataHandler();
-export const entity: IEntity = new EntityParser();
+    private request: IRequest;
 
-export class Attestation extends AttestationHandler {}
-export class Data extends DataHandler {}
-export class Entity extends EntityParser {}
+
+    constructor(request = new Request()) {
+        this.request = request;
+    }
+
+
+    public getEntity = async (url: string, params: GetEntityParams): Promise<GetEntityResponse> => {
+        const controller = new ParsingController(new GetEntityService(this.request));
+        return controller.run(url, params);
+    }
+}

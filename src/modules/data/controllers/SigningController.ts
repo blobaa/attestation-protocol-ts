@@ -15,19 +15,18 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { ISigningService, SignDataParams, SignedData } from "../../../types";
 
-/* eslint-disable max-classes-per-file */
-import AttestationHandler from "./modules/attestation/AttestationHandler";
-import DataHandler from "./modules/data/DataHandler";
-import EntityParser from "./modules/entity/EntityParser";
-import { IAttestation, IData, IEntity } from "./types";
 
-export * from "./types";
+export default class SigningController {
+    private readonly service: ISigningService;
 
-export const attestation: IAttestation = new AttestationHandler();
-export const data: IData = new DataHandler();
-export const entity: IEntity = new EntityParser();
 
-export class Attestation extends AttestationHandler {}
-export class Data extends DataHandler {}
-export class Entity extends EntityParser {}
+    constructor(service: ISigningService) {
+        this.service = service;
+    }
+
+    public run(params: SignDataParams, forTestnet = true): SignedData {
+        return this.service.run(params, forTestnet);
+    }
+}

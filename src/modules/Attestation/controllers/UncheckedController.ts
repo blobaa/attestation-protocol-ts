@@ -15,18 +15,19 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ATTESTATION_PATH_SEPARATOR, SIGNED_DATA_SEPARATOR } from "../../constants";
+import { AttestationResponse, EntityType, IAttestationService, objectAny } from "../../../types";
 
 
-export default class TokenData {
+export default class UncheckedController {
+    private readonly service: IAttestationService;
 
-    public static createTokenDataString = (path: string[] | undefined, context: string, payload: string): string => {
-        let tokenData = "";
-        tokenData += (path && path.join(ATTESTATION_PATH_SEPARATOR)) || "";
-        tokenData += SIGNED_DATA_SEPARATOR;
-        tokenData += context;
-        tokenData += SIGNED_DATA_SEPARATOR;
-        tokenData += payload;
-        return tokenData;
-    };;
+
+    constructor(service: IAttestationService) {
+        this.service = service;
+    }
+
+
+    public async run (url: string, params: objectAny): Promise<AttestationResponse> {
+        return await this.service.run(url, params, EntityType.ROOT, false);
+    }
 }

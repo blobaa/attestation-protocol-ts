@@ -15,19 +15,18 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { IVerificationService, VerifySignedDataParams, VerifySignedDataResponse } from "../../../types";
 
-/* eslint-disable max-classes-per-file */
-import AttestationHandler from "./modules/attestation/AttestationHandler";
-import DataHandler from "./modules/data/DataHandler";
-import EntityParser from "./modules/entity/EntityParser";
-import { IAttestation, IData, IEntity } from "./types";
 
-export * from "./types";
+export default class VerificationController {
+    private readonly service: IVerificationService;
 
-export const attestation: IAttestation = new AttestationHandler();
-export const data: IData = new DataHandler();
-export const entity: IEntity = new EntityParser();
 
-export class Attestation extends AttestationHandler {}
-export class Data extends DataHandler {}
-export class Entity extends EntityParser {}
+    constructor(service: IVerificationService) {
+        this.service = service;
+    }
+
+    public run(url: string, params: VerifySignedDataParams, forTestnet = true): Promise<VerifySignedDataResponse> {
+        return this.service.run(url, params, forTestnet);
+    }
+}

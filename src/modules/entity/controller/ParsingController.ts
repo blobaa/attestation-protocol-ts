@@ -15,19 +15,18 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { GetEntityParams, GetEntityResponse, IGetEntityService } from "../../../types";
 
-/* eslint-disable max-classes-per-file */
-import AttestationHandler from "./modules/attestation/AttestationHandler";
-import DataHandler from "./modules/data/DataHandler";
-import EntityParser from "./modules/entity/EntityParser";
-import { IAttestation, IData, IEntity } from "./types";
 
-export * from "./types";
+export default class ParsingController {
+    private readonly service: IGetEntityService;
 
-export const attestation: IAttestation = new AttestationHandler();
-export const data: IData = new DataHandler();
-export const entity: IEntity = new EntityParser();
 
-export class Attestation extends AttestationHandler {}
-export class Data extends DataHandler {}
-export class Entity extends EntityParser {}
+    constructor(service: IGetEntityService) {
+        this.service = service;
+    }
+
+    public run(url: string, params: GetEntityParams): Promise<GetEntityResponse>  {
+        return this.service.run(url, params);
+    }
+}

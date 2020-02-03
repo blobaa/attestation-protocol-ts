@@ -21,20 +21,24 @@ import { unknown } from "../../constants";
 
 export default class Helper {
 
-    public static getError = (error: objectAny): Error => {
-        if (error.syscall) return {
+    public static getError(error: objectAny): Error {
+        if (error.syscall) {
+            return {
                 code: ErrorCode.CONNECTION_ERROR,
                 description: "Connection error. Could not connect to node."
             };
-        if (error.errorCode) return {
+        }
+        if (error.errorCode) {
+            return {
                 code: ErrorCode.NODE_ERROR,
                 description: error.errorDescription
             };
+        }
         return error as Error;
     }
 
 
-    public static createError = (errorCode: ErrorCode, params?: string[]): Error => {
+    public static createError(errorCode: ErrorCode, params?: string[]): Error {
         const error: Error = {
             code: errorCode,
             description: ""
@@ -55,8 +59,11 @@ export default class Helper {
             }
             case ErrorCode.ATTESTATION_NOT_ALLOWED: {
                 let desc = "";
-                if (_params.length === 0) desc = "Attestation not allowed. A leaf entity is not allowed to attest.";
-                else desc = "Attestation not allowed. A " + _params[0] + " entity is not allowed to attest a " + _params[1] + ".";
+                if (_params.length === 0) {
+                    desc = "Attestation not allowed. A leaf entity is not allowed to attest.";
+                } else {
+                    desc = "Attestation not allowed. A " + _params[0] + " entity is not allowed to attest a " + _params[1] + ".";
+                }
                 error.description = desc;
                 return error;
             }
