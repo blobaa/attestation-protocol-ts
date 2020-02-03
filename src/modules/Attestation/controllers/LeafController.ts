@@ -15,10 +15,10 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { AttestationResponse, EntityType, IAttestationService, IController, objectAny } from "../../../types";
+import { AttestationResponse, EntityType, IAttestationController, IAttestationService, objectAny } from "../../../types";
 
 
-export default class LeafController implements IController {
+export default class LeafController implements IAttestationController {
     private readonly service: IAttestationService;
 
 

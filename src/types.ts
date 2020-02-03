@@ -271,7 +271,15 @@ export interface IAttestationService {
     run(url: string, params: objectAny, entityType: EntityType, runChecks: boolean): Promise<AttestationResponse>;
 }
 
-
-export interface IController {
+export interface IAttestationController {
     run(url: string, params: objectAny): Promise<AttestationResponse>;
+}
+
+
+export interface ISigningService {
+    run(params: SignDataParams, forTestnet: boolean): SignedData;
+}
+
+export interface IVerificationService {
+    run(url: string, params: VerifySignedDataParams, forTestnet: boolean): Promise<VerifySignedDataResponse>;
 }
