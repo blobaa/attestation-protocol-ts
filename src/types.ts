@@ -287,3 +287,7 @@ export interface ISigningService {
 export interface IVerificationService {
     run(url: string, params: VerifySignedDataParams, forTestnet: boolean): Promise<VerifySignedDataResponse>;
 }
+
+export interface IGetEntityService {
+    run(url: string, params: GetEntityParams): Promise<GetEntityResponse>;
+}
