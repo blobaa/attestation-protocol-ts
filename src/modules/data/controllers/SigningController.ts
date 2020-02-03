@@ -15,14 +15,18 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SignDataParams, SignedData } from "../../../types";
-import SigningService from "./../services/SigningService";
+import { ISigningService, SignDataParams, SignedData } from "../../../types";
 
 
 export default class SigningController {
+    private readonly service: ISigningService;
 
-    public sign(params: SignDataParams, forTestnet = false): SignedData {
-        const signingService = new SigningService();
-        return signingService.sign(params, forTestnet);
+
+    constructor(service: ISigningService) {
+        this.service = service;
+    }
+
+    public run(params: SignDataParams, forTestnet = true): SignedData {
+        return this.service.run(params, forTestnet);
     }
 }

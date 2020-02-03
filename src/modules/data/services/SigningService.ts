@@ -16,12 +16,13 @@
  */
 
 import { account } from "@somedotone/ardor-ts";
-import { SignDataParams, SignedData } from "../../../types";
-import TokenData from "../../lib/TokenData";
+import { ISigningService, SignDataParams, SignedData } from "../../../types";
+import TokenData from "./utils/TokenData";
 
 
-export default class SigningService {
-    public sign(params: SignDataParams, forTestnet: boolean): SignedData {
+export default class SigningService implements ISigningService {
+
+    public run(params: SignDataParams, forTestnet: boolean): SignedData {
         const tokenDataString = TokenData.createTokenDataString(params.attestationPath, params.attestationContext, params.payload);
         const creatorAccount = account.convertPassphraseToAccountRs(params.passphrase);
 

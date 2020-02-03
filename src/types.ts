@@ -216,9 +216,13 @@ export type SignDataParams = {
 export type VerifySignedDataParams = {
     signedData: SignedData;
     trustedRootAccount: string;
-    signedDataCheckCallback?(signedDataCheck: SignedDataCheckParams): boolean;
-    entityCheckCallback?(entity: EntityCheckParams): boolean;
+    signedDataCheckCallback?: SignedDataCheckCallback;
+    entityCheckCallback?: EntityCheckCallback;
 };
+
+export type SignedDataCheckCallback = (signedDataCheck: SignedDataCheckParams) => boolean;
+export type EntityCheckCallback = (entity: EntityCheckParams) => boolean;
+
 
 export type VerifySignedDataResponse = {
     activeRootAccount: string;
