@@ -15,21 +15,21 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { GetAccountPropertiesParams, SetAccountPropertyParams } from '@somedotone/ardor-ts';
-import { Data, EntityCheckParams, EntityType, Error, ErrorCode, SignDataParams, SignedDataCheckParams, State, VerifySignedDataParams } from '../src/index';
-import config from './config';
+import { GetAccountPropertiesParams, SetAccountPropertyParams } from "@somedotone/ardor-ts";
+import { Data, EntityCheckParams, EntityType, Error, ErrorCode, SignDataParams, SignedDataCheckParams, State, VerifySignedDataParams } from "../src/index";
+import config from "./config";
 import RequestMock from "./mocks/RequestMock";
 
 
 if (config.test.dataModule.runTests) {
-    describe('Data module tests', () => {
+    describe("Data module tests", () => {
 
-        test('sign / verify signed data success', async () => {
+        test("sign / verify signed data success", async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.erin.address, valid: true };
             };
 
-            const setAccountPropertyCallback = (): void => fail('should not reach here');
+            const setAccountPropertyCallback = (): void => fail("should not reach here");
 
             let propCnt = 0;
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
@@ -37,60 +37,60 @@ if (config.test.dataModule.runTests) {
                 if (propCnt === 0) {
                     expect(params.recipient).toBe(config.account.erin.address);
                     expect(params.setter).toBe(config.account.david.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-leaf-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|l|a|0000-0000-0000-00000|test-leaf-payload" };
                 }
 
                 if (propCnt === 1) {
                     expect(params.recipient).toBe(config.account.david.address);
                     expect(params.setter).toBe(config.account.charlie.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|a|0000-0000-0000-00000|test-intermediate-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|i|a|0000-0000-0000-00000|test-intermediate-payload" };
                 }
 
                 if (propCnt === 2) {
                     expect(params.recipient).toBe(config.account.charlie.address);
                     expect(params.setter).toBe(config.account.bob.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|a|0000-0000-0000-00000|test-intermediate-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|i|a|0000-0000-0000-00000|test-intermediate-payload" };
                 }
 
                 if (propCnt === 3) {
                     expect(params.recipient).toBe(config.account.bob.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|a|0000-0000-0000-00000|test-intermediate-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|i|a|0000-0000-0000-00000|test-intermediate-payload" };
                 }
 
                 if (propCnt === 4) {
                     expect(params.recipient).toBe(config.account.alice.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|r|a|0000-0000-0000-00000|test-root-payload" };
                 }
 
 
-                fail('should not reach here');
-                return { context: 'none', dataFieldsString: 'none' };
+                fail("should not reach here");
+                return { context: "none", dataFieldsString: "none" };
             };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
             const signDataParams: SignDataParams = {
-                attestationContext: 'test-context',
+                attestationContext: "test-context",
                 attestationPath: [ config.account.david.address, config.account.charlie.address, config.account.bob.address, config.account.alice.address ],
-                payload: 'test-signed-data-payload',
+                payload: "test-signed-data-payload",
                 passphrase: config.account.erin.secret
             };
 
@@ -99,7 +99,7 @@ if (config.test.dataModule.runTests) {
 
             const signedDataCheckCb = (params: SignedDataCheckParams): boolean => {
                 expect(params.signedData.creatorAccount).toBe(config.account.erin.address);
-                expect(params.signedData.payload).toBe('test-signed-data-payload');
+                expect(params.signedData.payload).toBe("test-signed-data-payload");
 
 
                 const timeWindow = 10 * 1000;
@@ -163,7 +163,7 @@ if (config.test.dataModule.runTests) {
                     return true;
                 }
 
-                fail('should not reach here');
+                fail("should not reach here");
                 return false;
             };
 
@@ -189,12 +189,12 @@ if (config.test.dataModule.runTests) {
         });
 
 
-        test('verifySignedData root attest leaf success', async () => {
+        test("verifySignedData root attest leaf success", async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.bob.address, valid: true };
             };
 
-            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
+            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail("should not reach here");
 
             let propCnt = 0;
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
@@ -202,33 +202,33 @@ if (config.test.dataModule.runTests) {
                 if (propCnt === 0) {
                     expect(params.recipient).toBe(config.account.bob.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-leaf-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|l|a|0000-0000-0000-00000|test-leaf-payload" };
                 }
 
                 if (propCnt === 1) {
                     expect(params.recipient).toBe(config.account.alice.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|r|a|0000-0000-0000-00000|test-root-payload" };
                 }
 
 
-                fail('should not reach here');
-                return { context: 'none', dataFieldsString: 'none' };
+                fail("should not reach here");
+                return { context: "none", dataFieldsString: "none" };
             };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
             const signDataParams: SignDataParams = {
-                attestationContext: 'test-context',
+                attestationContext: "test-context",
                 attestationPath: [ config.account.alice.address ],
-                payload: 'test-signed-data-payload',
+                payload: "test-signed-data-payload",
                 passphrase: config.account.bob.secret
             };
 
@@ -268,7 +268,7 @@ if (config.test.dataModule.runTests) {
                     return true;
                 }
 
-                fail('should not reach here');
+                fail("should not reach here");
                 return false;
             };
 
@@ -286,12 +286,12 @@ if (config.test.dataModule.runTests) {
         });
 
 
-        test('verifySignedData intermediate signed data success', async () => {
+        test("verifySignedData intermediate signed data success", async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.bob.address, valid: true };
             };
 
-            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
+            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail("should not reach here");
 
             let propCnt = 0;
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
@@ -299,33 +299,33 @@ if (config.test.dataModule.runTests) {
                 if (propCnt === 0) {
                     expect(params.recipient).toBe(config.account.bob.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|a|0000-0000-0000-00000|test-intermediate-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|i|a|0000-0000-0000-00000|test-intermediate-payload" };
                 }
 
                 if (propCnt === 1) {
                     expect(params.recipient).toBe(config.account.alice.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|r|a|0000-0000-0000-00000|test-root-payload" };
                 }
 
 
-                fail('should not reach here');
-                return { context: 'none', dataFieldsString: 'none' };
+                fail("should not reach here");
+                return { context: "none", dataFieldsString: "none" };
             };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
             const signDataParams: SignDataParams = {
-                attestationContext: 'test-context',
+                attestationContext: "test-context",
                 attestationPath: [ config.account.alice.address ],
-                payload: 'test-signed-data-payload',
+                payload: "test-signed-data-payload",
                 passphrase: config.account.bob.secret
             };
 
@@ -365,7 +365,7 @@ if (config.test.dataModule.runTests) {
                     return true;
                 }
 
-                fail('should not reach here');
+                fail("should not reach here");
                 return false;
             };
 
@@ -383,12 +383,12 @@ if (config.test.dataModule.runTests) {
         });
 
 
-        test('verifySignedData root signed data success', async () => {
+        test("verifySignedData root signed data success", async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.alice.address, valid: true };
             };
 
-            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
+            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail("should not reach here");
 
             let propCnt = 0;
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
@@ -396,14 +396,14 @@ if (config.test.dataModule.runTests) {
                 if (propCnt === 0) {
                     expect(params.recipient).toBe(config.account.alice.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|r|a|0000-0000-0000-00000|test-root-payload" };
                 }
 
-                fail('should not reach here');
-                return { context: 'none', dataFieldsString: 'none' };
+                fail("should not reach here");
+                return { context: "none", dataFieldsString: "none" };
             };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
@@ -432,14 +432,14 @@ if (config.test.dataModule.runTests) {
                     return true;
                 }
 
-                fail('should not reach here');
+                fail("should not reach here");
                 return false;
             };
 
 
             const signDataParams: SignDataParams = {
-                attestationContext: 'test-context',
-                payload: 'test-signed-data-payload',
+                attestationContext: "test-context",
+                payload: "test-signed-data-payload",
                 passphrase: config.account.alice.secret
             };
 
@@ -476,12 +476,12 @@ if (config.test.dataModule.runTests) {
         });
 
 
-        test('verifySignedData root in the middle of path error', async () => {
+        test("verifySignedData root in the middle of path error", async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.charlie.address, valid: true };
             };
 
-            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
+            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail("should not reach here");
 
             let propCnt = 0;
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
@@ -489,33 +489,33 @@ if (config.test.dataModule.runTests) {
                 if (propCnt === 0) {
                     expect(params.recipient).toBe(config.account.charlie.address);
                     expect(params.setter).toBe(config.account.bob.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-leaf-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|l|a|0000-0000-0000-00000|test-leaf-payload" };
                 }
 
                 if (propCnt === 1) {
                     expect(params.recipient).toBe(config.account.bob.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|r|a|0000-0000-0000-00000|test-root-payload" };
                 }
 
 
-                fail('should not reach here');
-                return { context: 'none', dataFieldsString: 'none' };
+                fail("should not reach here");
+                return { context: "none", dataFieldsString: "none" };
             };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
             const signDataParams: SignDataParams = {
-                attestationContext: 'test-context',
+                attestationContext: "test-context",
                 attestationPath: [ config.account.bob.address, config.account.alice.address ],
-                payload: 'test-signed-data-payload',
+                payload: "test-signed-data-payload",
                 passphrase: config.account.charlie.secret
             };
 
@@ -524,7 +524,7 @@ if (config.test.dataModule.runTests) {
 
             try {
                 await testData.verifySignedData(config.node.url.testnet, { signedData, trustedRootAccount: config.account.alice.address }, true);
-                fail('should not reach here');
+                fail("should not reach here");
             } catch (e) {
                 const error = e as Error;
                 expect(error.code).toBe(ErrorCode.ROOT_ENTITY_IN_MIDDLE_OF_PATH);
@@ -533,12 +533,12 @@ if (config.test.dataModule.runTests) {
         });
 
 
-        test('verifySignedData leaf as attestor error', async () => {
+        test("verifySignedData leaf as attestor error", async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.charlie.address, valid: true };
             };
 
-            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
+            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail("should not reach here");
 
             let propCnt = 0;
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
@@ -546,33 +546,33 @@ if (config.test.dataModule.runTests) {
                 if (propCnt === 0) {
                     expect(params.recipient).toBe(config.account.charlie.address);
                     expect(params.setter).toBe(config.account.bob.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-leaf-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|l|a|0000-0000-0000-00000|test-leaf-payload" };
                 }
 
                 if (propCnt === 1) {
                     expect(params.recipient).toBe(config.account.bob.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|l|a|0000-0000-0000-00000|test-root-payload" };
                 }
 
 
-                fail('should not reach here');
-                return { context: 'none', dataFieldsString: 'none' };
+                fail("should not reach here");
+                return { context: "none", dataFieldsString: "none" };
             };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
             const signDataParams: SignDataParams = {
-                attestationContext: 'test-context',
+                attestationContext: "test-context",
                 attestationPath: [ config.account.bob.address, config.account.alice.address ],
-                payload: 'test-signed-data-payload',
+                payload: "test-signed-data-payload",
                 passphrase: config.account.charlie.secret
             };
 
@@ -581,7 +581,7 @@ if (config.test.dataModule.runTests) {
 
             try {
                 await testData.verifySignedData(config.node.url.testnet, { signedData, trustedRootAccount: config.account.alice.address }, true);
-                fail('should not reach here');
+                fail("should not reach here");
             } catch (e) {
                 const error = e as Error;
                 expect(error.code).toBe(ErrorCode.LEAF_ATTESTOR_NOT_ALLOWED);
@@ -590,25 +590,25 @@ if (config.test.dataModule.runTests) {
         });
 
 
-        test('verifySignedData token invalid error', async () => {
+        test("verifySignedData token invalid error", async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.charlie.address, valid: false };
             };
 
-            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
+            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail("should not reach here");
 
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
-                fail('should not reach here');
-                return { context: 'none', dataFieldsString: 'none' };
+                fail("should not reach here");
+                return { context: "none", dataFieldsString: "none" };
             };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
             const signDataParams: SignDataParams = {
-                attestationContext: 'test-context',
+                attestationContext: "test-context",
                 attestationPath: [ config.account.bob.address, config.account.alice.address ],
-                payload: 'test-signed-data-payload',
+                payload: "test-signed-data-payload",
                 passphrase: config.account.charlie.secret
             };
 
@@ -617,7 +617,7 @@ if (config.test.dataModule.runTests) {
 
             try {
                 await testData.verifySignedData(config.node.url.testnet, { signedData, trustedRootAccount: config.account.alice.address }, true);
-                fail('should not reach here');
+                fail("should not reach here");
             } catch (e) {
                 const error = e as Error;
                 expect(error.code).toBe(ErrorCode.INVALID_SIGNATURE);
@@ -626,25 +626,25 @@ if (config.test.dataModule.runTests) {
         });
 
 
-        test('verifySignedData wrong signed data creator error', async () => {
+        test("verifySignedData wrong signed data creator error", async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.bob.address, valid: true };
             };
 
-            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
+            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail("should not reach here");
 
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
-                fail('should not reach here');
-                return { context: 'none', dataFieldsString: 'none' };
+                fail("should not reach here");
+                return { context: "none", dataFieldsString: "none" };
             };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
             const signDataParams: SignDataParams = {
-                attestationContext: 'test-context',
+                attestationContext: "test-context",
                 attestationPath: [ config.account.bob.address, config.account.alice.address ],
-                payload: 'test-signed-data-payload',
+                payload: "test-signed-data-payload",
                 passphrase: config.account.charlie.secret
             };
 
@@ -653,7 +653,7 @@ if (config.test.dataModule.runTests) {
 
             try {
                 await testData.verifySignedData(config.node.url.testnet, { signedData, trustedRootAccount: config.account.alice.address }, true);
-                fail('should not reach here');
+                fail("should not reach here");
             } catch (e) {
                 const error = e as Error;
                 expect(error.code).toBe(ErrorCode.WRONG_CREATOR_ACCOUNT);
@@ -662,24 +662,24 @@ if (config.test.dataModule.runTests) {
         });
 
 
-        test('verifySignedData signed data callback returned false error', async () => {
+        test("verifySignedData signed data callback returned false error", async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.charlie.address, valid: true };
             };
 
-            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
+            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail("should not reach here");
 
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
-                fail('should not reach here');
-                return { context: 'none', dataFieldsString: 'none' };
+                fail("should not reach here");
+                return { context: "none", dataFieldsString: "none" };
             };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
             const signDataParams: SignDataParams = {
-                attestationContext: 'test-context',
-                payload: 'test-signed-data-payload',
+                attestationContext: "test-context",
+                payload: "test-signed-data-payload",
                 passphrase: config.account.charlie.secret
             };
 
@@ -699,7 +699,7 @@ if (config.test.dataModule.runTests) {
 
             try {
                 await testData.verifySignedData(config.node.url.testnet, verifyParams, true);
-                fail('should not reach here');
+                fail("should not reach here");
             } catch (e) {
                 const error = e as Error;
                 expect(error.code).toBe(ErrorCode.SIGNED_DATA_CALLBACK_ERROR);
@@ -708,12 +708,12 @@ if (config.test.dataModule.runTests) {
         });
 
 
-        test('verifySignedData entity callback returned false error', async () => {
+        test("verifySignedData entity callback returned false error", async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.bob.address, valid: true };
             };
 
-            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
+            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail("should not reach here");
 
             let propCnt = 0;
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
@@ -721,24 +721,24 @@ if (config.test.dataModule.runTests) {
                 if (propCnt === 0) {
                     expect(params.recipient).toBe(config.account.bob.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-intermediate-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|l|a|0000-0000-0000-00000|test-intermediate-payload" };
                 }
 
 
-                fail('should not reach here');
-                return { context: 'none', dataFieldsString: 'none' };
+                fail("should not reach here");
+                return { context: "none", dataFieldsString: "none" };
             };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
             const signDataParams: SignDataParams = {
-                attestationContext: 'test-context',
+                attestationContext: "test-context",
                 attestationPath: [ config.account.alice.address ],
-                payload: 'test-signed-data-payload',
+                payload: "test-signed-data-payload",
                 passphrase: config.account.bob.secret
             };
 
@@ -758,7 +758,7 @@ if (config.test.dataModule.runTests) {
 
             try {
                 await testData.verifySignedData(config.node.url.testnet, verifyParams, true);
-                fail('should not reach here');
+                fail("should not reach here");
             } catch (e) {
                 const error = e as Error;
                 expect(error.code).toBe(ErrorCode.ENTITY_CALLBACK_ERROR);
@@ -767,12 +767,12 @@ if (config.test.dataModule.runTests) {
         });
 
 
-        test('verifySignedData deprecation success', async () => {
+        test("verifySignedData deprecation success", async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.erin.address, valid: true };
             };
 
-            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail('should not reach here');
+            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => fail("should not reach here");
 
             let propCnt = 0;
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
@@ -780,60 +780,60 @@ if (config.test.dataModule.runTests) {
                 if (propCnt === 0) {
                     expect(params.recipient).toBe(config.account.erin.address);
                     expect(params.setter).toBe(config.account.david.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-leaf-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|l|a|0000-0000-0000-00000|test-leaf-payload" };
                 }
 
                 if (propCnt === 1) {
                     expect(params.recipient).toBe(config.account.david.address);
                     expect(params.setter).toBe(config.account.bob.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|d|' + config.account.charlie.address.substring("ARDOR-".length) + '|test-intermediate-deprecated-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|i|d|" + config.account.charlie.address.substring("ARDOR-".length) + "|test-intermediate-deprecated-payload" };
                 }
 
                 if (propCnt === 2) {
                     expect(params.recipient).toBe(config.account.charlie.address);
                     expect(params.setter).toBe(config.account.bob.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|a|0000-0000-0000-00000|test-intermediate-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|i|a|0000-0000-0000-00000|test-intermediate-payload" };
                 }
 
                 if (propCnt === 3) {
                     expect(params.recipient).toBe(config.account.bob.address);
                     expect(params.setter).toBe(config.account.bob.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|d|' + config.account.alice.address.substring("ARDOR-".length) + '|test-root-deprecated-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|r|d|" + config.account.alice.address.substring("ARDOR-".length) + "|test-root-deprecated-payload" };
                 }
 
                 if (propCnt === 4) {
                     expect(params.recipient).toBe(config.account.alice.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|r|a|0000-0000-0000-00000|test-root-payload" };
                 }
 
 
-                fail('should not reach here');
-                return { context: 'none', dataFieldsString: 'none' };
+                fail("should not reach here");
+                return { context: "none", dataFieldsString: "none" };
             };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback, decodeTokenCallback));
 
 
             const signDataParams: SignDataParams = {
-                attestationContext: 'test-context',
+                attestationContext: "test-context",
                 attestationPath: [ config.account.david.address, config.account.bob.address ],
-                payload: 'test-signed-data-deprecation-payload',
+                payload: "test-signed-data-deprecation-payload",
                 passphrase: config.account.erin.secret
             };
 
@@ -892,7 +892,7 @@ if (config.test.dataModule.runTests) {
                     return true;
                 }
 
-                fail('should not reach here');
+                fail("should not reach here");
                 return false;
             };
 
@@ -917,7 +917,7 @@ if (config.test.dataModule.runTests) {
         });
 
 
-        test('verifySignedData multiple deprecation hops success', async () => {
+        test("verifySignedData multiple deprecation hops success", async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.frank.address, valid: true };
             };
@@ -928,69 +928,69 @@ if (config.test.dataModule.runTests) {
                 if (propCnt === 0) {
                     expect(params.recipient).toBe(config.account.frank.address);
                     expect(params.setter).toBe(config.account.erin.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-leaf-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|l|a|0000-0000-0000-00000|test-leaf-payload" };
                 }
 
                 if (propCnt === 1) {
                     expect(params.recipient).toBe(config.account.erin.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|d|' + config.account.david.address.substring("ARDOR-".length) + '|test-intermediate-deprecated-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|i|d|" + config.account.david.address.substring("ARDOR-".length) + "|test-intermediate-deprecated-payload" };
                 }
 
                 if (propCnt === 2) {
                     expect(params.recipient).toBe(config.account.david.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|d|' + config.account.charlie.address.substring("ARDOR-".length) + '|test-intermediate-deprecated-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|i|d|" + config.account.charlie.address.substring("ARDOR-".length) + "|test-intermediate-deprecated-payload" };
                 }
 
                 if (propCnt === 3) {
                     expect(params.recipient).toBe(config.account.charlie.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|d|' + config.account.bob.address.substring("ARDOR-".length) + '|test-intermediate-deprecated-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|i|d|" + config.account.bob.address.substring("ARDOR-".length) + "|test-intermediate-deprecated-payload" };
                 }
 
                 if (propCnt === 4) {
                     expect(params.recipient).toBe(config.account.bob.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|i|a|0000-0000-0000-00000|test-intermediate-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|i|a|0000-0000-0000-00000|test-intermediate-payload" };
                 }
 
                 if (propCnt === 5) {
                     expect(params.recipient).toBe(config.account.alice.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|r|a|0000-0000-0000-00000|test-root-payload" };
                 }
 
 
-                fail('should not reach here');
-                return { context: 'none', dataFieldsString: 'none' };
+                fail("should not reach here");
+                return { context: "none", dataFieldsString: "none" };
             };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
 
 
             const signDataParams: SignDataParams = {
-                attestationContext: 'test-context',
+                attestationContext: "test-context",
                 attestationPath: [ config.account.erin.address, config.account.alice.address ],
-                payload: 'test-signed-data-deprecation-payload',
+                payload: "test-signed-data-deprecation-payload",
                 passphrase: config.account.frank.secret
             };
 
@@ -1059,7 +1059,7 @@ if (config.test.dataModule.runTests) {
                     return true;
                 }
 
-                fail('should not reach here');
+                fail("should not reach here");
                 return false;
             };
 
@@ -1085,7 +1085,7 @@ if (config.test.dataModule.runTests) {
         });
 
 
-        test('verifySignedData too many deprecation hops error', async () => {
+        test("verifySignedData too many deprecation hops error", async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.charlie.address, valid: true };
             };
@@ -1095,31 +1095,31 @@ if (config.test.dataModule.runTests) {
 
                 if (propCnt === 0) {
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-leaf-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|l|a|0000-0000-0000-00000|test-leaf-payload" };
                 } else {
                     if (propCnt % 2 === 1) {
                         propCnt++;
-                        return { context: 'ap://test-context', dataFieldsString: '001|r|d|' + config.account.alice.address.substring("ARDOR-".length) + '|test-root-bob-payload' };
+                        return { context: "ap://test-context", dataFieldsString: "001|r|d|" + config.account.alice.address.substring("ARDOR-".length) + "|test-root-bob-payload" };
                     }
 
                     if (propCnt %2 === 0) {
                         propCnt++;
-                        return { context: 'ap://test-context', dataFieldsString: '001|r|d|' + config.account.bob.address.substring("ARDOR-".length) + '|test-leaf-alice-payload' };
+                        return { context: "ap://test-context", dataFieldsString: "001|r|d|" + config.account.bob.address.substring("ARDOR-".length) + "|test-leaf-alice-payload" };
                     }
                 }
 
 
-                fail('should not reach here');
-                return { context: 'none', dataFieldsString: 'none' };
+                fail("should not reach here");
+                return { context: "none", dataFieldsString: "none" };
             };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
 
 
             const signDataParams: SignDataParams = {
-                attestationContext: 'test-context',
+                attestationContext: "test-context",
                 attestationPath: [ config.account.bob.address ],
-                payload: 'test-signed-data-payload',
+                payload: "test-signed-data-payload",
                 passphrase: config.account.charlie.secret
             };
 
@@ -1127,7 +1127,7 @@ if (config.test.dataModule.runTests) {
 
             try {
                 await testData.verifySignedData(config.node.url.testnet, { signedData, trustedRootAccount: config.account.bob.address }, true);
-                fail('should not reach here');
+                fail("should not reach here");
             } catch (e) {
                 const error = e as Error;
                 expect(error.code).toBe(ErrorCode.TOO_MANY_DEPRECATION_HOPS);
@@ -1136,7 +1136,7 @@ if (config.test.dataModule.runTests) {
         });
 
 
-        test('verifySignedData trusted root not found error', async () => {
+        test("verifySignedData trusted root not found error", async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.bob.address, valid: true };
             };
@@ -1147,33 +1147,33 @@ if (config.test.dataModule.runTests) {
                 if (propCnt === 0) {
                     expect(params.recipient).toBe(config.account.bob.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-leaf-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|l|a|0000-0000-0000-00000|test-leaf-payload" };
                 }
 
                 if (propCnt === 1) {
                     expect(params.recipient).toBe(config.account.alice.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|r|a|0000-0000-0000-00000|test-root-payload" };
                 }
 
 
-                fail('should not reach here');
-                return { context: 'none', dataFieldsString: 'none' };
+                fail("should not reach here");
+                return { context: "none", dataFieldsString: "none" };
             };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
 
 
             const signDataParams: SignDataParams = {
-                attestationContext: 'test-context',
+                attestationContext: "test-context",
                 attestationPath: [ config.account.alice.address ],
-                payload: 'test-signed-data-payload',
+                payload: "test-signed-data-payload",
                 passphrase: config.account.bob.secret
             };
 
@@ -1182,7 +1182,7 @@ if (config.test.dataModule.runTests) {
 
             try {
                 await testData.verifySignedData(config.node.url.testnet, { trustedRootAccount: config.account.bob.address, signedData }, true);
-                fail('should not reach here');
+                fail("should not reach here");
             } catch (e) {
                 const error = e as Error;
                 expect(error.code).toBe(ErrorCode.TRUSTED_ROOT_NOT_FOUND);
@@ -1191,7 +1191,7 @@ if (config.test.dataModule.runTests) {
         });
 
 
-        test('verifySignedData trusted root is deprecated success', async () => {
+        test("verifySignedData trusted root is deprecated success", async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.charlie.address, valid: true };
             };
@@ -1202,42 +1202,42 @@ if (config.test.dataModule.runTests) {
                 if (propCnt === 0) {
                     expect(params.recipient).toBe(config.account.charlie.address);
                     expect(params.setter).toBe(config.account.bob.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|a|0000-0000-0000-00000|test-leaf-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|l|a|0000-0000-0000-00000|test-leaf-payload" };
                 }
 
                 if (propCnt === 1) {
                     expect(params.recipient).toBe(config.account.bob.address);
                     expect(params.setter).toBe(config.account.bob.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|d|' + config.account.alice.address.substring("ARDOR-".length) + '|test-root-deprecated-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|r|d|" + config.account.alice.address.substring("ARDOR-".length) + "|test-root-deprecated-payload" };
                 }
 
                 if (propCnt === 2) {
                     expect(params.recipient).toBe(config.account.alice.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|r|a|0000-0000-0000-00000|test-root-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|r|a|0000-0000-0000-00000|test-root-payload" };
                 }
 
 
-                fail('should not reach here');
-                return { context: 'none', dataFieldsString: 'none' };
+                fail("should not reach here");
+                return { context: "none", dataFieldsString: "none" };
             };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
 
 
             const signDataParams: SignDataParams = {
-                attestationContext: 'test-context',
+                attestationContext: "test-context",
                 attestationPath: [ config.account.bob.address ],
-                payload: 'test-signed-data-payload',
+                payload: "test-signed-data-payload",
                 passphrase: config.account.charlie.secret
             };
 
@@ -1253,7 +1253,7 @@ if (config.test.dataModule.runTests) {
         });
 
 
-        test('verifySignedData signed data creator is deprecated error', async () => {
+        test("verifySignedData signed data creator is deprecated error", async () => {
             const decodeTokenCallback = (): { account: string; valid: boolean } => {
                 return { account: config.account.bob.address, valid: true };
             };
@@ -1264,23 +1264,23 @@ if (config.test.dataModule.runTests) {
                 if (propCnt === 0) {
                     expect(params.recipient).toBe(config.account.bob.address);
                     expect(params.setter).toBe(config.account.alice.address);
-                    expect(params.property).toBe('ap://test-context');
+                    expect(params.property).toBe("ap://test-context");
 
                     propCnt++;
-                    return { context: 'ap://test-context', dataFieldsString: '001|l|d|' + config.account.alice.address.substring("ARDOR-".length) + '|test-leaf-deprecated-payload' };
+                    return { context: "ap://test-context", dataFieldsString: "001|l|d|" + config.account.alice.address.substring("ARDOR-".length) + "|test-leaf-deprecated-payload" };
                 }
 
-                fail('should not reach here');
-                return { context: 'none', dataFieldsString: 'none' };
+                fail("should not reach here");
+                return { context: "none", dataFieldsString: "none" };
             };
 
             const testData = new Data(new RequestMock(getAccountPropertyCallback, undefined, decodeTokenCallback));
 
 
             const signDataParams: SignDataParams = {
-                attestationContext: 'test-context',
+                attestationContext: "test-context",
                 attestationPath: [ config.account.alice.address ],
-                payload: 'test-signed-data-payload',
+                payload: "test-signed-data-payload",
                 passphrase: config.account.bob.secret
             };
 
@@ -1289,7 +1289,7 @@ if (config.test.dataModule.runTests) {
 
             try {
                 await testData.verifySignedData(config.node.url.testnet, { trustedRootAccount: config.account.alice.address, signedData }, true);
-                fail('should not reach here');
+                fail("should not reach here");
             } catch (e) {
                 const error = e as Error;
                 expect(error.code).toBe(ErrorCode.CREATOR_ACCOUNT_DEPRECATED);
@@ -1299,7 +1299,7 @@ if (config.test.dataModule.runTests) {
 
     });
 } else {
-    test('dummy', () => {
+    test("dummy", () => {
         expect(true).toBeTruthy();
     });
 }
