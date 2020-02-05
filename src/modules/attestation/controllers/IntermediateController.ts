@@ -15,7 +15,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { AttestationResponse, EntityType, IAttestationService, objectAny } from "../../../types";
+import { AttestationResponse, EntityType } from "../../../types";
+import { IAttestationService, objectAny } from "../../internal-types";
 
 
 export default class IntermediateController {

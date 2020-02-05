@@ -17,9 +17,10 @@
 
 import { DecodeTokenParams, DecodeTokenResponse, IRequest, time } from "@somedotone/ardor-ts";
 import { ACCOUNT_PREFIX, MAX_DEPRECATION_HOPS, noError } from "../../../constants";
-import { EntityCheckCallback, EntityCheckParams, EntityType, Error, ErrorCode, IVerificationService, SignedData, SignedDataCheckCallback, SignedDataCheckParams, State, VerifySignedDataParams, VerifySignedDataResponse } from "../../../types";
+import { EntityCheckCallback, EntityCheckParams, EntityType, Error, ErrorCode, SignedData, SignedDataCheckCallback, SignedDataCheckParams, State, VerifySignedDataParams, VerifySignedDataResponse } from "../../../types";
 import DataFields from "../../lib/DataFields";
 import Helper from "../../lib/Helper";
+import { IVerificationService } from "../../internal-types";
 import TokenData from "./utils/TokenData";
 
 

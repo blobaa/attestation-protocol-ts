@@ -15,7 +15,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ISigningService, SignDataParams, SignedData } from "../../../types";
+import { SignDataParams, SignedData } from "../../../types";
+import { ISigningService } from "../../internal-types";
 
 
 export default class SigningController {

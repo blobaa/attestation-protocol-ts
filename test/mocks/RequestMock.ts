@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DecodeTokenParams, DecodeTokenResponse, GetAccountPropertiesParams, GetAccountPropertiesResponse, Request, SetAccountPropertyParams, SetAccountPropertyResponse, time, DeleteAccountPropertyParams, DeleteAccountPropertyResponse } from '@somedotone/ardor-ts';
+import { DecodeTokenParams, DecodeTokenResponse, GetAccountPropertiesParams, GetAccountPropertiesResponse, Request, SetAccountPropertyParams, SetAccountPropertyResponse, time, DeleteAccountPropertyParams, DeleteAccountPropertyResponse } from "@somedotone/ardor-ts";
 
 
 export default class RequestMock extends Request {
@@ -58,7 +58,7 @@ export default class RequestMock extends Request {
             properties: [] as any
             /*eslint-enable @typescript-eslint/no-explicit-any*/
         };
-        if (value !== 'none') {
+        if (value !== "none") {
             resp.properties.push({
                 setterRS: "",
                 property,

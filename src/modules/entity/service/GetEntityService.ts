@@ -16,9 +16,10 @@
  */
 
 import { IRequest } from "@somedotone/ardor-ts";
-import { ErrorCode, GetEntityParams, GetEntityResponse, IGetEntityService } from "../../../types";
+import { ErrorCode, GetEntityParams, GetEntityResponse } from "../../../types";
 import DataFields from "../../lib/DataFields";
 import Helper from "../../lib/Helper";
+import { IGetEntityService } from "../../internal-types";
 
 
 export default class GetEntityService implements IGetEntityService {

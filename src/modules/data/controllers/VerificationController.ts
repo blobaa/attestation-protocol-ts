@@ -15,7 +15,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IVerificationService, VerifySignedDataParams, VerifySignedDataResponse } from "../../../types";
+import { VerifySignedDataParams, VerifySignedDataResponse } from "../../../types";
+import { IVerificationService } from "../../internal-types";
 
 
 export default class VerificationController {
