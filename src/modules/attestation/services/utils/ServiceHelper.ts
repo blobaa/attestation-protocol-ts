@@ -16,9 +16,10 @@
  */
 
 import { account, ChainId, IRequest, SetAccountPropertyParams, SetAccountPropertyResponse } from "@somedotone/ardor-ts";
-import { EntityType, ErrorCode, objectAny, State } from "../../../..";
+import { EntityType, ErrorCode, State } from "../../../..";
 import DataFields from "../../../lib/DataFields";
 import Helper from "../../../lib/Helper";
+import { objectAny } from "../../../internal-types";
 
 
 export default class ServiceHelper {

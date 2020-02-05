@@ -16,7 +16,8 @@
  */
 
 import { account } from "@somedotone/ardor-ts";
-import { ISigningService, SignDataParams, SignedData } from "../../../types";
+import { SignDataParams, SignedData } from "../../../types";
+import { ISigningService } from "../../internal-types";
 import TokenData from "./utils/TokenData";
 
 

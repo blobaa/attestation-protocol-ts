@@ -16,11 +16,12 @@
  */
 
 import { account, IRequest } from "@somedotone/ardor-ts";
-import { EntityType, ErrorCode, objectAny, State } from "../../..";
+import { EntityType, ErrorCode, State } from "../../..";
 import { ACCOUNT_PREFIX } from "../../../constants";
-import { AttestationResponse, IAttestationService } from "../../../types";
+import { AttestationResponse } from "../../../types";
 import DataFields from "../../lib/DataFields";
 import Helper from "../../lib/Helper";
+import { IAttestationService, objectAny } from "../../internal-types";
 import ServiceHelper from "./utils/ServiceHelper";
 
 

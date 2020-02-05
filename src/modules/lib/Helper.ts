@@ -15,8 +15,9 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Error, ErrorCode, objectAny } from "../../types";
+import { Error, ErrorCode } from "../../types";
 import { unknown } from "../../constants";
+import { objectAny } from "../internal-types";
 
 
 export default class Helper {

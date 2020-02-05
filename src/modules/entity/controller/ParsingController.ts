@@ -15,7 +15,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { GetEntityParams, GetEntityResponse, IGetEntityService } from "../../../types";
+import { GetEntityParams, GetEntityResponse } from "../../../types";
+import { IGetEntityService } from "../../internal-types";
 
 
 export default class ParsingController {

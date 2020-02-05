@@ -15,10 +15,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*eslint-disable @typescript-eslint/no-explicit-any*/
-export type objectAny = {[name: string]: any};
-/*eslint-enable @typescript-eslint/no-explicit-any*/
-
 export type Error = {
     code: ErrorCode;
     description: string;
@@ -268,21 +264,4 @@ export type GetEntityResponse = {
 
 export interface IEntity {
     getEntity(url: string, params: GetEntityParams): Promise<GetEntityResponse>;
-}
-
-
-export interface IAttestationService {
-    run(url: string, params: objectAny, entityType: EntityType, runChecks: boolean): Promise<AttestationResponse>;
-}
-
-export interface ISigningService {
-    run(params: SignDataParams, forTestnet: boolean): SignedData;
-}
-
-export interface IVerificationService {
-    run(url: string, params: VerifySignedDataParams, forTestnet: boolean): Promise<VerifySignedDataResponse>;
-}
-
-export interface IGetEntityService {
-    run(url: string, params: GetEntityParams): Promise<GetEntityResponse>;
 }

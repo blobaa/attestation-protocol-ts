@@ -15,7 +15,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 /* eslint-disable max-classes-per-file */
 import AttestationHandler from "./modules/attestation/AttestationHandler";
 import DataHandler from "./modules/data/DataHandler";
