@@ -3,6 +3,9 @@
 An implementation of the [Attestation Protocol](https://github.com/blobaa/documentation/wiki/Attestation-Protocol) written in [TypeScript](https://www.typescriptlang.org).
 
 
+<details><summary><i>Table of Contents</i></summary>
+<p>
+
 - [Attestation Protocol TypeScript](#attestation-protocol-typescript)
   - [Installation](#installation)
   - [Development](#development)
@@ -29,6 +32,9 @@ An implementation of the [Attestation Protocol](https://github.com/blobaa/docume
   - [Module Instantiation](#module-instantiation)
   - [Licensing](#licensing)
     - [Dual-License](#dual-license)
+
+</p>
+</details>
 
 
 ## Installation
