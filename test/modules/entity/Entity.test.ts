@@ -16,9 +16,9 @@
  */
 
 import { GetAccountPropertiesParams } from "@somedotone/ardor-ts";
-import { Entity, EntityType, GetEntityParams, State, Error, ErrorCode } from "../src/index";
-import config from "./config";
-import RequestMock from "./mocks/RequestMock";
+import { Entity, EntityType, GetEntityParams, State, Error, ErrorCode } from "../../../src/index";
+import config from "../../config";
+import RequestMock from "../../mocks/RequestMock";
 
 
 if (config.test.entityModule.runTests) {

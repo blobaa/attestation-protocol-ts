@@ -16,9 +16,9 @@
  */
 
 import { GetAccountPropertiesParams, SetAccountPropertyParams } from "@somedotone/ardor-ts";
-import { Data, EntityCheckParams, EntityType, Error, ErrorCode, SignDataParams, SignedDataCheckParams, State, VerifySignedDataParams } from "../src/index";
-import config from "./config";
-import RequestMock from "./mocks/RequestMock";
+import { Data, EntityCheckParams, EntityType, Error, ErrorCode, SignDataParams, SignedDataCheckParams, State, VerifySignedDataParams } from "../../../src/index";
+import config from "../../config";
+import RequestMock from "../../mocks/RequestMock";
 
 
 if (config.test.dataModule.runTests) {
