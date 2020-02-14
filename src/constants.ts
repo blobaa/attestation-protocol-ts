@@ -27,9 +27,6 @@ export const NUMBER_OF_DATA_FIELDS = 5;
 
 export const MAX_PAYLOAD_LENGTH = 120;
 
-export const SIGNED_DATA_SEPARATOR = "|";
-export const ATTESTATION_PATH_SEPARATOR = ",";
-
 export const MAX_DEPRECATION_HOPS = 20;
 export const REDIRECT_ACCOUNT_CHARACTER_LENGTH = 20;
 

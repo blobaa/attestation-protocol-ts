@@ -15,17 +15,12 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ATTESTATION_PATH_SEPARATOR, SIGNED_DATA_SEPARATOR } from "../../../../constants";
-
-
 export default class TokenData {
 
     public static createTokenDataString = (path: string[] | undefined, context: string, payload: string): string => {
         let tokenData = "";
-        tokenData += (path && path.join(ATTESTATION_PATH_SEPARATOR)) || "";
-        tokenData += SIGNED_DATA_SEPARATOR;
         tokenData += context;
-        tokenData += SIGNED_DATA_SEPARATOR;
+        tokenData += (path && path.join("")) || "";
         tokenData += payload;
         return tokenData;
     };;
