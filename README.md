@@ -96,7 +96,7 @@ npm test
 
 ## General
 
-This library uses the [ardor-ts](https://github.com/somedotone/ardor-ts) package to interact with the [Ardor](https://ardorplatform.org) Blockchain. At the current state there is no child chain and fee configuration possible. It uses the default ardor-ts configuration and therefore the IGNIS child chain and automatic fee calculation.
+This library uses the [ardor-ts](https://github.com/somedotone/ardor-ts) package to interact with the [Ardor](https://ardorplatform.org) Blockchain. At the current state there is no child chain configuration possible. It uses the default ardor-ts configuration and therefore the IGNIS child chain.
 
 There are lots of tests in the test folder. Have a look if you need some additional examples of how to use the APIs.
 
@@ -147,7 +147,9 @@ const createRootAttestationExample = async () => {
         attestationContext: "exampleContext",
         payload: "exampleAccountPayload",       // [optional] payload data field (see Attestation Protocol)
         
-        passphrase: "<some passphrase>"         // passphrase of account to be self attested
+        passphrase: "<some passphrase>",        // passphrase of account to be self attested
+        fee: 0.1                                // [optional] fee in IGNIS.
+                                                // If not set, automatic fee calculation will be used
     };
     
     try {
@@ -182,8 +184,10 @@ const createIntermediateAttestationExample = async () => {
         payload: "exampleAccountPayload",                   // [optional] payload data field (see Attestation Protocol)
         
         passphrase: "<some passphrase>",                    // passphrase of attestor account
-        myAttestorAccount: "ARDOR-MYAT-TEST-ORAC-COUNT"     // [optional] account name of attestor accounts attestor.
+        myAttestorAccount: "ARDOR-MYAT-TEST-ORAC-COUNT",    // [optional] account name of attestor accounts attestor.
                                                             // Required if attestor account is an intermediate entity
+        fee: 0.1                                            // [optional] fee in IGNIS. 
+                                                            // If not set, automatic fee calculation will be used
     };
     
     try {
@@ -213,13 +217,15 @@ const createLeafAttestationExample = async () => {
 
     /* set parameters */
     const params: CreateLeafAttestationParams = {
-        leafAccount: "ARDOR-ACCO-UNTT-OBEA-TTEST",      // account to be attested
+        leafAccount: "ARDOR-ACCO-UNTT-OBEA-TTEST",          // account to be attested
         attestationContext: "exampleContext",
-        payload: "exampleAccountPayload",               // [optional] payload data field (see Attestation Protocol)
+        payload: "exampleAccountPayload",                   // [optional] payload data field (see Attestation Protocol)
         
-        passphrase: "<some passphrase>",                // passphrase of attestor account
-        myAttestorAccount: "ARDOR-MYAT-TEST-ORAC-COUNT" // [optional] account name of attestor accounts attestor.
-                                                        // Required if attestor account is an intermediate entity
+        passphrase: "<some passphrase>",                    // passphrase of attestor account
+        myAttestorAccount: "ARDOR-MYAT-TEST-ORAC-COUNT",    // [optional] account name of attestor accounts attestor.
+                                                            // Required if attestor account is an intermediate entity
+        fee: 0.1                                            // [optional] fee in IGNIS.
+                                                            // If not set, automatic fee calculation will be used
     };
     
     try {
@@ -254,7 +260,9 @@ const createAttestationUncheckedExample = async () => {
         attestationContext: "exampleContext",
         payload: "exampleAccountPayload",       // [optional] payload data field (see Attestation Protocol)
         
-        passphrase: "<some passphrase>"         // passphrase of attestor account
+        passphrase: "<some passphrase>",        // passphrase of attestor account
+        fee: 0.1                                // [optional] fee in IGNIS.
+                                                // If not set, automatic fee calculation will be used
     };
     
     try {
@@ -290,7 +298,9 @@ const updateRootDataFieldsExample = async () => {
         newPayload: "newExampleAccountPayload", // [optional] new payload
         newState: State.INACTIVE,               // [optional] new state
 
-        passphrase: "<some passphrase>"         // passphrase of account to be updated
+        passphrase: "<some passphrase>",        // passphrase of account to be updated
+        fee: 0.1                                // [optional] fee in IGNIS.
+                                                // If not set, automatic fee calculation will be used
     };
     
     try {
@@ -320,7 +330,11 @@ const updateRootAccountExample = async () => {
         attestationContext: "exampleContext",
         newRootAccount: "ARDOR-NEWA-CCOU-NTNA-MEXXX",   // new account
 
-        passphrase: "<some passphrase>"                 // passphrase of account to be updated
+        passphrase: "<some passphrase>",                // passphrase of account to be updated
+        fee: 0.1                                        // [optional] fee in IGNIS.
+                                                        // If not set, automatic fee calculation will be used.
+                                                        // CAUTION: this involves two transactions and the
+                                                        // fee is set for each
     };
     
     try {
@@ -358,8 +372,10 @@ const updateIntermediateDataFieldsExample = async () => {
         newState: State.INACTIVE,                           // [optional] new state
         
         passphrase: "<some passphrase>",                    // passphrase of attestor account
-        myAttestorAccount: "ARDOR-MYAT-TEST-ORAC-COUNT"     // [optional] account name of attestor accounts attestor.
+        myAttestorAccount: "ARDOR-MYAT-TEST-ORAC-COUNT",    // [optional] account name of attestor accounts attestor.
                                                             // Required if attestor account is an intermediate entity
+        fee: 0.1                                            // [optional] fee in IGNIS.
+                                                            // If not set, automatic fee calculation will be used.
     };
     
     try {
@@ -391,8 +407,12 @@ const updateIntermediateAccountExample = async () => {
         newIntermediateAccount: "ARDOR-NEWA-CCOU-NTXX-XXXXX",   // new account
         
         passphrase: "<some passphrase>",                        // passphrase of attestor account
-        myAttestorAccount: "ARDOR-MYAT-TEST-ORAC-COUNT"         // [optional] account name of attestor accounts attestor.
+        myAttestorAccount: "ARDOR-MYAT-TEST-ORAC-COUNT",        // [optional] account name of attestor accounts attestor.
                                                                 // Required if attestor account is an intermediate entity
+        fee: 0.1                                                // [optional] fee in IGNIS.
+                                                                // If not set, automatic fee calculation will be used.
+                                                                // CAUTION: this involves two transactions and the
+                                                                // fee is set for each
     };
     
     try {
@@ -424,14 +444,16 @@ const updateLeafDataFieldsExample = async () => {
 
     /* set parameters */
     const params: UpdateLeafAttestationParams = {
-        leafAccount: "ARDOR-ACCO-UNTT-OBEU-PDATE",      // account to be updated
+        leafAccount: "ARDOR-ACCO-UNTT-OBEU-PDATE",          // account to be updated
         attestationContext: "exampleContext",
-        newPayload: "newExampleAccountPayload",         // [optional] new payload
-        newState: State.INACTIVE,                       // [optional] new state
+        newPayload: "newExampleAccountPayload",             // [optional] new payload
+        newState: State.INACTIVE,                           // [optional] new state
         
-        passphrase: "<some passphrase>",                // passphrase of attestor account
-        myAttestorAccount: "ARDOR-MYAT-TEST-ORAC-COUNT" // [optional] account name of attestor accounts attestor.
-                                                        // Required if attestor account is an intermediate entity
+        passphrase: "<some passphrase>",                    // passphrase of attestor account
+        myAttestorAccount: "ARDOR-MYAT-TEST-ORAC-COUNT",    // [optional] account name of attestor accounts attestor.
+                                                            // Required if attestor account is an intermediate entity
+        fee: 0.1                                            // [optional] fee in IGNIS.
+                                                            // If not set, automatic fee calculation will be used.
     };
     
     try {
@@ -458,13 +480,17 @@ const updateLeafAccountExample = async () => {
 
     /* set parameters */
     const params: UpdateLeafAttestationParams = {
-        leafAccount: "ARDOR-ACCO-UNTT-OBEU-PDATE",      // account to be updated
+        leafAccount: "ARDOR-ACCO-UNTT-OBEU-PDATE",          // account to be updated
         attestationContext: "exampleContext",
-        newLeafAccount: "ARDOR-NEWA-CCOU-NTXX-XXXXX",   // new account
+        newLeafAccount: "ARDOR-NEWA-CCOU-NTXX-XXXXX",       // new account
         
-        passphrase: "<some passphrase>",                // passphrase of attestor account
-        myAttestorAccount: "ARDOR-MYAT-TEST-ORAC-COUNT" // [optional] account name of attestor accounts attestor.
-                                                        // Required if attestor account is an intermediate entity
+        passphrase: "<some passphrase>",                    // passphrase of attestor account
+        myAttestorAccount: "ARDOR-MYAT-TEST-ORAC-COUNT",    // [optional] account name of attestor accounts attestor.
+                                                            // Required if attestor account is an intermediate entity
+        fee: 0.1                                            // [optional] fee in IGNIS.
+                                                            // If not set, automatic fee calculation will be used.
+                                                            // CAUTION: this involves two transactions and the
+                                                            // fee is set for each
     };
     
     try {
@@ -495,7 +521,9 @@ const revokeRootAttestationExample = async () => {
     /* set parameters */
     const params: RevokeRootAttestationParams = {
         attestationContext: "exampleContext",
-        passphrase: "<some passphrase>" // passphrase of account to be revoked
+        passphrase: "<some passphrase>",        // passphrase of account to be revoked
+        fee: 0.1                                // [optional] fee in IGNIS.
+                                                // If not set, automatic fee calculation will be used.
     };
     
     try {
@@ -529,6 +557,8 @@ const revokeIntermediateAttestationExample = async () => {
                                                             // Required if request is not a self revocation
         attestationContext: "exampleContext",
         passphrase: "<some passphrase>",                    // passphrase of revoking account
+        fee: 0.1                                            // [optional] fee in IGNIS.
+                                                            // If not set, automatic fee calculation will be used.
     };
     
     try {
@@ -561,7 +591,9 @@ const revokeLeafAttestationExample = async () => {
         leafAccount: "ARDOR-ACCO-UNTT-OBER-EVOKE",  // [ optional ] account to be revoked.
                                                     // Required if request is not a self revocation
         attestationContext: "exampleContext",
-        passphrase: "<some passphrase>"             // passphrase of revoking account
+        passphrase: "<some passphrase>",            // passphrase of revoking account
+        fee: 0.1                                    // [optional] fee in IGNIS.
+                                                    // If not set, automatic fee calculation will be used.
     };
     
     try {
@@ -594,6 +626,8 @@ const revokeAttestationUncheckedExample = async () => {
         account: "ARDOR-ACCO-UNTT-OBER-EVOKE",  // account to be revoked
         attestationContext: "exampleContext",
         passphrase: "<some passphrase>",        // passphrase of revoking account
+        fee: 0.1                                // [optional] fee in IGNIS.
+                                                // If not set, automatic fee calculation will be used.
     };
     
     try {

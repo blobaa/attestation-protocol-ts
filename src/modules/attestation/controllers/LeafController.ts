@@ -17,6 +17,7 @@
 
 import { AttestationResponse, EntityType } from "../../../types";
 import { IAttestationService, objectAny } from "../../internal-types";
+import { IGNIS_ONE_COIN } from "../../../constants";
 
 
 export default class LeafController {
@@ -29,6 +30,10 @@ export default class LeafController {
 
 
     public async run(url: string, params: objectAny): Promise<AttestationResponse> {
+        if (params.fee) {
+            params.feeNQT = params.fee * IGNIS_ONE_COIN;
+            delete params.fee;
+        }
         return await this.service.run(url, params, EntityType.LEAF, true);
     }
 }

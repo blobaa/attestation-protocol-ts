@@ -123,7 +123,8 @@ export default class CreationService implements IAttestationService {
         dataFields.entityType = entityType;
         dataFields.payload = params.payload;
 
-        const response = await this.helper.createAttestationTransaction(url, params.passphrase, this.helper.getRecipient(params), dataFields);
+        const accountToAttest = this.helper.getRecipient(params);
+        const response = await this.helper.createAttestationTransaction(url, params.passphrase, accountToAttest, dataFields, params.feeNQT);
         return { transactionId: response.fullHash };
     }
 }

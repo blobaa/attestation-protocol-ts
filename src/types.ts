@@ -92,6 +92,7 @@ export type CreateRootAttestationParams = {
     passphrase: string;
     attestationContext: string;
     payload?: string;
+    fee?: number;
 };
 
 export type CreateIntermediateAttestationParams = {
@@ -100,6 +101,7 @@ export type CreateIntermediateAttestationParams = {
     intermediateAccount: string;
     myAttestorAccount?: string;
     payload?: string;
+    fee?: number;
 };
 
 export type CreateLeafAttestationParams = {
@@ -108,6 +110,7 @@ export type CreateLeafAttestationParams = {
     leafAccount: string;
     myAttestorAccount?: string;
     payload?: string;
+    fee?: number;
 };
 
 export type CreateAttestationUncheckedParams = {
@@ -116,6 +119,7 @@ export type CreateAttestationUncheckedParams = {
     account: string;
     entityType: EntityType;
     payload?: string;
+    fee?: number;
 };
 
 export type AttestationResponse = {
@@ -129,6 +133,7 @@ export type UpdateRootAttestationParams = {
     newPayload?: string;
     newState?: State.ACTIVE | State.INACTIVE;
     newRootAccount?: string;
+    fee?: number;
 };
 
 export type UpdateIntermediateAttestationParams = {
@@ -139,6 +144,7 @@ export type UpdateIntermediateAttestationParams = {
     newPayload?: string;
     newState?: State.ACTIVE | State.INACTIVE;
     newIntermediateAccount?: string;
+    fee?: number;
 };
 
 export type UpdateLeafAttestationParams = {
@@ -149,30 +155,35 @@ export type UpdateLeafAttestationParams = {
     newPayload?: string;
     newState?: State.ACTIVE | State.INACTIVE;
     newLeafAccount?: string;
+    fee?: number;
 };
 
 
 export type RevokeRootAttestationParams = {
     passphrase: string;
     attestationContext: string;
+    fee?: number;
 };
 
 export type RevokeIntermediateAttestationParams = {
     passphrase: string;
     attestationContext: string;
     intermediateAccount?: string;
+    fee?: number;
 };
 
 export type RevokeLeafAttestationParams = {
     passphrase: string;
     attestationContext: string;
     leafAccount?: string;
+    fee?: number;
 };
 
 export type RevokeAttestationUncheckedParams = {
     passphrase: string;
     attestationContext: string;
     account: string;
+    fee?: number;
 };
 
 

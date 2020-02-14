@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { account, ChainId, IRequest, SetAccountPropertyParams, SetAccountPropertyResponse } from "@somedotone/ardor-ts";
+import { account, ChainId, IRequest, SetAccountPropertyParams, SetAccountPropertyResponse, DeleteAccountPropertyResponse, DeleteAccountPropertyParams } from "@somedotone/ardor-ts";
 import { EntityType, ErrorCode, State } from "../../../..";
 import DataFields from "../../../lib/DataFields";
 import Helper from "../../../lib/Helper";
@@ -112,7 +112,8 @@ export default class ServiceHelper {
 
 
     public async createAttestationTransaction(url: string, passphrase: string,
-                                                  accountToAttest: string, dataFields: DataFields ): Promise<SetAccountPropertyResponse> {
+                                              accountToAttest: string, dataFields: DataFields,
+                                              feeNQT?: number ): Promise<SetAccountPropertyResponse> {
         const propertyRequestParams: SetAccountPropertyParams = {
             chain: ChainId.IGNIS,
             property: dataFields.attestationContext,
@@ -121,8 +122,36 @@ export default class ServiceHelper {
             value: dataFields.createDataFieldsString()
         };
 
+        if (feeNQT) {
+            propertyRequestParams.feeNQT = feeNQT;
+        }
+
         try {
             return await this.request.setAccountProperty(url, propertyRequestParams);
+        } catch (error) {
+            return Promise.reject(Helper.getError(error));
+        }
+    }
+
+
+    public async createRevokeTransaction(url: string, params: objectAny, attestedAccount: string, feeNQT?: number): Promise<DeleteAccountPropertyResponse> {
+        const passphrase = params.passphrase;
+        const dataFields = new DataFields();
+        const attestationContext = dataFields.setAttestationContext(params.attestationContext);
+
+        const propertyRequestParams: DeleteAccountPropertyParams = {
+            chain: ChainId.IGNIS,
+            property: attestationContext,
+            recipient: attestedAccount,
+            secretPhrase: passphrase
+        };
+
+        if (feeNQT) {
+            propertyRequestParams.feeNQT = feeNQT;
+        }
+
+        try {
+            return await this.request.deleteAccountProperty(url, propertyRequestParams);
         } catch (error) {
             return Promise.reject(Helper.getError(error));
         }

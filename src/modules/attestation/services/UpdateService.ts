@@ -72,8 +72,8 @@ export default class UpdateService implements IAttestationService {
         let currentDataFields = new DataFields();
 
         if (entity !== EntityType.ROOT) {
-            const recipient = this.helper.getRecipient(params);
-            await this.checkAttestedEntityAndState(url, recipient, myAccount, attestationContext, currentDataFields, isStateUpdate, entity);
+            const attestedAccount = this.helper.getRecipient(params);
+            await this.checkAttestedEntityAndState(url, attestedAccount, myAccount, attestationContext, currentDataFields, isStateUpdate, entity);
         } else {
             currentDataFields = ownDataFields;
         }
@@ -156,9 +156,10 @@ export default class UpdateService implements IAttestationService {
 
 
         try {
+            const currentAttestedAccount = this.helper.getRecipient(params);
             const responses = await Promise.all([
-                this.helper.createAttestationTransaction(url, params.passphrase, newAttestedAccount, newDataFields),
-                this.helper.createAttestationTransaction(url, params.passphrase, this.helper.getRecipient(params), currentDataFields)
+                this.helper.createAttestationTransaction(url, params.passphrase, newAttestedAccount, newDataFields, params.feeNQT),
+                this.helper.createAttestationTransaction(url, params.passphrase, currentAttestedAccount, currentDataFields, params.feeNQT)
             ]);
             return { transactionId: responses[0].fullHash };
         } catch (e) {
@@ -193,7 +194,8 @@ export default class UpdateService implements IAttestationService {
 
     private async updateDataFields(url: string, params: objectAny, newDataFields: DataFields): Promise<AttestationResponse> {
         try {
-            const response = await this.helper.createAttestationTransaction(url, params.passphrase, this.helper.getRecipient(params), newDataFields);
+            const attestedAccount = this.helper.getRecipient(params);
+            const response = await this.helper.createAttestationTransaction(url, params.passphrase, attestedAccount, newDataFields, params.feeNQT);
             return { transactionId: response.fullHash };
         } catch (e) {
             return Promise.reject(Helper.getError(e));

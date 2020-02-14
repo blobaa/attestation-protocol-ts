@@ -33,6 +33,7 @@ export const ATTESTATION_PATH_SEPARATOR = ",";
 export const MAX_DEPRECATION_HOPS = 20;
 export const REDIRECT_ACCOUNT_CHARACTER_LENGTH = 20;
 
+export const IGNIS_ONE_COIN = 100000000;
 
 export const noError: Error = {
     code: ErrorCode.NO_ERROR,

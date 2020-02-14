@@ -15,12 +15,12 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { account, ChainId, DeleteAccountPropertyParams, DeleteAccountPropertyResponse, IRequest } from "@somedotone/ardor-ts";
+import { account, IRequest } from "@somedotone/ardor-ts";
 import { EntityType, ErrorCode } from "../../..";
 import { AttestationResponse } from "../../../types";
+import { IAttestationService, objectAny } from "../../internal-types";
 import DataFields from "../../lib/DataFields";
 import Helper from "../../lib/Helper";
-import { IAttestationService, objectAny } from "../../internal-types";
 import ServiceHelper from "./utils/ServiceHelper";
 
 
@@ -46,18 +46,18 @@ export default class RevocationService implements IAttestationService {
     public async revoke(url: string, params: objectAny, entityType: EntityType, runChecks: boolean): Promise<AttestationResponse> {
         const dataFields = new DataFields();
         dataFields.attestationContext = params.attestationContext;
-        let recipient = "";
+        let attestedAccount = "";
 
 
         if (runChecks) {
             await this.checkRevokeAttestation(url, params, entityType);
-            recipient = this.helper.getRecipient(params);
+            attestedAccount = this.helper.getRecipient(params);
         } else {
-            recipient = params.account;
+            attestedAccount = params.account;
         }
 
 
-        return await this.revokeAttestation(url, params, recipient);
+        return await this.revokeAttestation(url, params, attestedAccount);
     }
 
     private async checkRevokeAttestation(url: string, params: objectAny, entityType: EntityType): Promise<void> {
@@ -96,27 +96,8 @@ export default class RevocationService implements IAttestationService {
         }
     }
 
-    private async createRevokeTransaction(url: string, params: objectAny, attestedAccount: string): Promise<DeleteAccountPropertyResponse> {
-        const passphrase = params.passphrase;
-        const dataFields = new DataFields();
-        const attestationContext = dataFields.setAttestationContext(params.attestationContext);
-
-        const propertyRequestParams: DeleteAccountPropertyParams = {
-            chain: ChainId.IGNIS,
-            property: attestationContext,
-            recipient: attestedAccount,
-            secretPhrase: passphrase
-        };
-
-        try {
-            return await this.request.deleteAccountProperty(url, propertyRequestParams);
-        } catch (error) {
-            return Promise.reject(Helper.getError(error));
-        }
-    }
-
     private async revokeAttestation(url: string, params: objectAny, recipient: string): Promise<AttestationResponse> {
-        const response = await this.createRevokeTransaction(url, params, recipient);
+        const response = await this.helper.createRevokeTransaction(url, params, recipient, params.feeNQT);
         return { transactionId: response.fullHash };
     }
 }

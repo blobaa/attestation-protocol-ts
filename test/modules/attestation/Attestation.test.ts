@@ -93,6 +93,39 @@ if (config.test.attestationModule.runTests) {
         });
 
 
+        test("createRootAttestation with fee success", async () => {
+            const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
+                expect(params.recipient).toBe(config.account.alice.address);
+                expect(params.setter).toBe(config.account.alice.address);
+                expect(params.property).toBe("ap://test-context");
+
+                return { context: "none", dataFieldsString: "none" };
+            };
+
+            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
+                expect(params.chain).toBe(ChainId.IGNIS);
+                expect(params.secretPhrase).toBe(config.account.alice.secret);
+                expect(params.recipient).toBe(config.account.alice.address);
+                expect(params.property).toBe("ap://test-context");
+                expect(params.value).toBe("001|r|a|0000-0000-0000-00000|test-root-payload");
+                expect(params.feeNQT).toBe(100000000);
+            };
+
+            const testAttestation = new Attestation(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback));
+
+
+            const attestationParams: CreateRootAttestationParams = {
+                passphrase: config.account.alice.secret,
+                payload: "test-root-payload",
+                attestationContext: "ap://test-context",
+                fee: 1
+            };
+
+            const response = await testAttestation.createRootAttestation(config.node.url.testnet, attestationParams);
+            expect(response.transactionId).toBeDefined();
+        });
+
+
         test("createRootAttestation no checks success", async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 fail("should not reach here");
@@ -292,6 +325,38 @@ if (config.test.attestationModule.runTests) {
                 entityType: EntityType.INTERMEDIATE,
                 attestationContext: "test-context",
                 account: config.account.charlie.address
+            };
+
+            const response = await testAttestation.createAttestationUnchecked(config.node.url.testnet, attestationParams);
+            expect(response.transactionId).toBeDefined();
+        });
+
+
+        test("createIntermediateAttestation no checks with fee success", async () => {
+            const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
+                fail("should not reach here");
+                return { context: "none", dataFieldsString: "none" };
+            };
+
+            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
+                expect(params.chain).toBe(ChainId.IGNIS);
+                expect(params.secretPhrase).toBe(config.account.bob.secret);
+                expect(params.recipient).toBe(config.account.charlie.address);
+                expect(params.property).toBe("ap://test-context");
+                expect(params.value).toBe("001|i|a|0000-0000-0000-00000|test-intermediate-payload");
+                expect(params.feeNQT).toBe(1000000000);
+            };
+
+            const testAttestation = new Attestation(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback));
+
+
+            const attestationParams: CreateAttestationUncheckedParams = {
+                passphrase: config.account.bob.secret,
+                payload: "test-intermediate-payload",
+                entityType: EntityType.INTERMEDIATE,
+                attestationContext: "test-context",
+                account: config.account.charlie.address,
+                fee: 10
             };
 
             const response = await testAttestation.createAttestationUnchecked(config.node.url.testnet, attestationParams);
@@ -1066,6 +1131,59 @@ if (config.test.attestationModule.runTests) {
         });
 
 
+        test("updateLeafAttestation deprecation with fee success", async () => {
+            const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
+                if (params.recipient === config.account.alice.address) {
+                    return { context: "ap://test-context", dataFieldsString: "001|i|a|0000-0000-0000-00000|test-intermediate-payload" };
+                }
+
+                if (params.recipient === config.account.bob.address) {
+                    return { context: "ap://test-context", dataFieldsString: "001|l|a|0000-0000-0000-00000|test-leaf-payload" };
+                }
+
+                if (params.recipient === config.account.charlie.address) {
+                    return { context: "none", dataFieldsString: "none" };
+                }
+
+                fail("should not reach here");
+                return { context: "error", dataFieldsString: "error" };
+            };
+
+            const setAccountPropertyCallback = (params: SetAccountPropertyParams): void => {
+                if (params.recipient === config.account.bob.address) {
+                    expect(params.property).toBe("ap://test-context");
+                    expect(params.value).toBe("001|l|d|" + config.account.charlie.address.substring("ARDOR-".length) + "|test-leaf-payload");
+                    expect(params.feeNQT).toBe(200000000);
+                    return;
+                }
+
+                if (params.recipient === config.account.charlie.address) {
+                    expect(params.property).toBe("ap://test-context");
+                    expect(params.value).toBe("001|l|a|0000-0000-0000-00000|test-new-payload");
+                    expect(params.feeNQT).toBe(200000000);
+                    return;
+                }
+
+                fail("should not reach here");
+            };
+
+            const testAttestation = new Attestation(new RequestMock(getAccountPropertyCallback, setAccountPropertyCallback));
+
+
+            const attestationParams: UpdateLeafAttestationParams = {
+                passphrase: config.account.alice.secret,
+                attestationContext: "test-context",
+                newPayload: "test-new-payload",
+                leafAccount: config.account.bob.address,
+                newLeafAccount: config.account.charlie.address,
+                fee: 2
+            };
+
+            const response = await testAttestation.updateLeafAttestation(config.node.url.testnet, attestationParams);
+            expect(response.transactionId).toBeDefined();
+        });
+
+
         test("revokeRootAttestation success", async () => {
             const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
                 if (params.recipient === config.account.alice.address) {
@@ -1174,6 +1292,46 @@ if (config.test.attestationModule.runTests) {
                 passphrase: config.account.alice.secret,
                 attestationContext: "test-context",
                 intermediateAccount: config.account.bob.address
+            };
+
+            const response = await testAttestation.revokeIntermediateAttestation(config.node.url.testnet, attestationParams);
+            expect(response.transactionId).toBeDefined();
+        });
+
+
+        test("revokeIntermediateAttestation with fee success", async () => {
+            const getAccountPropertyCallback = (params: GetAccountPropertiesParams): { context: string; dataFieldsString: string } => {
+                if (params.recipient === config.account.bob.address) {
+                    expect(params.setter).toBe(config.account.alice.address);
+                    expect(params.property).toBe("ap://test-context");
+
+                    return { context: "ap://test-context", dataFieldsString: "001|i|a|0000-0000-0000-00000|test-root-payload" };
+                }
+
+                fail("should not reach here");
+                return { context: "error", dataFieldsString: "error" };
+            };
+
+            const deleteAccountPropertyCallback = (params: DeleteAccountPropertyParams): void => {
+                if (params.recipient === config.account.bob.address) {
+                    expect(params.chain).toBe(ChainId.IGNIS);
+                    expect(params.secretPhrase).toBe(config.account.alice.secret);
+                    expect(params.property).toBe("ap://test-context");
+                    expect(params.feeNQT).toBe(10000000);
+                    return;
+                }
+
+                fail("should not reach here");
+            };
+
+            const testAttestation = new Attestation(new RequestMock(getAccountPropertyCallback, undefined, undefined, deleteAccountPropertyCallback));
+
+
+            const attestationParams: RevokeIntermediateAttestationParams = {
+                passphrase: config.account.alice.secret,
+                attestationContext: "test-context",
+                intermediateAccount: config.account.bob.address,
+                fee: 0.1
             };
 
             const response = await testAttestation.revokeIntermediateAttestation(config.node.url.testnet, attestationParams);
