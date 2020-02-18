@@ -111,19 +111,19 @@ The library consist of the following modules:
 The Attestation module handles attestation tasks like creating, updating and revoking attestations. It provides the following APIs:
 
 ````typescript
-- createRootAttestation: (url: string, params: CreateRootAttestationParams) => Promise<AttestationResponse>
-- createIntermediateAttestation: (url: string, params: CreateIntermediateAttestationParams) => Promise<AttestationResponse>
-- createLeafAttestation: (url: string, params: CreateLeafAttestationParams) => Promise<AttestationResponse>
-- createAttestationUnchecked: (url: string, params: CreateAttestationUncheckedParams) => Promise<AttestationResponse>
+- createRootAttestation(url: string, params: CreateRootAttestationParams): Promise<AttestationResponse>
+- createIntermediateAttestation(url: string, params: CreateIntermediateAttestationParams): Promise<AttestationResponse>
+- createLeafAttestation(url: string, params: CreateLeafAttestationParams): Promise<AttestationResponse>
+- createAttestationUnchecked(url: string, params: CreateAttestationUncheckedParams): Promise<AttestationResponse>
 
-- updateRootAttestation: (url: string, params: UpdateRootAttestationParams) => Promise<AttestationResponse>
-- updateIntermediateAttestation: (url: string, params: UpdateIntermediateAttestationParams) => Promise<AttestationResponse>
-- updateLeafAttestation: (url: string, params: UpdateLeafAttestationParams) => Promise<AttestationResponse>
+- updateRootAttestation(url: string, params: UpdateRootAttestationParams): Promise<AttestationResponse>
+- updateIntermediateAttestation(url: string, params: UpdateIntermediateAttestationParams): Promise<AttestationResponse>
+- updateLeafAttestation(url: string, params: UpdateLeafAttestationParams): Promise<AttestationResponse>
 
-- revokeRootAttestation: (url: string, params: RevokeRootAttestationParams) => Promise<AttestationResponse>
-- revokeIntermediateAttestation: (url: string, params: RevokeIntermediateAttestationParams) => Promise<AttestationResponse>
-- revokeLeafAttestation: (url: string, params: RevokeLeafAttestationParams) => Promise<AttestationResponse>
-- revokeAttestationUnchecked: (url: string, params: RevokeAttestationUncheckedParams) => Promise<AttestationResponse>
+- revokeRootAttestation(url: string, params: RevokeRootAttestationParams): Promise<AttestationResponse>
+- revokeIntermediateAttestation(url: string, params: RevokeIntermediateAttestationParams): Promise<AttestationResponse>
+- revokeLeafAttestation(url: string, params: RevokeLeafAttestationParams): Promise<AttestationResponse>
+- revokeAttestationUnchecked(url: string, params: RevokeAttestationUncheckedParams): Promise<AttestationResponse>
 ````
 
 Before requesting blockchain transactions, various conditions will be checked and an error will be thrown in case of an unmet condition. This is to protect a user against invalid transaction creation and therefore money lost in form of transaction fees.
@@ -649,8 +649,8 @@ revokeAttestationUncheckedExample();
 The Data module handles the data signing and verification tasks. It provides the following APIs:
 
 ````typescript
-- signData: (params: SignDataParams, forTestnet?: boolean) => SignedData // forTestnet defaults to false
-- verifySignedData: (url: string, params: VerifySignedDataParams, forTestnet?: boolean) => Promise<VerifySignedDataResponse> // forTestnet defaults to false
+- signData(params: SignDataParams, forTestnet?: boolean): SignedData // forTestnet defaults to false
+- verifySignedData(url: string, params: VerifySignedDataParams, forTestnet?: boolean): Promise<VerifySignedDataResponse> // forTestnet defaults to false
 ````
 
 
@@ -754,7 +754,7 @@ verifySignedDataExample();
 The Entity module provides the possibility to retrieve account information.
 
 ````typescript
-- getEntity: (url: string, params: GetEntityParams) => Promise<GetEntityResponse>
+- getEntity(url: string, params: GetEntityParams): Promise<GetEntityResponse>
 ````
 
 
