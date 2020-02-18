@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ChainId, DeleteAccountPropertyParams, GetAccountPropertiesParams, SetAccountPropertyParams } from "@somedotone/ardor-ts";
+import { ChainId, DeleteAccountPropertyParams, GetAccountPropertiesParams, SetAccountPropertyParams } from "@blobaa/ardor-ts";
 import { Attestation, attestation, CreateAttestationUncheckedParams, CreateIntermediateAttestationParams, CreateLeafAttestationParams, CreateRootAttestationParams, EntityType, Error, ErrorCode, RevokeAttestationUncheckedParams, RevokeIntermediateAttestationParams, RevokeLeafAttestationParams, RevokeRootAttestationParams, State, UpdateIntermediateAttestationParams, UpdateLeafAttestationParams, UpdateRootAttestationParams } from "../../../src/index";
 import config from "../../config";
 import RequestMock from "../../mocks/RequestMock";

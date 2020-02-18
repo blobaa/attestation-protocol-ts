@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { account, ChainId, IRequest, SetAccountPropertyParams, SetAccountPropertyResponse, DeleteAccountPropertyResponse, DeleteAccountPropertyParams } from "@somedotone/ardor-ts";
+import { account, ChainId, IRequest, SetAccountPropertyParams, SetAccountPropertyResponse, DeleteAccountPropertyResponse, DeleteAccountPropertyParams } from "@blobaa/ardor-ts";
 import { EntityType, ErrorCode, State } from "../../../..";
 import DataFields from "../../../lib/DataFields";
 import Helper from "../../../lib/Helper";

@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IRequest, Request } from "@somedotone/ardor-ts";
+import { IRequest, Request } from "@blobaa/ardor-ts";
 import { IData, SignDataParams, SignedData, VerifySignedDataParams, VerifySignedDataResponse } from "../../types";
 import SigningController from "./controllers/SigningController";
 import VerificationController from "./controllers/VerificationController";

@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { account, IRequest } from "@somedotone/ardor-ts";
+import { account, IRequest } from "@blobaa/ardor-ts";
 import { EntityType, ErrorCode } from "../../..";
 import { AttestationResponse } from "../../../types";
 import { IAttestationService, objectAny } from "../../internal-types";

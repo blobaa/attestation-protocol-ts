@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IRequest } from "@somedotone/ardor-ts";
+import { IRequest } from "@blobaa/ardor-ts";
 import { ErrorCode, GetEntityParams, GetEntityResponse } from "../../../types";
 import DataFields from "../../lib/DataFields";
 import Helper from "../../lib/Helper";

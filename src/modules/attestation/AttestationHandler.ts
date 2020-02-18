@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IRequest, Request } from "@somedotone/ardor-ts";
+import { IRequest, Request } from "@blobaa/ardor-ts";
 import { AttestationResponse, CreateAttestationUncheckedParams, CreateIntermediateAttestationParams, CreateLeafAttestationParams, CreateRootAttestationParams, IAttestation, RevokeAttestationUncheckedParams, RevokeIntermediateAttestationParams, RevokeLeafAttestationParams, RevokeRootAttestationParams, UpdateIntermediateAttestationParams, UpdateLeafAttestationParams, UpdateRootAttestationParams } from "../../types";
 import IntermediateController from "./controllers/IntermediateController";
 import LeafController from "./controllers/LeafController";

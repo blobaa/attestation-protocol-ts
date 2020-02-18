@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { account, IRequest } from "@somedotone/ardor-ts";
+import { account, IRequest } from "@blobaa/ardor-ts";
 import { AttestationResponse, EntityType, ErrorCode, State } from "../../../types";
 import DataFields from "../../lib/DataFields";
 import Helper from "../../lib/Helper";

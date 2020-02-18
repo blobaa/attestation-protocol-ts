@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { account } from "@somedotone/ardor-ts";
+import { account } from "@blobaa/ardor-ts";
 import { SignDataParams, SignedData } from "../../../types";
 import { ISigningService } from "../../internal-types";
 import TokenData from "./utils/TokenData";

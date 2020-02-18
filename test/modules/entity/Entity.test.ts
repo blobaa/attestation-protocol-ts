@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { GetAccountPropertiesParams } from "@somedotone/ardor-ts";
+import { GetAccountPropertiesParams } from "@blobaa/ardor-ts";
 import { Entity, EntityType, GetEntityParams, State, Error, ErrorCode } from "../../../src/index";
 import config from "../../config";
 import RequestMock from "../../mocks/RequestMock";

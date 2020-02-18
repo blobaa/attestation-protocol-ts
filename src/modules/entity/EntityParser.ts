@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IRequest, Request } from "@somedotone/ardor-ts";
+import { IRequest, Request } from "@blobaa/ardor-ts";
 import { GetEntityParams, GetEntityResponse, IEntity } from "../../types";
 import ParsingController from "./controller/ParsingController";
 import GetEntityService from "./service/GetEntityService";

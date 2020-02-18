@@ -44,7 +44,6 @@ To use it as a dependency, create an *.npmrc* file in the same directory as your
 
 ````
 @blobaa:registry=https://npm.pkg.github.com/blobaa
-@somedotone:registry=https://npm.pkg.github.com/somedotone
 ```` 
 
 This tells npm to use the GitHub registry for scoped packages.
@@ -96,7 +95,7 @@ npm test
 
 ## General
 
-This library uses the [ardor-ts](https://github.com/somedotone/ardor-ts) package to interact with the [Ardor](https://ardorplatform.org) Blockchain. At the current state there is no child chain configuration possible. It uses the default ardor-ts configuration and therefore the IGNIS child chain.
+This library uses the [ardor-ts](https://github.com/blobaa/ardor-ts) package to interact with the [Ardor](https://ardorplatform.org) Blockchain. At the current state there is no child chain configuration possible. It uses the default ardor-ts configuration and therefore the IGNIS child chain.
 
 There are lots of tests in the test folder. Have a look if you need some additional examples of how to use the APIs.
 

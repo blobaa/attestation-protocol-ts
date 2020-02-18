@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { account } from "@somedotone/ardor-ts";
+import { account } from "@blobaa/ardor-ts";
 import { ACCOUNT_PREFIX, DATA_FIELD_SEPARATOR, DUMMY_ACCOUNT_RS, MAX_PAYLOAD_LENGTH, noError, NUMBER_OF_DATA_FIELDS, PROTOCOL_IDENTIFIER, PROTOCOL_VERSION, REDIRECT_ACCOUNT_CHARACTER_LENGTH } from "../../constants";
 import { EntityType, Error, ErrorCode, State } from "../../types";
 import Helper from "./Helper";

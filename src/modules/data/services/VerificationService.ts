@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DecodeTokenParams, DecodeTokenResponse, IRequest, time } from "@somedotone/ardor-ts";
+import { DecodeTokenParams, DecodeTokenResponse, IRequest, time } from "@blobaa/ardor-ts";
 import { ACCOUNT_PREFIX, MAX_DEPRECATION_HOPS, noError } from "../../../constants";
 import { EntityCheckCallback, EntityCheckParams, EntityType, Error, ErrorCode, SignedData, SignedDataCheckCallback, SignedDataCheckParams, State, VerifySignedDataParams, VerifySignedDataResponse } from "../../../types";
 import DataFields from "../../lib/DataFields";

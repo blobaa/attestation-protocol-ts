@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DecodeTokenParams, DecodeTokenResponse, GetAccountPropertiesParams, GetAccountPropertiesResponse, Request, SetAccountPropertyParams, SetAccountPropertyResponse, time, DeleteAccountPropertyParams, DeleteAccountPropertyResponse } from "@somedotone/ardor-ts";
+import { DecodeTokenParams, DecodeTokenResponse, GetAccountPropertiesParams, GetAccountPropertiesResponse, Request, SetAccountPropertyParams, SetAccountPropertyResponse, time, DeleteAccountPropertyParams, DeleteAccountPropertyResponse } from "@blobaa/ardor-ts";
 
 
 export default class RequestMock extends Request {
