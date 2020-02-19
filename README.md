@@ -1,6 +1,6 @@
 # Attestation Protocol TypeScript
 
-An implementation of the [Attestation Protocol](https://github.com/blobaa/documentation/wiki/Attestation-Protocol) written in [TypeScript](https://www.typescriptlang.org).
+An implementation of the [Attestation Protocol](https://docu.blobaa.dev/Attestation-Protocol.html) written in [TypeScript](https://www.typescriptlang.org).
 
 
 <details><summary><i>Table of Contents</i></summary>
