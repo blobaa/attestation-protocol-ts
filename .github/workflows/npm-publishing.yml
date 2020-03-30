@@ -46,6 +46,9 @@ jobs:
         with:
           node-version: 12
           registry-url: https://npm.pkg.github.com/
+          
+      - name: Authenticate with GitHub package registry
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
      
       - name: Get package version
         run: echo ::set-env name=RELEASE_VERSION::$(echo ${GITHUB_REF:10})
