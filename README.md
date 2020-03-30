@@ -884,7 +884,7 @@ console.log(signedData2);
 attestation-protocol-ts source code ("The Software") is licensed under **both** GNU Affero General Public License v3.0 or later **and** a proprietary license that can be arranged with me. In practical sense, this means:
 
 - If you are developing Open Source Software (OSS) based on attestation-protocol-ts, chances are you will be able to use attestation-protocol-ts freely under AGPL. Please double check [here](https://www.gnu.org/licenses/agpl-3.0.en.html) for OSS license compatibility with AGPL.
-- Alternatively, if you are unable to release your application as Open Source Software, you may arrange alternative licensing with me. Just send your inquiry to a_aldemir@hotmail.de to discuss this option.
+- Alternatively, if you are unable to release your application as Open Source Software, you may arrange alternative licensing with me. Just send your inquiry to hi.blobaa@gmail.com to discuss this option.
 
 ____
 Enjoy :)
