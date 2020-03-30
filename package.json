@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "An implementation of the Attestation Protocol written in TypeScript",
   "author": "atz3n",
-  "license": "AGPL",
+  "license": "AGPL-3.0-or-later",
   "repository": {
     "type": "git",
     "url": "https://github.com/blobaa/attestation-protocol-ts"
