@@ -8,6 +8,8 @@ An implementation of the [Attestation Protocol](https://docu.blobaa.dev/Attestat
 
 - [Attestation Protocol TypeScript](#attestation-protocol-typescript)
   - [Installation](#installation)
+    - [Npmjs Registry](#npmjs-registry)
+    - [Github Registry](#github-registry)
   - [Development](#development)
   - [General](#general)
   - [APIs](#apis)
@@ -39,21 +41,37 @@ An implementation of the [Attestation Protocol](https://docu.blobaa.dev/Attestat
 
 ## Installation
 
-At the current state this library is published to the GitHub npm registry only.
-To use it as a dependency, create an *.npmrc* file in the same directory as your *package.json* and add the following line 
+This library is published on GitHub's and npmjs's npm registry.
+
+
+### Npmjs Registry
+
+````
+npm install @blobaa/attestation-protocol-ts
+````
+
+See [npmjs package](https://www.npmjs.com/package/@blobaa/attestation-protocol-ts).
+
+
+### Github Registry
+
+For using GitHub's registry, create a *.npmrc* file in the same directory as your *package.json* and add the following line 
 
 ````
 @blobaa:registry=https://npm.pkg.github.com/blobaa
 ```` 
 
-This tells npm to use the GitHub registry for scoped packages.
-You can now install the npm package via
+This tells npm to use the GitHub registry for @blobaa scoped packages. More information about multiple registry usage can be found in [this medium post](https://medium.com/@crysfel/using-different-registries-in-yarn-and-npm-766541d6f851).
+
+You can now install the package via
 
 ````
-npm install @blobaa/attestation-protocol-ts@<release version>
+npm install @blobaa/attestation-protocol-ts
 ````
 
-More information can be found at the [npm package](https://github.com/blobaa/attestation-protocol-ts/packages/82302) description and [this medium post](https://medium.com/@crysfel/using-different-registries-in-yarn-and-npm-766541d6f851) about multiple registry usage.
+See [GitHub package](https://github.com/blobaa/attestation-protocol-ts/packages/82302).
+
+CAUTION: You need to [authenticate yourself](https://github.community/t5/GitHub-API-Development-and/Download-from-Github-Package-Registry-without-authentication/td-p/35255) to use the GitHub registry, even if it's a public available package.
 
 
 ## Development
